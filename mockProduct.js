@@ -54,5 +54,47 @@ export const mockProducts = [
       sweet: false,
       note: true
     }
-  }
+  },
+  {
+    productId: "matcha-vanilla-005",
+    productName: "Vanilla Matcha",
+    description: "Sweet vanilla twist blended with matcha.",
+    basePrice: 22000,
+    imageUrl: "/images/card-menu.png",
+    availableTypes: ["hot", "ice"],
+    availableSizes: ["regular", "large"],
+    customizable: {
+      iceCube: true,
+      sweet: false,
+      note: true
+    }
+  },
+  {
+    productId: "matcha-vanilla-006",
+    productName: "Vanilla Matcha",
+    description: "Sweet vanilla twist blended with matcha.",
+    basePrice: 22000,
+    imageUrl: "/images/card-menu.png",
+    availableTypes: ["hot", "ice"],
+    availableSizes: ["regular", "large"],
+    customizable: {
+      iceCube: true,
+      sweet: false,
+      note: true
+    }
+  },
+  {
+    productId: "matcha-vanilla-007",
+    productName: "Vanilla Matcha",
+    description: "Sweet vanilla twist blended with matcha.",
+    basePrice: 22000,
+    imageUrl: "/images/card-menu.png",
+    availableTypes: ["hot", "ice"],
+    availableSizes: ["regular", "large"],
+    customizable: {
+      iceCube: true,
+      sweet: false,
+      note: true
+    }
+  },
 ];

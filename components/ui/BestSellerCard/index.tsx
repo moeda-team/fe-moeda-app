@@ -15,14 +15,16 @@ const BestSellerCard = ({
 }: BestSellerCardProps) => {
   return (
     <div
-      className="h-[220px] w-[180px] bg-black rounded-t-[80px] rounded-b-[80px] bg-cover bg-center bg-no-repeat flex items-end justify-center"
-      style={{ backgroundImage: `url(${image})` }}
+      className="h-[160px] w-[140px] bg-black rounded-md bg-cover bg-center bg-no-repeat flex items-end justify-center"
+      style={{ backgroundImage: `url(${image})`, objectFit: "fill" }}
       onClick={() => {
         onOpenPopupOrder();
         onSetProductDetail();
       }}
     >
-      <span className="text-sm font-normal text-white py-4">{title}</span>
+      <span className="text-sm text-center font-semibold text-white py-2">
+        {title}
+      </span>
     </div>
   );
 };

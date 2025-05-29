@@ -14,7 +14,7 @@ export const getStatusConfig = (status: string) => {
     },
     completed: {
       text: "Completed",
-      bgColor: "bg-primary-500",
+      bgColor: "bg-success-500",
       textColor: "text-white",
       dotColor: "bg-white"
     },

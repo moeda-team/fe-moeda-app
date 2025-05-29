@@ -5,6 +5,7 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './utils/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -15,24 +16,24 @@ const config: Config = {
       },
       colors: {
         primary: {
-          50: '#e6f4f3',
-          100: '#cce8e6',
-          200: '#99d1cd',
-          300: '#66b9b3',
-          400: '#339299',
-          500: '#2A625A', // base color
-          600: '#225049',
-          700: '#1a3e39',
-          800: '#122d29',
-          900: '#0b1b19',
-        },
+          50:  '#ebebeb',  // very light gray
+          100: '#d6d6d6',
+          200: '#b0b0b0',
+          300: '#8a8a8a',
+          400: '#646464',
+          500: '#343434',
+          600: '#2e2e2e',
+          700: '#282828',
+          800: '#1f1f1f',
+          900: '#141414',
+        },        
         neutral: {
           50: '#f3f4f5',
           100: '#e6e7e9',
           200: '#cfd2d6',
           300: '#b8bcc3',
           400: '#929aa2',
-          500: '#11181C', // base neutral
+          500: '#11181C',
           600: '#0e1316',
           700: '#0b0e10',
           800: '#080a0c',

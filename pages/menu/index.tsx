@@ -1,4 +1,9 @@
-import { Hero, OrderForm, SearchBar } from "@/components/sections";
+import {
+  CategoryList,
+  Hero,
+  OrderForm,
+  SearchBar,
+} from "@/components/sections";
 import { ProductCard } from "@/components/ui";
 import { mockProducts } from "@/mockProduct";
 import { map } from "lodash";
@@ -12,7 +17,6 @@ const Menu = () => {
   const [productDetail, setProductDetailt] = useState<any>({});
 
   const handleSearch = (query: string) => {
-    console.log("Search query:", query);
     router.push(`/menu?search=${query}`);
   };
 
@@ -20,7 +24,7 @@ const Menu = () => {
     <>
       <Hero />
 
-      <div className="mt-20 px-4 text-lg font-semibold space-y-4 w-full">
+      <div className="px-4 text-lg font-semibold space-y-4 w-full">
         <SearchBar onSearch={handleSearch} />
       </div>
       <div className="mt-8 px-4 text-lg font-semibold space-y-4">

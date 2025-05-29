@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoArrowBack } from "react-icons/io5";
-import { HiShoppingCart } from "react-icons/hi2";
+import { FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
-import { getStatusConfig } from "@/utils/statusConfig";
 import OrderCard from "@/components/ui/OrderCard";
 
 // Types
@@ -20,66 +19,49 @@ interface OrderProduct {
   status: "preparing" | "ready" | "completed" | "cancelled";
 }
 
+// Types
+interface CartProduct {
+  productId: string;
+  type: "hot" | "iced";
+  size: "regular" | "large";
+  iceCube: "regular" | "less" | "more";
+  sweet: "regular" | "less";
+  note?: string;
+  quantity: number;
+  basePrice: number;
+  imageUrl: string;
+}
+
 const OrderList: React.FC = () => {
   const router = useRouter();
-  const [orderProducts, setOrderProducts] = useState<OrderProduct[]>([]);
+  const [orderProducts, setOrderProducts] = useState<OrderProduct[]>([
+    {
+      productId: "1",
+      type: "hot",
+      size: "regular",
+      iceCube: "regular",
+      sweet: "regular",
+      quantity: 2,
+      basePrice: 5000,
+      imageUrl: "https://via.placeholder.com/150",
+      status: "preparing",
+    },
+  ]);
+  const [cartItems, setCartItems] = useState<CartProduct[]>([]);
 
   useEffect(() => {
     // Mock data for demonstration - replace with actual API call
-    const mockOrders: OrderProduct[] = [
-      {
-        productId: "1",
-        type: "iced",
-        size: "large",
-        iceCube: "regular",
-        sweet: "less",
-        quantity: 2,
-        basePrice: 25000,
-        imageUrl: "/api/placeholder/80/80",
-        status: "preparing",
-      },
-      {
-        productId: "2",
-        type: "hot",
-        size: "regular",
-        iceCube: "regular",
-        sweet: "regular",
-        quantity: 1,
-        basePrice: 22000,
-        imageUrl: "/api/placeholder/80/80",
-        status: "ready",
-      },
-      {
-        productId: "3",
-        type: "iced",
-        size: "large",
-        iceCube: "more",
-        sweet: "regular",
-        quantity: 1,
-        basePrice: 28000,
-        imageUrl: "/api/placeholder/80/80",
-        status: "completed",
-      },
-      {
-        productId: "4",
-        type: "hot",
-        size: "regular",
-        iceCube: "regular",
-        sweet: "less",
-        quantity: 3,
-        basePrice: 22000,
-        imageUrl: "/api/placeholder/80/80",
-        status: "cancelled",
-      },
-    ];
-    setOrderProducts(mockOrders);
+    const cart = localStorage.getItem("cart");
+    if (cart) {
+      setCartItems(JSON.parse(cart));
+    }
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <motion.div
-        className="bg-primary-500 text-white px-4 py-6 relative"
+        className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -87,7 +69,7 @@ const OrderList: React.FC = () => {
         <div className="flex items-center justify-between">
           <motion.button
             onClick={() => router.back()}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-gray-100 transition-colors"
+            className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-gray-100 transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -104,10 +86,11 @@ const OrderList: React.FC = () => {
           </motion.h1>
 
           <motion.div
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary-500 relative"
+            className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 relative"
             whileHover={{ scale: 1.05 }}
+            onClick={() => router.push("/cart")}
           >
-            <HiShoppingCart size={20} />
+            <FiShoppingCart size={20} />
             <motion.span
               className="absolute -top-1 -right-1 w-5 h-5 bg-danger-500 text-white rounded-full text-xs flex items-center justify-center"
               initial={{ scale: 0 }}
@@ -129,7 +112,7 @@ const OrderList: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-2xl p-8 text-center"
             >
-              <HiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-600 mb-2">
                 No orders found
               </h3>

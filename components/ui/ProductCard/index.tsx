@@ -22,6 +22,10 @@ export default function Card({
           src={image}
           alt="Food"
           fill
+          sizes="(min-width: 808px) 50vw, 100vw"
+          style={{
+            objectFit: "cover",
+          }}
           fetchPriority="low"
         />
       </div>

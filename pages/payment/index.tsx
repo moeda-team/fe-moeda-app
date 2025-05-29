@@ -1,13 +1,12 @@
 // components/QrisPayment.js
 "use client";
-
-import { IoArrowBack } from "react-icons/io5";
-import { HiShoppingCart } from "react-icons/hi2";
 // import QRCode from "qrcode";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 export default function QrisPayment() {
+  const router = useRouter();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
 
   // useEffect(() => {
@@ -31,60 +30,24 @@ export default function QrisPayment() {
   //   generateQRCode();
   // }, []);
 
-  const handleBack = () => {
-    // Handle back navigation
-    console.log("Back button clicked");
-  };
-
-  const handleCart = () => {
-    // Handle cart action
-    console.log("Cart button clicked");
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <motion.div
-        className="bg-primary-500 text-white px-4 py-6 relative"
+        className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="flex items-center justify-between">
-          <motion.button
-            onClick={handleBack}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-gray-100 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <IoArrowBack size={20} />
-          </motion.button>
-
           <motion.h1
-            className="text-xl font-semibold"
+            className="text-xl font-semibold mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
             Qris Payment
           </motion.h1>
-
-          <motion.button
-            onClick={handleCart}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-gray-100 transition-colors relative"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <HiShoppingCart size={20} />
-            <motion.span
-              className="absolute -top-1 -right-1 w-5 h-5 bg-danger-500 text-white rounded-full text-xs flex items-center justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
-            >
-              6
-            </motion.span>
-          </motion.button>
         </div>
       </motion.div>
 
@@ -180,6 +143,26 @@ export default function QrisPayment() {
           <p className="text-lg text-neutral-500 font-medium">
             Payment of 04:30
           </p>
+        </motion.div>
+
+        <motion.div
+          className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t"
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <motion.button
+            className="w-full bg-primary-500 text-white py-4 rounded-2xl font-semibold flex items-center justify-center space-x-2 disabled:bg-neutral-400"
+            whileHover={{ scale: 1.02, backgroundColor: "#225049" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400 }}
+            type="button"
+            onClick={() => {
+              router.push("/feedback");
+            }}
+          >
+            <span>Completed</span>
+          </motion.button>
         </motion.div>
       </div>
     </div>

@@ -9,49 +9,25 @@ interface BestSellerSliderProps {
   onSetProductDetail: (product: any) => void;
 }
 
-const cardData = [
-  { image: "123", title: "123" },
-  { image: "456", title: "456" },
-  { image: "789", title: "789" },
-  { image: "101", title: "101" },
-];
-
 export default function BestSellerSlider({
   onOpenPopupOrder,
   onSetProductDetail,
 }: BestSellerSliderProps) {
   const [bestSeller, setBestSeller] = useState(mockProducts);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(0);
-  console.log({ bestSeller });
-
-  useEffect(() => {
-    const carousel = carouselRef.current;
-    if (carousel) {
-      setWidth(carousel.scrollWidth - carousel.offsetWidth);
-    }
-  }, []);
 
   return (
-    <div className="overflow-hidden cursor-grab">
-      <motion.div
-        ref={carouselRef}
-        className="flex"
-        drag="x"
-        dragConstraints={{ right: 0, left: -width }}
-        whileTap={{ cursor: "grabbing" }}
-      >
+    <div className="w-full overflow-x-auto cursor-grab no-scrollbar">
+      <div className="flex w-max space-x-4">
         {bestSeller.map((bestSell, index) => (
-          <motion.div key={index} className="min-w-[200px]">
-            <BestSellerCard
-              onOpenPopupOrder={onOpenPopupOrder}
-              onSetProductDetail={() => onSetProductDetail(bestSell)}
-              image={bestSell.imageUrl}
-              title={bestSell.productName}
-            />
-          </motion.div>
+          <BestSellerCard
+            key={index}
+            onOpenPopupOrder={onOpenPopupOrder}
+            onSetProductDetail={() => onSetProductDetail(bestSell)}
+            image={bestSell.imageUrl}
+            title={bestSell.productName}
+          />
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoPencil, IoCard } from "react-icons/io5";
-import { FiArrowLeft, FiShoppingCart } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
+import { RiFileList3Line } from "react-icons/ri";
 
 // Types
 interface CartItem {
@@ -28,8 +29,8 @@ const OrderDetail: React.FC = () => {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [customer, setCustomer] = useState<Customer>({
-    tableNumber: "24",
-    name: "Lovanto",
+    tableNumber: "0",
+    name: "Your Name",
   });
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
@@ -57,14 +58,8 @@ const OrderDetail: React.FC = () => {
 
   const subtotal: number = calculateSubtotal();
   const tax: number = Math.round(subtotal * 0.1); // 10% tax
-  const rounding: number = 500; // Fixed rounding
-  const total: number = subtotal + tax + rounding;
-
-  // Payment calculation (different from order total)
-  const paymentSubtotal: number = 300234;
-  const paymentTax: number = 12234;
   const serviceFee: number = 500;
-  const paymentAmount: number = paymentSubtotal + paymentTax + serviceFee;
+  const paymentAmount: number = subtotal + tax + serviceFee;
 
   const handleCustomerEdit = (): void => {
     setTempCustomer(customer);
@@ -97,6 +92,10 @@ const OrderDetail: React.FC = () => {
   };
 
   const onPayOrder = (): void => {
+    if (customer.tableNumber === "0") {
+      setShowCustomerModal(true);
+      return;
+    }
     localStorage.removeItem("cart");
     router.push("/payment");
   };
@@ -117,38 +116,26 @@ const OrderDetail: React.FC = () => {
       >
         <div className="flex items-center justify-between">
           <motion.button
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center"
-            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            type="button"
+            className="bg-white rounded-full p-3 shadow-lg"
             onClick={() => router.push("/cart")}
           >
-            <FiArrowLeft className="w-6 h-6 text-primary-500" />
+            <FiArrowLeft className="w-5 h-5 text-gray-700" />
           </motion.button>
-          <h1 className="text-xl font-semibold">Detail Order</h1>
+          <h1 className="text-xl font-semibold">Order Detail</h1>
           <div className="relative">
-            <motion.button
-              className="w-12 h-12 bg-white rounded-full flex items-center justify-center"
-              whileHover={{ scale: 1.05 }}
+            <motion.div
               whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={() => router.push("/cart")}
+              className="bg-white rounded-full p-3 shadow-lg relative"
+              onClick={() => router.push("/order")}
             >
-              <FiShoppingCart className="w-6 h-6 text-primary-500" />
-            </motion.button>
-            <motion.span
-              className="absolute -top-2 -right-2 bg-danger-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.8, type: "spring", stiffness: 500 }}
-            >
-              {cartItems.length}
-            </motion.span>
+              <RiFileList3Line className="w-5 h-5 text-gray-700" />
+            </motion.div>
           </div>
         </div>
       </motion.div>
 
-      <div className="px-4 -mt-4 pb-10">
+      <div className="px-4 mt-4 pb-10">
         {/* Customer Info */}
         <motion.div
           className="bg-white rounded-2xl p-4 mb-6 shadow-sm"
@@ -217,16 +204,6 @@ const OrderDetail: React.FC = () => {
               </motion.div>
             ))}
 
-            <div className="flex justify-between">
-              <span className="text-gray-600">Tax</span>
-              <span>{formatToIDR(tax)}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Rounding</span>
-              <span>{formatToIDR(rounding)}</span>
-            </div>
-
             <motion.div
               className="border-t pt-3"
               initial={{ scaleX: 0 }}
@@ -235,7 +212,7 @@ const OrderDetail: React.FC = () => {
             >
               <div className="flex justify-between font-semibold text-lg">
                 <span>Total</span>
-                <span>{formatToIDR(total)}</span>
+                <span>{formatToIDR(subtotal)}</span>
               </div>
             </motion.div>
           </div>
@@ -282,13 +259,11 @@ const OrderDetail: React.FC = () => {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Sub Total</span>
-              <span className="font-medium">
-                {formatToIDR(paymentSubtotal)}
-              </span>
+              <span className="font-medium">{formatToIDR(subtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Tax</span>
-              <span>{formatToIDR(paymentTax)}</span>
+              <span>{formatToIDR(tax)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Service Fee</span>
@@ -361,7 +336,7 @@ const OrderDetail: React.FC = () => {
                     Table Number
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     value={tempCustomer.tableNumber}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleInputChange("tableNumber", e.target.value)

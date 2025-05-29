@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import {
   FaFire,
   FaSnowflake,
-  FaCoffee,
   FaShoppingCart,
   FaCreditCard,
   FaTimes,
@@ -122,7 +121,12 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({ onClose }) => (
 );
 
 // Product Info Component
-const ProductInfo: React.FC<ProductCardProps> = ({ title, image, price }) => (
+const ProductInfo: React.FC<ProductCardProps> = ({
+  title,
+  image,
+  price,
+  description,
+}) => (
   <motion.div
     className="flex items-center gap-4 mb-6"
     initial={{ opacity: 0, x: -20 }}
@@ -136,7 +140,8 @@ const ProductInfo: React.FC<ProductCardProps> = ({ title, image, price }) => (
     />
     <div>
       <h3 className="font-semibold text-lg">{title}</h3>
-      <p className="text-gray-600">{price}</p>
+      <p className="text-sm font-normal">{description}</p>
+      <p className="text-gray-600">{formatToIDR(price)}</p>
     </div>
   </motion.div>
 );
@@ -287,7 +292,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
     // Save updated cart to localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
     onClose();
-    console.log("Cart updated:", cart);
+    window.dispatchEvent(new CustomEvent("cartUpdated"));
   };
 
   const incrementQuantity = (): void => setQuantity((prev) => prev + 1);
@@ -338,6 +343,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
             price={productDetail.basePrice}
             image={productDetail.imageUrl}
             title={productDetail.productName}
+            description={productDetail.description}
           />
 
           {/* Type Selection */}

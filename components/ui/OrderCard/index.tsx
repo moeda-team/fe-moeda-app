@@ -28,6 +28,7 @@ const getOptionText = (type: string, value: string): string => {
 
 const OrderCard = (product: OrderProduct, index: number) => {
   const statusConfig = getStatusConfig(product.status);
+
   return (
     <motion.div
       key={`${product.productId}-${index}`}
@@ -36,25 +37,10 @@ const OrderCard = (product: OrderProduct, index: number) => {
       transition={{ delay: index * 0.1 }}
       className="bg-white rounded-2xl p-4 mb-4 shadow-sm relative"
     >
-      {/* Status Badge */}
-      <motion.div
-        className={`absolute top-4 right-4 ${statusConfig.bgColor} ${statusConfig.textColor} px-3 py-1 rounded-full text-xs flex items-center gap-1`}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{
-          delay: index * 0.1 + 0.3,
-          type: "spring",
-          stiffness: 300,
-        }}
-      >
-        <div className={`w-2 h-2 ${statusConfig.dotColor} rounded-full`}></div>
-        {statusConfig.text}
-      </motion.div>
-
-      <div className="flex gap-4 pr-20">
+      <div className="flex gap-4">
         {/* Product Image */}
         <motion.div
-          className="w-20 h-20 bg-gray-200 rounded-xl flex-shrink-0 overflow-hidden"
+          className="w-20 h-20 rounded-xl flex-shrink-0 overflow-hidden"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -72,9 +58,24 @@ const OrderCard = (product: OrderProduct, index: number) => {
         {/* Product Details */}
         <div className="flex-1">
           <div className="mb-3">
-            <h3 className="font-semibold text-gray-900 text-lg">
-              Matcha Latte
-            </h3>
+            <div className="flex justify-between">
+              <h3 className="font-semibold text-lg">Matcha Latte</h3>
+              {/* Status Badge */}
+              <motion.div
+                className={`${statusConfig.bgColor} px-3 py-1 rounded-full text-xs flex items-center gap-1`}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  delay: index * 0.1 + 0.3,
+                  type: "spring",
+                  stiffness: 300,
+                }}
+              >
+                <span className={`${statusConfig.textColor}`}>
+                  {statusConfig.text}
+                </span>
+              </motion.div>
+            </div>
             <p className="text-sm text-gray-500">Qty: {product.quantity}</p>
           </div>
 
@@ -99,7 +100,7 @@ const OrderCard = (product: OrderProduct, index: number) => {
           </div>
 
           {/* Price */}
-          <div className="flex items-center">
+          <div className="flex items-center w-full text-nowrap">
             <span className="font-bold text-lg text-gray-900">
               {formatToIDR(product.basePrice * product.quantity)}
             </span>

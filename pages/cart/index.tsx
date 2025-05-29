@@ -10,6 +10,7 @@ import {
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { IoCard } from "react-icons/io5";
+import { RiFileList3Line } from "react-icons/ri";
 
 // Types
 interface CartProduct {
@@ -112,42 +113,8 @@ const MatchaCartUI: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Custom Tailwind CSS with your color palette */}
-      <style jsx global>{`
-        .bg-primary-500 {
-          background-color: #2a625a;
-        }
-        .bg-primary-600 {
-          background-color: #225049;
-        }
-        .text-primary-500 {
-          color: #2a625a;
-        }
-        .text-primary-600 {
-          color: #225049;
-        }
-        .bg-danger-500 {
-          background-color: #e02f2f;
-        }
-        .bg-danger-50 {
-          background-color: #fdeaea;
-        }
-        .text-danger-500 {
-          color: #e02f2f;
-        }
-        .border-primary-500 {
-          border-color: #2a625a;
-        }
-        .hover\\:bg-primary-600:hover {
-          background-color: #225049;
-        }
-        .hover\\:bg-danger-600:hover {
-          background-color: #b32626;
-        }
-      `}</style>
-
       {/* Header */}
-      <div className="bg-primary-500 px-4 py-6 pb-8">
+      <div className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl">
         <div className="flex items-center justify-between mx-auto">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -159,20 +126,20 @@ const MatchaCartUI: React.FC = () => {
 
           <h1 className="text-white text-xl font-semibold">Cart</h1>
 
-          <motion.div
-            whileTap={{ scale: 0.95 }}
-            className="bg-white rounded-full p-3 shadow-lg relative"
-          >
-            <FiShoppingCart className="w-5 h-5 text-gray-700" />
-            <span className="absolute -top-1 -right-1 bg-danger-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {cartProducts.length}
-            </span>
-          </motion.div>
+          <div className="relative">
+            <motion.div
+              whileTap={{ scale: 0.95 }}
+              className="bg-white rounded-full p-3 shadow-lg relative"
+              onClick={() => router.push("/order")}
+            >
+              <RiFileList3Line className="w-5 h-5 text-gray-700" />
+            </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Cart Items */}
-      <div className="mx-auto px-4 -mt-4 pb-28">
+      <div className="mx-auto px-4 mt-4 pb-28">
         <AnimatePresence>
           {cartProducts.length === 0 ? (
             <motion.div
@@ -316,7 +283,6 @@ const MatchaCartUI: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Payment Button */}
         {/* Payment Button */}
         <motion.div
           className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t"

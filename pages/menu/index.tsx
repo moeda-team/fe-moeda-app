@@ -1,26 +1,28 @@
-import { Hero, BestSellerSlider, OrderForm } from "@/components/sections";
+import { Hero, OrderForm, SearchBar } from "@/components/sections";
 import { ProductCard } from "@/components/ui";
-import { AnimatePresence } from "motion/react";
-import { useState } from "react";
-import { mockProducts } from "../mockProduct";
+import { mockProducts } from "@/mockProduct";
 import { map } from "lodash";
+import { AnimatePresence } from "motion/react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 
-export default function Home() {
+const Menu = () => {
+  const router = useRouter();
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetailt] = useState<any>({});
 
+  const handleSearch = (query: string) => {
+    console.log("Search query:", query);
+    router.push(`/menu?search=${query}`);
+  };
+
   return (
-    <div className="bg-gray-50">
+    <>
       <Hero />
 
-      <div className="mt-16 px-4 text-lg font-semibold space-y-4">
-        <h4>Best Seller</h4>
-        <BestSellerSlider
-          onOpenPopupOrder={() => setOpenPopupOrder(true)}
-          onSetProductDetail={setProductDetailt}
-        />
+      <div className="mt-20 px-4 text-lg font-semibold space-y-4 w-full">
+        <SearchBar onSearch={handleSearch} />
       </div>
-
       <div className="mt-8 px-4 text-lg font-semibold space-y-4">
         <h4>Menu</h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
@@ -49,6 +51,8 @@ export default function Home() {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </>
   );
-}
+};
+
+export default Menu;

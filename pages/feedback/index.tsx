@@ -85,7 +85,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
             Share your experience
           </h2>
-          <p className="text-gray-600 text-lg">How's your experience?</p>
+          <p className="text-gray-600 text-lg">How is your experience?</p>
         </motion.div>
 
         {/* Star Rating */}

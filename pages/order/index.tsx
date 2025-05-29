@@ -97,7 +97,7 @@ const OrderList: React.FC = () => {
               animate={{ scale: 1 }}
               transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
             >
-              {orderProducts.length}
+              {cartItems.length}
             </motion.span>
           </motion.div>
         </div>

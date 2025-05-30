@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <div
       className={`min-h-screen flex items-center justify-center bg-neutral-50  ${monserrat.className}`}
     >
-      <div className="w-full md:px-20 bg-white shadow-lg min-h-screen overflow-hidden">
+      <div className="w-full bg-white shadow-lg min-h-screen">
         <Component {...pageProps} />
       </div>
     </div>

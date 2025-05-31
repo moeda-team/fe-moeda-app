@@ -4,6 +4,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
 import OrderCard from "@/components/ui/OrderCard";
+import Image from "next/image";
 
 // Types
 interface OrderProduct {
@@ -61,20 +62,21 @@ const OrderList: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <motion.div
-        className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl"
+        className="bg-primary-500 text-white px-4 py-6"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="flex items-center justify-between">
-          <motion.button
-            onClick={() => router.back()}
-            className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-gray-100 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <IoArrowBack size={20} />
-          </motion.button>
+          <Image
+            onClick={() => router.push("/")}
+            src="/logo.png"
+            alt="Moeda Coffee Logo"
+            width={44}
+            height={44}
+            className="object-contain relative z-50"
+            fetchPriority="low"
+          />
 
           <motion.h1
             className="text-xl font-semibold"

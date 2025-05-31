@@ -14,11 +14,11 @@ export default function Card({
   description: string;
 }) {
   return (
-    <div className="w-full rounded-xl overflow-hidden shadow-md border border-gray-200">
+    <div className="w-full rounded-2xl overflow-hidden shadow-md border border-gray-200 flex flex-col h-full">
       {/* Image Section */}
-      <div className="h-[140px] w-full relative">
+      <div className="h-[140px] w-full relative flex-shrink-0">
         <Image
-          className="p-2 rounded-[32px]"
+          className="p-2 rounded-t-[100px_20px] rounded-b-[100px_20px]"
           src={image}
           alt="Food"
           fill
@@ -31,17 +31,19 @@ export default function Card({
       </div>
 
       {/* Content Section */}
-      <div className="p-2">
-        <h3 className="text-sm font-semibold text-gray-900 truncate">
-          {title}
-        </h3>
-        <p className="text-xs text-neutral-400 mt-1 truncate font-normal">
-          {description}
-        </p>
+      <div className="p-2 flex flex-col flex-1">
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+            {title}
+          </h3>
+          <p className="text-xs text-neutral-400 mt-1 font-normal line-clamp-2">
+            {description}
+          </p>
+        </div>
 
-        {/* Button */}
+        {/* Button - Always at bottom */}
         <button
-          className="mt-4 w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-800 text-white text-sm font-semibold py-1 rounded-full"
+          className="mt-4 w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-800 text-white text-sm font-semibold py-1 rounded-full flex-shrink-0"
           onClick={onAddToCart}
         >
           <span className="text-lg">+</span>

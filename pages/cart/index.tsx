@@ -11,6 +11,8 @@ import _ from "lodash";
 import { useRouter } from "next/router";
 import { IoCard } from "react-icons/io5";
 import { RiFileList3Line } from "react-icons/ri";
+import { CartCard } from "@/components/ui";
+import { formatToIDR } from "@/utils/formatCurrency";
 
 // Types
 interface CartProduct {
@@ -29,20 +31,14 @@ const MatchaCartUI: React.FC = () => {
   const router = useRouter();
 
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
+  console.log({ cartProducts });
 
   // Calculate totals
   const subTotal = _.sumBy(
     cartProducts,
     (product) => product.basePrice * product.quantity
   );
-  const tax = Math.floor(subTotal * 0.1);
-  const serviceFee = 500;
-  const totalAmount = subTotal + tax + serviceFee;
-
-  // Format currency
-  const formatCurrency = (amount: number): string => {
-    return `Rp.${amount.toLocaleString("id-ID")}`;
-  };
+  const totalAmount = subTotal;
 
   // Update quantity and localStorage
   const updateQuantity = (
@@ -157,131 +153,16 @@ const MatchaCartUI: React.FC = () => {
             </motion.div>
           ) : (
             cartProducts.map((product, index) => (
-              <motion.div
+              <CartCard
+                index={index}
+                product={product}
                 key={product.productId}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-4 mb-4 shadow-sm"
-              >
-                <div className="flex gap-4">
-                  {/* Product Image */}
-                  <div className="w-20 h-20 bg-gray-900 rounded-xl flex-shrink-0 overflow-hidden">
-                    <img
-                      src={product.imageUrl}
-                      alt="Matcha Latte"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Product Details */}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="font-semibold text-gray-900">
-                        Matcha Latte
-                      </h3>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => removeProduct(product)}
-                        className="bg-danger-50 p-2 rounded-lg"
-                      >
-                        <FiTrash2 className="w-4 h-4 text-danger-500" />
-                      </motion.button>
-                    </div>
-
-                    {/* Options */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                        {getOptionText("size", product.size)}
-                      </span>
-                      <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                        {getOptionText("iceCube", product.iceCube)}
-                      </span>
-                      <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                        {getOptionText("sweet", product.sweet)}
-                      </span>
-                      {product.iceCube === "more" && (
-                        <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                          More Ice
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Price and Quantity */}
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-gray-900">
-                        {formatCurrency(product.basePrice)}
-                      </span>
-
-                      <div className="flex items-center gap-3">
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() =>
-                            updateQuantity(product, product.quantity - 1)
-                          }
-                          className="bg-primary-500 text-white rounded-full p-2 hover:bg-primary-600"
-                        >
-                          <FiMinus className="w-4 h-4" />
-                        </motion.button>
-
-                        <span className="font-semibold text-gray-900 min-w-[20px] text-center">
-                          {product.quantity}
-                        </span>
-
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() =>
-                            updateQuantity(product, product.quantity + 1)
-                          }
-                          className="bg-primary-500 text-white rounded-full p-2 hover:bg-primary-600"
-                        >
-                          <FiPlus className="w-4 h-4" />
-                        </motion.button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                removeProduct={removeProduct}
+                updateQuantity={updateQuantity}
+              />
             ))
           )}
         </AnimatePresence>
-
-        {/* Order Summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl p-6 mt-6 shadow-sm"
-        >
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Sub Total</span>
-              <span className="font-semibold">{formatCurrency(subTotal)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Tax</span>
-              <span className="font-semibold">{formatCurrency(tax)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Service Fee</span>
-              <span className="font-semibold">
-                {formatCurrency(serviceFee)}
-              </span>
-            </div>
-            <hr className="my-3" />
-            <div className="flex justify-between">
-              <span className="font-bold text-lg">Amount</span>
-              <span className="font-bold text-lg">
-                {formatCurrency(totalAmount)}
-              </span>
-            </div>
-          </div>
-        </motion.div>
 
         {/* Payment Button */}
         <motion.div
@@ -290,6 +171,12 @@ const MatchaCartUI: React.FC = () => {
           animate={{ y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
+          <div className="flex justify-between pb-2">
+            <span className="font-bold text-lg">Amount</span>
+            <span className="font-bold text-lg">
+              {formatToIDR(totalAmount)}
+            </span>
+          </div>
           <motion.button
             disabled={cartProducts.length === 0}
             className="w-full bg-primary-500 text-white py-4 rounded-2xl font-semibold flex items-center justify-center space-x-2 disabled:bg-neutral-400"

@@ -34,7 +34,7 @@ export default function QrisPayment() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <motion.div
-        className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl"
+        className="bg-primary-500 text-white px-4 py-6"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}

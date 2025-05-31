@@ -11,6 +11,7 @@ import {
 import { CheckboxGroup, QuantitySelector } from "@/components/ui";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 interface Option {
   value: string;
@@ -177,7 +178,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   onAddToCart,
 }) => (
   <motion.div
-    className="flex gap-3"
+    className="flex gap-3 w-full"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.4 }}
@@ -292,6 +293,10 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
     // Save updated cart to localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
     onClose();
+    toast.success("Product added to cart", {
+      autoClose: 1000,
+      position: "top-center",
+    });
     window.dispatchEvent(new CustomEvent("cartUpdated"));
   };
 
@@ -307,18 +312,18 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
   };
 
   const typeOptions = TYPE_OPTIONS.filter((option) =>
-    productDetail.availableTypes.includes(option.value)
+    productDetail?.availableTypes?.includes(option.value)
   );
 
   const sizeOptions = SIZE_OPTIONS.filter((option) =>
-    productDetail.availableSizes.includes(option.value)
+    productDetail?.availableSizes?.includes(option.value)
   );
 
-  const iceCubeOptions = productDetail.customizable.iceCube
+  const iceCubeOptions = productDetail?.customizable?.iceCube
     ? ICE_CUBE_OPTIONS
     : [];
 
-  const sweetOptions = productDetail.customizable.sweet ? SWEET_OPTIONS : [];
+  const sweetOptions = productDetail?.customizable?.sweet ? SWEET_OPTIONS : [];
 
   return (
     <motion.div
@@ -330,7 +335,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
       exit="exit"
     >
       <motion.div
-        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto no-scrollbar"
         variants={modalVariants}
         initial="hidden"
         animate="visible"
@@ -389,10 +394,11 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
 
           {/* Add Note */}
           <NoteInput control={control} />
-
+        </div>
+        <div className="sticky bottom-0 bg-white p-4 border-t w-full">
           {/* Quantity and Price */}
           <motion.div
-            className="flex items-center justify-between mb-6"
+            className="flex items-center justify-between mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -412,7 +418,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
               onDecrement={decrementQuantity}
             />
           </motion.div>
-
           {/* Action Buttons */}
           <ActionButtons
             onSubmit={handleSubmit(onOrder)}

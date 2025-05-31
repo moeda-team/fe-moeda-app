@@ -15,7 +15,7 @@ import React, { useState } from "react";
 const CashierMenu = () => {
   const router = useRouter();
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
-  const [productDetail, setProductDetailt] = useState<any>({});
+  const [productDetail, setProductDetail] = useState<any>({});
 
   const handleSearch = (query: string) => {
     router.push(`/menu?search=${query}`);
@@ -33,7 +33,7 @@ const CashierMenu = () => {
         <h4>Best Seller</h4>
         <BestSellerSlider
           onOpenPopupOrder={() => setOpenPopupOrder(true)}
-          onSetProductDetail={setProductDetailt}
+          onSetProductDetail={setProductDetail}
         />
       </div>
 
@@ -48,7 +48,7 @@ const CashierMenu = () => {
               image={product.imageUrl}
               onAddToCart={() => {
                 setOpenPopupOrder(true);
-                setProductDetailt(product);
+                setProductDetail(product);
               }}
             />
           ))}
@@ -60,7 +60,10 @@ const CashierMenu = () => {
           {openPopupOrder && (
             <OrderForm
               productDetail={productDetail}
-              onClose={() => setOpenPopupOrder(false)}
+              onClose={() => {
+                setOpenPopupOrder(false);
+                setProductDetail({});
+              }}
             />
           )}
         </AnimatePresence>

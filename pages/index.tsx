@@ -12,7 +12,7 @@ import { map } from "lodash";
 
 export default function Home() {
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
-  const [productDetail, setProductDetailt] = useState<any>({});
+  const [productDetail, setProductDetail] = useState<any>({});
 
   return (
     <div className="bg-gray-50">
@@ -22,7 +22,7 @@ export default function Home() {
         <h4>Best Seller</h4>
         <BestSellerSlider
           onOpenPopupOrder={() => setOpenPopupOrder(true)}
-          onSetProductDetail={setProductDetailt}
+          onSetProductDetail={setProductDetail}
         />
       </div>
 
@@ -37,7 +37,7 @@ export default function Home() {
               image={product.imageUrl}
               onAddToCart={() => {
                 setOpenPopupOrder(true);
-                setProductDetailt(product);
+                setProductDetail(product);
               }}
             />
           ))}
@@ -49,7 +49,10 @@ export default function Home() {
           {openPopupOrder && (
             <OrderForm
               productDetail={productDetail}
-              onClose={() => setOpenPopupOrder(false)}
+              onClose={() => {
+                setOpenPopupOrder(false);
+                setProductDetail({});
+              }}
             />
           )}
         </AnimatePresence>

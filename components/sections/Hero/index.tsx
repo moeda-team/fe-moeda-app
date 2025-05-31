@@ -28,10 +28,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
 
   // Calculate total quantity of items in cart
-  const totalCartItems = cartProducts.reduce(
-    (total, product) => total + product.quantity,
-    0
-  );
+  const totalCartItems = cartProducts.length;
 
   useEffect(() => {
     const loadCart = () => {
@@ -64,19 +61,21 @@ export default function Hero({ isCustomer = true }: HeroProps) {
 
   return (
     <>
-      <div className="w-full bg-primary-500 py-6 px-4 flex items-center justify-between rounded-b-3xl">
-        <Image
-          onClick={() => router.push("/")}
-          src="/logo.png"
-          alt="Moeda Coffee Logo"
-          width={44}
-          height={44}
-          className="object-contain relative z-50"
-          fetchPriority="low"
-        />
-        <p className="text-white font-semibold text-xl ml-4 md:ml-0 absolute text-center w-full right-0">
-          MOEDA COFFEE
-        </p>
+      <div className="w-full bg-primary-500 py-6 px-4 flex items-center justify-end">
+        <div className="text-white font-semibold text-xl ml-4 md:ml-0 absolute text-center w-full right-0">
+          <div className="flex flex-col items-center justify-center">
+            <Image
+              onClick={() => router.push("/")}
+              src="/logo.png"
+              alt="Moeda Coffee Logo"
+              width={44}
+              height={44}
+              className="object-contain relative z-50"
+              fetchPriority="low"
+            />
+            <span>MOEDA COFFEE</span>
+          </div>
+        </div>
         {isCustomer && (
           <div className="flex gap-2">
             <motion.div
@@ -90,13 +89,6 @@ export default function Hero({ isCustomer = true }: HeroProps) {
                   {totalCartItems}
                 </span>
               )}
-            </motion.div>
-            <motion.div
-              whileTap={{ scale: 0.95 }}
-              className="bg-white rounded-full p-3 shadow-lg relative"
-              onClick={() => router.push("/order")}
-            >
-              <RiFileList3Line className="w-5 h-5 text-gray-700" />
             </motion.div>
           </div>
         )}

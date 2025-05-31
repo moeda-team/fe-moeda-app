@@ -15,7 +15,7 @@ const BestSellerCard = ({
 }: BestSellerCardProps) => {
   return (
     <div
-      className="h-[160px] w-[140px] bg-black rounded-md bg-cover bg-center bg-no-repeat flex items-end justify-center"
+      className="h-[160px] w-[140px] bg-black rounded-t-[100px_12px] rounded-b-[100px_12px] bg-cover bg-center bg-no-repeat flex items-end justify-center"
       style={{ backgroundImage: `url(${image})`, objectFit: "fill" }}
       onClick={() => {
         onOpenPopupOrder();

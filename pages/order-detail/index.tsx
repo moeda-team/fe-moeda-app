@@ -59,7 +59,12 @@ const OrderDetail: React.FC = () => {
   const subtotal: number = calculateSubtotal();
   const tax: number = Math.round(subtotal * 0.1); // 10% tax
   const serviceFee: number = 500;
-  const paymentAmount: number = subtotal + tax + serviceFee;
+  const beforeRounding: number = subtotal + tax + serviceFee;
+
+  // Calculate rounding UP to nearest 100
+  const roundedAmount: number = Math.ceil(beforeRounding / 100) * 100; // Round UP to nearest 100
+  const roundingAdjustment: number = roundedAmount - beforeRounding;
+  const paymentAmount: number = roundedAmount;
 
   const handleCustomerEdit = (): void => {
     setTempCustomer(customer);
@@ -109,7 +114,7 @@ const OrderDetail: React.FC = () => {
     >
       {/* Header */}
       <motion.div
-        className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl"
+        className="bg-primary-500 text-white px-4 py-6"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.1 }}
@@ -248,10 +253,19 @@ const OrderDetail: React.FC = () => {
             </motion.div>
           </motion.div>
         </motion.div>
+      </div>
 
+      {/* Payment Button */}
+      <motion.div
+        className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t"
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+      >
+        {/* Payment Summary */}
         {/* Payment Summary */}
         <motion.div
-          className="bg-white rounded-2xl p-4 mb-20 shadow-sm"
+          className="bg-white rounded-2xl mb-2 shadow-sm"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
@@ -269,6 +283,13 @@ const OrderDetail: React.FC = () => {
               <span className="text-gray-600">Service Fee</span>
               <span>{formatToIDR(serviceFee)}</span>
             </div>
+
+            {/* Add Rounding Section */}
+            <div className="flex justify-between">
+              <span className="text-gray-600">Rounding</span>
+              <span>{formatToIDR(roundingAdjustment)}</span>
+            </div>
+
             <motion.div
               className="border-t pt-3"
               initial={{ scaleX: 0 }}
@@ -282,15 +303,6 @@ const OrderDetail: React.FC = () => {
             </motion.div>
           </div>
         </motion.div>
-      </div>
-
-      {/* Payment Button */}
-      <motion.div
-        className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t"
-        initial={{ y: 100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-      >
         <motion.button
           className="w-full bg-primary-500 text-white py-4 rounded-2xl font-semibold flex items-center justify-center space-x-2 disabled:bg-neutral-400"
           whileHover={{ scale: 1.02, backgroundColor: "#225049" }}

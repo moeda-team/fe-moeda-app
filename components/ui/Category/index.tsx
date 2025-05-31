@@ -1,7 +1,7 @@
-// components/category/index.tsx
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import clsx from "clsx"; // Optional: for cleaner class logic
 
 interface CategoryProps {
   icon: string; // image path
@@ -17,18 +17,22 @@ export default function Category({
   category,
 }: CategoryProps) {
   const router = useRouter();
+  const { query, pathname } = router;
+
+  const isActive = pathname === "/" ? true : query.category === category;
 
   return (
     <div className="text-center flex items-center flex-col">
       <motion.div
         onClick={() => {
-          if (router.pathname === "/cashier-menu") {
-            router.push("/cashier-menu?category=" + category);
-            return;
-          }
-          router.push("/menu?category=" + category);
+          const base =
+            router.pathname === "/cashier-menu" ? "/cashier-menu" : "/menu";
+          router.push(`${base}?category=${category}`);
         }}
-        className="w-16 h-16 rounded-full bg-[#F4A940] flex items-center justify-center shadow-md cursor-pointer"
+        className={clsx(
+          "w-16 h-16 rounded-full flex items-center justify-center shadow-md cursor-pointer",
+          isActive ? "bg-primary-500" : "bg-neutral-300"
+        )}
         whileHover={{
           scale: 1.1,
           transition: { duration: 0.2 },
@@ -41,10 +45,15 @@ export default function Category({
           alt={alt}
           width={44}
           height={44}
-          className="object-contain"
+          className={clsx(
+            "object-contain",
+            !isActive && "grayscale opacity-60"
+          )}
         />
       </motion.div>
-      <span className="font-semibold">{title}</span>
+      <span className={clsx("font-semibold", !isActive && "text-neutral-200")}>
+        {title}
+      </span>
     </div>
   );
 }

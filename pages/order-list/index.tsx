@@ -164,7 +164,7 @@ export default function OrderTable() {
   };
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-neutral-50">
       <Hero isCustomer={false} />
       <div className="min-h-screen p-6">
         {/* Header */}

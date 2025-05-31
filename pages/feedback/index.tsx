@@ -48,7 +48,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50  overflow-hidden">
+    <div className="min-h-screen bg-neutral-50  overflow-hidden">
       {/* Background decoration */}
       <div className="bg-gradient-to-br from-gray-100/50 to-gray-200/50"></div>
 
@@ -129,7 +129,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
               className={`flex items-center gap-3 px-4 py-3 rounded-full border-2 transition-all duration-200 cursor-pointer ${
                 selectedTags.includes(tag)
                   ? "bg-primary-500 border-primary-500 text-white"
-                  : "bg-gray-50 border-gray-200 text-gray-600"
+                  : "bg-neutral-50 border-gray-200 text-gray-600"
               }`}
             >
               <input

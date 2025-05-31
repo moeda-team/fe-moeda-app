@@ -59,18 +59,24 @@ const CartCard = ({
 
           {/* Options */}
           <div className="flex flex-wrap gap-2 mb-3">
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("size", product.size)}
-            </span>
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("iceCube", product.iceCube)}
-            </span>
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("sweet", product.sweet)}
-            </span>
+            {product.size && (
+              <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                {getOptionText("size", product.size)}
+              </span>
+            )}
+            {product.iceCube && (
+              <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                {getOptionText("iceCube", product.iceCube)}
+              </span>
+            )}
+            {product.sweet && (
+              <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                {getOptionText("sweet", product.sweet)}
+              </span>
+            )}
             {product.iceCube === "more" && (
               <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
                 <div className="w-2 h-2 bg-white rounded-full"></div>

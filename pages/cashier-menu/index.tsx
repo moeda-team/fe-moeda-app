@@ -64,6 +64,7 @@ const CashierMenu = () => {
                 setOpenPopupOrder(false);
                 setProductDetail({});
               }}
+              isOpen={openPopupOrder}
             />
           )}
         </AnimatePresence>

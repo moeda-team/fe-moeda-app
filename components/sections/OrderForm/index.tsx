@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, Control } from "react-hook-form";
 import { motion } from "framer-motion";
 import {
@@ -43,6 +43,7 @@ interface ActionButtonsProps {
 interface OrderFormProps {
   onClose: () => void;
   productDetail: any;
+  isOpen: boolean;
 }
 
 interface ProductCardProps {
@@ -227,7 +228,11 @@ const SWEET_OPTIONS: Option[] = [
 ];
 
 // Order Form Component
-const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
+const OrderForm: React.FC<OrderFormProps> = ({
+  onClose,
+  productDetail,
+  isOpen = false,
+}) => {
   const router = useRouter();
 
   const [quantity, setQuantity] = useState<number>(1);
@@ -324,6 +329,18 @@ const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail }) => {
     : [];
 
   const sweetOptions = productDetail?.customizable?.sweet ? SWEET_OPTIONS : [];
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
     <motion.div

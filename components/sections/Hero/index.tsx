@@ -61,7 +61,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
 
   return (
     <>
-      <div className="w-full bg-primary-500 py-6 px-4 flex items-center justify-end">
+      <div className="w-full bg-primary-500 py-6 px-4 flex items-center justify-end h-[92px]">
         <div className="text-white font-semibold text-xl ml-4 md:ml-0 absolute text-center w-full right-0">
           <div className="flex flex-col items-center justify-center">
             <Image
@@ -71,7 +71,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
               width={44}
               height={44}
               className="object-contain relative z-50"
-              fetchPriority="low"
+              priority
             />
             <span>MOEDA COFFEE</span>
           </div>

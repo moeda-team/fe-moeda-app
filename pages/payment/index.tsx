@@ -31,7 +31,7 @@ export default function QrisPayment() {
   // }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <motion.div
         className="bg-primary-500 text-white px-4 py-6"

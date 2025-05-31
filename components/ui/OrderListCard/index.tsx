@@ -104,7 +104,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             width: "100%",
             height: "100%",
           }}
-          fetchPriority="low"
+          priority
         />
       </div>
 

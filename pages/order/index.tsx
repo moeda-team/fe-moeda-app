@@ -59,7 +59,7 @@ const OrderList: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <motion.div
         className="bg-primary-500 text-white px-4 py-6"
@@ -75,7 +75,7 @@ const OrderList: React.FC = () => {
             width={44}
             height={44}
             className="object-contain relative z-50"
-            fetchPriority="low"
+            priority
           />
 
           <motion.h1

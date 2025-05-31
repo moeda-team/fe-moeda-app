@@ -7,7 +7,7 @@ const FloatingOrder = () => {
   const router = useRouter();
   const { pathname } = router;
 
-  if (!["cart", "order", "order-detail"].includes(pathname)) {
+  if (!["/cart", "/order", "/order-detail"].includes(pathname)) {
     return null;
   }
 

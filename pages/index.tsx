@@ -15,7 +15,7 @@ export default function Home() {
   const [productDetail, setProductDetail] = useState<any>({});
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-neutral-50">
       <Hero />
 
       <div className="px-4 text-lg font-semibold space-y-4">
@@ -53,6 +53,7 @@ export default function Home() {
                 setOpenPopupOrder(false);
                 setProductDetail({});
               }}
+              isOpen={openPopupOrder}
             />
           )}
         </AnimatePresence>

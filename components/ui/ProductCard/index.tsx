@@ -26,7 +26,7 @@ export default function Card({
           style={{
             objectFit: "cover",
           }}
-          fetchPriority="low"
+          priority
         />
       </div>
 

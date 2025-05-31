@@ -54,6 +54,7 @@ const Menu = () => {
                 setOpenPopupOrder(false);
                 setProductDetail({});
               }}
+              isOpen={openPopupOrder}
             />
           )}
         </AnimatePresence>

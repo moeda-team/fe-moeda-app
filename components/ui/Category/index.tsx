@@ -25,9 +25,17 @@ export default function Category({
     <div className="text-center flex items-center flex-col">
       <motion.div
         onClick={() => {
-          const base =
-            router.pathname === "/cashier-menu" ? "/cashier-menu" : "/menu";
-          router.push(`${base}?category=${category}`);
+          let basePath = "";
+          if (pathname === "/") {
+            basePath = "/menu";
+          } else if (pathname === "/cashier-menu") {
+            basePath = "/cashier-menu";
+          } else if (pathname === "/menu") {
+            basePath = "/menu";
+          } else if (pathname === "admin-cashier-menu") {
+            basePath = "/admin-cashier-menu";
+          }
+          router.push(`${basePath}?category=${category}`);
         }}
         className={clsx(
           "w-16 h-16 rounded-full flex items-center justify-center shadow-md cursor-pointer",
@@ -40,7 +48,7 @@ export default function Category({
         whileTap={{ scale: 0.95 }}
       >
         <Image
-          fetchPriority="low"
+          priority
           src={icon}
           alt={alt}
           width={44}

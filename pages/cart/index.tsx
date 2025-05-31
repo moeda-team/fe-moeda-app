@@ -89,17 +89,6 @@ const MatchaCartUI: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(updatedProducts));
   };
 
-  // Get option display text
-  const getOptionText = (type: string, value: string): string => {
-    const optionMap: Record<string, Record<string, string>> = {
-      type: { hot: "Hot", iced: "Iced" },
-      size: { regular: "Regular", large: "Large" },
-      iceCube: { regular: "Ice", less: "Less Ice", more: "More Ice" },
-      sweet: { regular: "Regular", less: "Less Sugar" },
-    };
-    return optionMap[type]?.[value] || value;
-  };
-
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -108,7 +97,7 @@ const MatchaCartUI: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <div className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl">
         <div className="flex items-center justify-between mx-auto">

@@ -61,42 +61,47 @@ const AdminLayout = ({
 
   return (
     <div className="bg-neutral-50 overflow-hidden">
-      <Hero isCustomer={false} />
+      <div className="absolute h-[160px] z-50 w-full top-0 left-0">
+        <Hero isCustomer={false} />
 
-      {/* Tab Navigation */}
-      <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
-        <div className="px-6 py-4">
-          <nav className="flex gap-2">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+        {/* Tab Navigation */}
+        <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
+          <div className="px-4 py-4">
+            <nav className="flex gap-2">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
 
-              return (
-                <motion.button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    router.push(tab.route);
-                  }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "text-white bg-primary-500 shadow-md"
-                      : "text-neutral-500 bg-neutral-100 hover:bg-neutral-200 hover:text-neutral-600"
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Icon className={`w-4 h-4`} />
-                  <span>{tab.label}</span>
-                </motion.button>
-              );
-            })}
-          </nav>
+                return (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      router.push(tab.route);
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? "text-white bg-primary-500 shadow-md"
+                        : "text-neutral-500 bg-neutral-100 hover:bg-neutral-200 hover:text-neutral-600"
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Icon className={`w-4 h-4`} />
+                    <span>{tab.label}</span>
+                  </motion.button>
+                );
+              })}
+            </nav>
+          </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className={`min-h-screen p-6 ${isHome ? "pb-0" : ""}`}>
+      <div
+        className={`px-4 mt-[160px] ${isHome ? "pb-0" : ""}`}
+        style={{ height: "calc(100vh - 160px)" }}
+      >
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 10 }}

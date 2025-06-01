@@ -30,7 +30,7 @@ const OrderDetail: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [customer, setCustomer] = useState<Customer>({
     tableNumber: "0",
-    name: "Your Name",
+    name: "Customer Name",
   });
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);

@@ -126,9 +126,12 @@ const AdminCashierMenu = () => {
 
   return (
     <AdminLayout isHome={true}>
-      <div className="grid grid-cols-8 gap-4 min-h-screen">
+      <div className="grid grid-cols-9 gap-4">
         {/* Left Side - Scrollable */}
-        <div className="col-span-6 overflow-y-auto max-h-screen no-scrollbar">
+        <div
+          className="col-span-6 overflow-y-auto no-scrollbar"
+          style={{ height: "calc(100vh - 160px)" }}
+        >
           <div className="text-lg font-semibold space-y-4">
             <h4>Categories</h4>
             <CategoryList />
@@ -140,7 +143,7 @@ const AdminCashierMenu = () => {
 
           <div className="text-lg font-semibold space-y-4">
             <h4>Menu</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 pb-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
               {mockProducts.map((product, index) => (
                 <ProductCard
                   key={index}
@@ -173,7 +176,7 @@ const AdminCashierMenu = () => {
         </div>
 
         {/* Right Side - Sticky */}
-        <div className="col-span-2 flex flex-col sticky top-20 self-start">
+        <div className="col-span-3 flex flex-col sticky top-20 self-start">
           {/* Sticky Customer Information */}
           <div className="sticky top-0 bg-white border-b shadow-sm z-10">
             <div className="text-lg font-semibold space-y-4 p-4">

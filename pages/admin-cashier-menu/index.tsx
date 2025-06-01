@@ -241,8 +241,11 @@ const AdminCashierMenu = () => {
           </div>
 
           {/* Cart Items - Scrollable */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-4 pb-0 h-[550px]">
+          <div className="flex-1 overflow-y-auto no-scrollbar">
+            <div
+              className="p-4 pb-20 overflow-y-auto"
+              style={{ height: "calc(68vh - 160px)" }}
+            >
               <AnimatePresence>
                 {cartProducts.length === 0 ? (
                   <motion.div

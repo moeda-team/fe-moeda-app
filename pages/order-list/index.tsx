@@ -26,7 +26,7 @@ export default function OrderTable() {
     {
       productId: "1",
       productName: "Matcha Latte",
-      imageUrl: "/images/card-menu.png",
+      imageUrl: "/images/product-image.webp",
       type: "iced",
       size: "regular",
       iceCube: "more",
@@ -38,7 +38,7 @@ export default function OrderTable() {
     {
       productId: "2",
       productName: "Caramel Macchiato",
-      imageUrl: "/images/card-menu.png",
+      imageUrl: "/images/product-image.webp",
       type: "hot",
       size: "large",
       iceCube: "less",
@@ -50,7 +50,7 @@ export default function OrderTable() {
     {
       productId: "3",
       productName: "Vanilla Cold Brew",
-      imageUrl: "/images/card-menu.png",
+      imageUrl: "/images/product-image.webp",
       type: "iced",
       size: "large",
       iceCube: "regular",
@@ -62,7 +62,7 @@ export default function OrderTable() {
     {
       productId: "4",
       productName: "Spicy Tofu Wrap",
-      imageUrl: "/images/card-menu.png",
+      imageUrl: "/images/product-image.webp",
       type: "hot",
       size: "regular",
       iceCube: "less",
@@ -74,7 +74,7 @@ export default function OrderTable() {
     {
       productId: "5",
       productName: "Mango Smoothie",
-      imageUrl: "/images/card-menu.png",
+      imageUrl: "/images/product-image.webp",
       type: "iced",
       size: "large",
       iceCube: "more",
@@ -86,7 +86,7 @@ export default function OrderTable() {
     {
       productId: "6",
       productName: "Black Bean Burrito, Indian Style",
-      imageUrl: "/images/card-menu.png",
+      imageUrl: "/images/product-image.webp",
       type: "hot",
       size: "large",
       iceCube: "regular",

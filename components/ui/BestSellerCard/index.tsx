@@ -22,7 +22,7 @@ const BestSellerCard = ({
         onSetProductDetail();
       }}
     >
-      <span className="text-sm text-center font-semibold text-white py-2">
+      <span className="text-sm text-center font-semibold text-primary-500 py-2">
         {title}
       </span>
     </div>

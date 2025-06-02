@@ -1,4 +1,5 @@
 // /components/ui/Card/index.tsx
+import { formatToIDR } from "@/utils/formatCurrency";
 import Image from "next/image";
 import React from "react";
 
@@ -7,14 +8,16 @@ export default function Card({
   image,
   title,
   description,
+  price,
 }: {
   onAddToCart?: () => void;
   image: string;
   title: string;
   description: string;
+  price?: number;
 }) {
   return (
-    <div className="w-full rounded-2xl overflow-hidden shadow-md border border-gray-200 flex flex-col h-full">
+    <div className="w-full rounded-2xl overflow-hidden shadow-md bg-white flex flex-col h-full">
       {/* Image Section */}
       <div className="h-[140px] w-full relative flex-shrink-0">
         <Image
@@ -39,6 +42,7 @@ export default function Card({
           <p className="text-xs text-neutral-400 mt-1 font-normal line-clamp-2">
             {description}
           </p>
+          {price && <p>{formatToIDR(price)}</p>}
         </div>
 
         {/* Button - Always at bottom */}

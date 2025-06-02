@@ -5,6 +5,7 @@ import CheckboxGroup from "./CheckboxGroup";
 import QuantitySelector from "./QuantitySelector";
 import ConfirmOrderPopup from "./ConfirmOrderPopup";
 import OrderListCard from "./OrderListCard";
+import HalfRadialProgress from "./HalfRadialChart";
 import CartCard from "./CartCard";
 export {
   Category,
@@ -14,4 +15,5 @@ export {
   QuantitySelector,
   ConfirmOrderPopup,
   CartCard,
+  HalfRadialProgress,
 };

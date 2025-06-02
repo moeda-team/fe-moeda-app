@@ -149,6 +149,7 @@ const AdminCashierMenu = () => {
                   key={index}
                   title={product.productName}
                   description={product.description}
+                  price={product.basePrice}
                   image={product.imageUrl}
                   onAddToCart={() => {
                     setOpenPopupOrder(true);
@@ -177,75 +178,71 @@ const AdminCashierMenu = () => {
 
         {/* Right Side - Sticky */}
         <div className="col-span-3 flex flex-col sticky top-20 self-start">
-          {/* Sticky Customer Information */}
-          <div className="sticky top-0 bg-white border-b shadow-sm z-10">
-            <div className="text-lg font-semibold space-y-4 p-4">
-              <h4>Customer Information</h4>
-              {/* Customer Name Input */}
-              <div>
-                <input
-                  type="text"
-                  placeholder="Customer Name"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-
-              {/* Table Selection Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsTableDropdownOpen(!isTableDropdownOpen)}
-                  className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 flex items-center justify-between text-left"
-                >
-                  <span
-                    className={
-                      selectedTable ? "text-neutral-800" : "text-neutral-400"
-                    }
-                  >
-                    {selectedTable || "Select Table"}
-                  </span>
-                  <HiChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      isTableDropdownOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                <AnimatePresence>
-                  {isTableDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute top-full mt-1 w-full bg-white border border-neutral-200 rounded-lg shadow-lg z-20"
-                    >
-                      {tables.map((table) => (
-                        <button
-                          key={table}
-                          onClick={() => {
-                            setSelectedTable(table);
-                            setIsTableDropdownOpen(false);
-                          }}
-                          className="w-full px-4 py-3 text-left hover:bg-neutral-50 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg"
-                        >
-                          {table}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
-
           {/* Cart Items - Scrollable */}
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <div
-              className="p-4 pb-20 overflow-y-auto"
-              style={{ height: "calc(68vh - 160px)" }}
+              className="p-4 pb-10 overflow-y-auto pt-0"
+              style={{ height: "calc(88vh - 160px)" }}
             >
+              <div className="text-base space-y-4 p-4 bg-white mb-4">
+                <h4 className="font-semibold">Customer Information</h4>
+                {/* Customer Name Input */}
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Customer Name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                {/* Table Selection Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsTableDropdownOpen(!isTableDropdownOpen)}
+                    className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 flex items-center justify-between text-left"
+                  >
+                    <span
+                      className={
+                        selectedTable ? "text-neutral-800" : "text-neutral-400"
+                      }
+                    >
+                      {selectedTable || "Select Table"}
+                    </span>
+                    <HiChevronDown
+                      className={`w-5 h-5 transition-transform duration-200 ${
+                        isTableDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isTableDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full mt-1 w-full bg-white border border-neutral-200 rounded-lg shadow-lg z-20"
+                      >
+                        {tables.map((table) => (
+                          <button
+                            key={table}
+                            onClick={() => {
+                              setSelectedTable(table);
+                              setIsTableDropdownOpen(false);
+                            }}
+                            className="w-full px-4 py-3 text-left hover:bg-neutral-50 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg"
+                          >
+                            {table}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
               <AnimatePresence>
                 {cartProducts.length === 0 ? (
                   <motion.div

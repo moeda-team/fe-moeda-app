@@ -3,15 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FiSearch,
   FiChevronDown,
-  FiFilter,
-  FiMoreVertical,
   FiCheck,
-  FiClock,
-  FiX,
-  FiRefreshCw,
-  FiEye,
-  FiEdit,
-  FiTrash2,
+  FiDownload,
+  FiArchive,
 } from "react-icons/fi";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { formatToIDR } from "@/utils/formatCurrency";
@@ -51,13 +45,13 @@ interface ActiveOrderProps {
 }
 
 // Mock data with proper typing
-const mockOrders: Order[] = [
+const mockCompletedOrders: Order[] = [
   {
     id: "01",
     customerName: "Hiroshi Tanaka",
     tableNumber: "10",
     totalAmount: 73161,
-    status: "cancelled",
+    status: "completed",
     items: 4,
     orderTime: "09:19 AM",
   },
@@ -66,7 +60,7 @@ const mockOrders: Order[] = [
     customerName: "Dennis Schulist",
     tableNumber: "8",
     totalAmount: 155055,
-    status: "cancelled",
+    status: "completed",
     items: 1,
     orderTime: "09:34 AM",
   },
@@ -75,7 +69,7 @@ const mockOrders: Order[] = [
     customerName: "Kenji Fujimoto",
     tableNumber: "10",
     totalAmount: 227546,
-    status: "preparing",
+    status: "completed",
     items: 4,
     orderTime: "09:28 AM",
   },
@@ -84,7 +78,7 @@ const mockOrders: Order[] = [
     customerName: "Darlene Robertson",
     tableNumber: "2",
     totalAmount: 83761,
-    status: "ready",
+    status: "completed",
     items: 2,
     orderTime: "09:54 AM",
   },
@@ -111,7 +105,7 @@ const mockOrders: Order[] = [
     customerName: "Esther Howard",
     tableNumber: "7",
     totalAmount: 78037,
-    status: "ready",
+    status: "completed",
     items: 4,
     orderTime: "11:53 AM",
   },
@@ -129,7 +123,7 @@ const mockOrders: Order[] = [
     customerName: "Wade Warren",
     tableNumber: "4",
     totalAmount: 161837,
-    status: "cancelled",
+    status: "completed",
     items: 4,
     orderTime: "09:49 AM",
   },
@@ -138,7 +132,7 @@ const mockOrders: Order[] = [
     customerName: "Esther Howard",
     tableNumber: "3",
     totalAmount: 160081,
-    status: "ready",
+    status: "completed",
     items: 4,
     orderTime: "10:33 AM",
   },
@@ -147,7 +141,7 @@ const mockOrders: Order[] = [
     customerName: "Howard Bader",
     tableNumber: "2",
     totalAmount: 178800,
-    status: "ready",
+    status: "completed",
     items: 2,
     orderTime: "09:56 AM",
   },
@@ -156,7 +150,7 @@ const mockOrders: Order[] = [
     customerName: "Jerome Bell",
     tableNumber: "7",
     totalAmount: 126434,
-    status: "cancelled",
+    status: "completed",
     items: 5,
     orderTime: "10:00 AM",
   },
@@ -165,7 +159,7 @@ const mockOrders: Order[] = [
     customerName: "Howard Bader",
     tableNumber: "2",
     totalAmount: 140886,
-    status: "ready",
+    status: "completed",
     items: 2,
     orderTime: "10:07 AM",
   },
@@ -174,7 +168,7 @@ const mockOrders: Order[] = [
     customerName: "Jane Cooper",
     tableNumber: "2",
     totalAmount: 111194,
-    status: "cancelled",
+    status: "completed",
     items: 3,
     orderTime: "11:36 AM",
   },
@@ -192,7 +186,7 @@ const mockOrders: Order[] = [
     customerName: "Hiroshi Tanaka",
     tableNumber: "2",
     totalAmount: 217668,
-    status: "ready",
+    status: "completed",
     items: 5,
     orderTime: "09:09 AM",
   },
@@ -228,7 +222,7 @@ const mockOrders: Order[] = [
     customerName: "Clementina DuBuque",
     tableNumber: "7",
     totalAmount: 210806,
-    status: "cancelled",
+    status: "completed",
     items: 6,
     orderTime: "11:23 AM",
   },
@@ -237,7 +231,7 @@ const mockOrders: Order[] = [
     customerName: "Kristin Watson",
     tableNumber: "4",
     totalAmount: 100742,
-    status: "preparing",
+    status: "completed",
     items: 4,
     orderTime: "10:24 AM",
   },
@@ -246,7 +240,7 @@ const mockOrders: Order[] = [
     customerName: "Robert Fox",
     tableNumber: "5",
     totalAmount: 189692,
-    status: "preparing",
+    status: "completed",
     items: 5,
     orderTime: "11:57 AM",
   },
@@ -255,7 +249,7 @@ const mockOrders: Order[] = [
     customerName: "Briana Moore",
     tableNumber: "10",
     totalAmount: 80589,
-    status: "preparing",
+    status: "completed",
     items: 6,
     orderTime: "11:03 AM",
   },
@@ -264,7 +258,7 @@ const mockOrders: Order[] = [
     customerName: "Clementina DuBuque",
     tableNumber: "1",
     totalAmount: 96457,
-    status: "ready",
+    status: "completed",
     items: 5,
     orderTime: "10:27 AM",
   },
@@ -273,7 +267,7 @@ const mockOrders: Order[] = [
     customerName: "Hiroshi Tanaka",
     tableNumber: "3",
     totalAmount: 91568,
-    status: "ready",
+    status: "completed",
     items: 4,
     orderTime: "10:53 AM",
   },
@@ -282,7 +276,7 @@ const mockOrders: Order[] = [
     customerName: "Nicholas Bauch",
     tableNumber: "10",
     totalAmount: 58408,
-    status: "cancelled",
+    status: "completed",
     items: 6,
     orderTime: "10:13 AM",
   },
@@ -300,7 +294,7 @@ const mockOrders: Order[] = [
     customerName: "Kathryn Murphy",
     tableNumber: "1",
     totalAmount: 200292,
-    status: "cancelled",
+    status: "completed",
     items: 4,
     orderTime: "11:37 AM",
   },
@@ -309,7 +303,7 @@ const mockOrders: Order[] = [
     customerName: "Akira Nishikawa",
     tableNumber: "9",
     totalAmount: 164161,
-    status: "preparing",
+    status: "completed",
     items: 4,
     orderTime: "11:54 AM",
   },
@@ -318,7 +312,7 @@ const mockOrders: Order[] = [
     customerName: "Brooklyn Simmons",
     tableNumber: "1",
     totalAmount: 212086,
-    status: "ready",
+    status: "completed",
     items: 3,
     orderTime: "09:05 AM",
   },
@@ -327,7 +321,7 @@ const mockOrders: Order[] = [
     customerName: "Kurtis Weissnat",
     tableNumber: "3",
     totalAmount: 118087,
-    status: "ready",
+    status: "completed",
     items: 3,
     orderTime: "11:04 AM",
   },
@@ -336,7 +330,7 @@ const mockOrders: Order[] = [
     customerName: "Clementina DuBuque",
     tableNumber: "1",
     totalAmount: 35833,
-    status: "preparing",
+    status: "completed",
     items: 6,
     orderTime: "09:42 AM",
   },
@@ -345,7 +339,7 @@ const mockOrders: Order[] = [
     customerName: "Clementina DuBuque",
     tableNumber: "7",
     totalAmount: 100142,
-    status: "cancelled",
+    status: "completed",
     items: 2,
     orderTime: "09:13 AM",
   },
@@ -354,7 +348,7 @@ const mockOrders: Order[] = [
     customerName: "Darrell Steward",
     tableNumber: "8",
     totalAmount: 49403,
-    status: "ready",
+    status: "completed",
     items: 4,
     orderTime: "11:08 AM",
   },
@@ -390,7 +384,7 @@ const mockOrders: Order[] = [
     customerName: "Hiroshi Tanaka",
     tableNumber: "1",
     totalAmount: 59955,
-    status: "preparing",
+    status: "completed",
     items: 6,
     orderTime: "11:13 AM",
   },
@@ -399,7 +393,7 @@ const mockOrders: Order[] = [
     customerName: "Jenny Wilson",
     tableNumber: "1",
     totalAmount: 98224,
-    status: "ready",
+    status: "completed",
     items: 2,
     orderTime: "11:38 AM",
   },
@@ -408,7 +402,7 @@ const mockOrders: Order[] = [
     customerName: "Courtney Henry",
     tableNumber: "8",
     totalAmount: 153822,
-    status: "preparing",
+    status: "completed",
     items: 1,
     orderTime: "10:21 AM",
   },
@@ -417,7 +411,7 @@ const mockOrders: Order[] = [
     customerName: "Dennis Schulist",
     tableNumber: "10",
     totalAmount: 115210,
-    status: "ready",
+    status: "completed",
     items: 2,
     orderTime: "10:34 AM",
   },
@@ -426,7 +420,7 @@ const mockOrders: Order[] = [
     customerName: "Rina Sato",
     tableNumber: "9",
     totalAmount: 103870,
-    status: "ready",
+    status: "completed",
     items: 3,
     orderTime: "11:55 AM",
   },
@@ -435,7 +429,7 @@ const mockOrders: Order[] = [
     customerName: "Leanne Graham",
     tableNumber: "5",
     totalAmount: 101796,
-    status: "cancelled",
+    status: "completed",
     items: 1,
     orderTime: "11:38 AM",
   },
@@ -444,7 +438,7 @@ const mockOrders: Order[] = [
     customerName: "Jenny Wilson",
     tableNumber: "4",
     totalAmount: 176408,
-    status: "ready",
+    status: "completed",
     items: 4,
     orderTime: "09:28 AM",
   },
@@ -453,7 +447,7 @@ const mockOrders: Order[] = [
     customerName: "Devon Lane",
     tableNumber: "4",
     totalAmount: 135599,
-    status: "preparing",
+    status: "completed",
     items: 3,
     orderTime: "10:22 AM",
   },
@@ -462,7 +456,7 @@ const mockOrders: Order[] = [
     customerName: "Cody Fisher",
     tableNumber: "9",
     totalAmount: 71883,
-    status: "preparing",
+    status: "completed",
     items: 6,
     orderTime: "10:33 AM",
   },
@@ -480,7 +474,7 @@ const mockOrders: Order[] = [
     customerName: "Leanne Graham",
     tableNumber: "4",
     totalAmount: 135107,
-    status: "ready",
+    status: "completed",
     items: 2,
     orderTime: "10:20 AM",
   },
@@ -489,7 +483,7 @@ const mockOrders: Order[] = [
     customerName: "Sakura Yamamoto",
     tableNumber: "6",
     totalAmount: 87001,
-    status: "preparing",
+    status: "completed",
     items: 3,
     orderTime: "09:00 AM",
   },
@@ -498,36 +492,39 @@ const mockOrders: Order[] = [
     customerName: "Ester Mcleod",
     tableNumber: "5",
     totalAmount: 152106,
-    status: "cancelled",
+    status: "completed",
     items: 3,
     orderTime: "11:27 AM",
   },
 ];
 
-const ActiveOrder: React.FC<ActiveOrderProps> = ({
-  orders = mockOrders,
-  onBulkComplete,
-  onBulkCancel,
+interface OrderHistoryProps {
+  orders?: Order[];
+  onViewOrder?: (orderId: string) => void;
+  onExportHistory?: (selectedOrders: string[]) => void;
+}
+
+const OrderHistory: React.FC<OrderHistoryProps> = ({
+  orders = mockCompletedOrders,
+  onViewOrder,
+  onExportHistory,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<FilterType>("all");
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<SortableColumns>("id");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
-  // Filter and search logic
+  // Filter completed orders only and apply search
   const filteredOrders = useMemo((): Order[] => {
     let filtered = orders.filter((order: Order) => {
+      const isCompleted = order.status === "completed";
       const matchesSearch =
         order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         order.tableNumber.includes(searchQuery) ||
         order.id.includes(searchQuery);
-      const matchesStatus =
-        statusFilter === "all" || order.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      return isCompleted && matchesSearch;
     });
 
     // Sort orders
@@ -548,7 +545,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
     });
 
     return filtered;
-  }, [searchQuery, statusFilter, sortBy, sortOrder, orders]);
+  }, [searchQuery, sortBy, sortOrder, orders]);
 
   // Pagination logic
   const totalPages: number = Math.ceil(filteredOrders.length / rowsPerPage);
@@ -575,39 +572,15 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
     );
   };
 
-  // Status styling
-  const getStatusConfig = (status: StatusType): StatusConfig => {
-    const configs: Record<StatusType, StatusConfig> = {
-      preparing: {
-        bg: "bg-warning-50",
-        text: "text-warning-600",
-        border: "border-warning-200",
-        icon: FiClock,
-        label: "Pending",
-      },
-      ready: {
-        bg: "bg-info-50",
-        text: "text-info-600",
-        border: "border-info-200",
-        icon: FiRefreshCw,
-        label: "Processing",
-      },
-      completed: {
-        bg: "bg-success-50",
-        text: "text-success-600",
-        border: "border-success-200",
-        icon: FiCheck,
-        label: "Completed",
-      },
-      cancelled: {
-        bg: "bg-danger-50",
-        text: "text-danger-600",
-        border: "border-danger-200",
-        icon: FiX,
-        label: "Cancelled",
-      },
+  // Status styling (only for completed status)
+  const getStatusConfig = (): StatusConfig => {
+    return {
+      bg: "bg-success-50",
+      text: "text-success-600",
+      border: "border-success-200",
+      icon: FiCheck,
+      label: "Completed",
     };
-    return configs[status];
   };
 
   const handleSort = (column: SortableColumns): void => {
@@ -619,16 +592,9 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
     }
   };
 
-  const handleBulkComplete = (): void => {
-    if (onBulkComplete) {
-      onBulkComplete(selectedOrders);
-    }
-    setSelectedOrders([]);
-  };
-
-  const handleBulkCancel = (): void => {
-    if (onBulkCancel) {
-      onBulkCancel(selectedOrders);
+  const handleExportSelected = (): void => {
+    if (onExportHistory) {
+      onExportHistory(selectedOrders);
     }
     setSelectedOrders([]);
   };
@@ -645,19 +611,8 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (status: FilterType): void => {
-    setStatusFilter(status);
-    setIsFilterOpen(false);
-    setCurrentPage(1);
-  };
-
-  const filterOptions: { value: FilterType; label: string }[] = [
-    { value: "all", label: "All Orders" },
-    { value: "ready", label: "Ready" },
-    { value: "preparing", label: "Preparing" },
-    { value: "completed", label: "Completed" },
-    { value: "cancelled", label: "Cancelled" },
-  ];
+  const statusConfig = getStatusConfig();
+  const StatusIcon = statusConfig.icon;
 
   return (
     <AdminLayout>
@@ -670,10 +625,10 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-neutral-900">
-                Order List
+                Order History
               </h1>
               <p className="text-neutral-500 mt-1">
-                Total {filteredOrders.length} orders
+                Total {filteredOrders.length} completed orders
               </p>
             </div>
 
@@ -683,59 +638,24 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search name or table number"
+                  placeholder="Search customer name, table, or order ID"
                   value={searchQuery}
                   onChange={handleSearchChange}
                   className="pl-10 pr-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full sm:w-80 transition-all duration-200"
                 />
               </div>
 
-              {/* Filter Button */}
-              <div className="relative">
+              {/* Export Button */}
+              <div className="flex gap-2">
                 <motion.button
-                  onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="flex items-center gap-2 px-4 py-2.5 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors duration-200"
+                  onClick={() => onExportHistory && onExportHistory([])}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <FiFilter className="w-4 h-4" />
-                  <span>Filter</span>
-                  <FiChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      isFilterOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <FiDownload className="w-4 h-4" />
+                  <span>Export All</span>
                 </motion.button>
-
-                <AnimatePresence>
-                  {isFilterOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full mt-2 right-0 bg-white border border-neutral-200 rounded-lg shadow-lg z-20 w-48"
-                    >
-                      <div className="p-3">
-                        <p className="text-sm font-medium text-neutral-700 mb-2">
-                          Filter by Status
-                        </p>
-                        {filterOptions.map(({ value, label }) => (
-                          <button
-                            key={value}
-                            onClick={() => handleStatusFilterChange(value)}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-150 ${
-                              statusFilter === value
-                                ? "bg-primary-50 text-primary-600"
-                                : "hover:bg-neutral-50"
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -756,16 +676,11 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
                 </span>
                 <div className="flex gap-2">
                   <button
-                    onClick={handleBulkComplete}
-                    className="px-3 py-1.5 text-sm bg-success-500 text-white rounded-md hover:bg-success-600 transition-colors"
+                    onClick={handleExportSelected}
+                    className="px-3 py-1.5 text-sm bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors flex items-center gap-1"
                   >
-                    Mark Complete
-                  </button>
-                  <button
-                    onClick={handleBulkCancel}
-                    className="px-3 py-1.5 text-sm bg-danger-500 text-white rounded-md hover:bg-danger-600 transition-colors"
-                  >
-                    Cancel Orders
+                    <FiDownload className="w-3 h-3" />
+                    Export Selected
                   </button>
                 </div>
               </div>
@@ -844,7 +759,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
                       </div>
                     </th>
                     <th className="w-32 px-6 py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
-                      Status
+                      Completed
                     </th>
                   </tr>
                 </thead>
@@ -859,11 +774,6 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
                   <tbody className="divide-y divide-neutral-200">
                     <AnimatePresence>
                       {paginatedOrders.map((order: Order, index: number) => {
-                        const statusConfig: StatusConfig = getStatusConfig(
-                          order.status
-                        );
-                        const StatusIcon = statusConfig.icon;
-
                         return (
                           <motion.tr
                             key={order.id}
@@ -894,7 +804,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
                                   {order.customerName}
                                 </div>
                                 <div className="text-xs text-neutral-500">
-                                  {order.orderTime}
+                                  Ordered: {order.orderTime}
                                 </div>
                               </div>
                             </td>
@@ -925,6 +835,21 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
                     </AnimatePresence>
                   </tbody>
                 </table>
+
+                {/* Empty State */}
+                {filteredOrders.length === 0 && (
+                  <div className="text-center py-12">
+                    <FiArchive className="mx-auto h-12 w-12 text-neutral-400" />
+                    <h3 className="mt-2 text-sm font-medium text-neutral-900">
+                      No completed orders found
+                    </h3>
+                    <p className="mt-1 text-sm text-neutral-500">
+                      {searchQuery
+                        ? "Try adjusting your search terms"
+                        : "Completed orders will appear here"}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -984,4 +909,4 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
   );
 };
 
-export default ActiveOrder;
+export default OrderHistory;

@@ -104,7 +104,7 @@ const LineChart = ({ rawData }: { rawData: any }) => {
   };
 
   return (
-    <div className="bg-gray-50 rounded-md shadow-md p-6">
+    <div className="bg-gray-50 rounded-md shadow-md p-6 h-full">
       <div className="flex justify-between">
         <h4 className="text-base font-medium text-gray-800 mb-4">
           Sales Overview

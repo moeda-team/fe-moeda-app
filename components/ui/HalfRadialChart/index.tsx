@@ -44,7 +44,7 @@ const HalfRadialProgress = ({
 
   return (
     <motion.div
-      className="flex flex-col items-center justify-center bg-gray-50 p-8 rounded-md shadow-md h-full"
+      className="flex flex-col items-center justify-center bg-gray-50 p-8 rounded-md h-full w-full"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}

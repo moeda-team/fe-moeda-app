@@ -60,14 +60,14 @@ const AdminLayout = ({
   }, [pathname]);
 
   return (
-    <div className="bg-neutral-50 overflow-hidden">
+    <div className="bg-neutral-50 overflow-auto">
       <div className="absolute h-[160px] z-50 w-full top-0 left-0">
         <Hero isCustomer={false} />
 
         {/* Tab Navigation */}
         <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
           <div className="px-4 py-4">
-            <nav className="flex gap-2">
+            <nav className="flex gap-2 flex-wrap">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;

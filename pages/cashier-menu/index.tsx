@@ -43,9 +43,9 @@ const CashierMenu = () => {
           {map(mockProducts, (product, index) => (
             <ProductCard
               key={index}
-              title={product.productName}
+              title={product.name}
               description={product.description}
-              image={product.imageUrl}
+              image={product.img}
               onAddToCart={() => {
                 setOpenPopupOrder(true);
                 setProductDetail(product);

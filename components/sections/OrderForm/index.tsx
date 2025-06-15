@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller, Control } from "react-hook-form";
 import { motion } from "framer-motion";
 import {
@@ -12,12 +12,8 @@ import { CheckboxGroup, QuantitySelector } from "@/components/ui";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-
-interface Option {
-  value: string;
-  label: string;
-  icon?: React.ReactNode;
-}
+import { API_URL } from "@/services";
+import { fetcher } from "@/swr/fetcher";
 
 interface FormData {
   type: string;
@@ -25,6 +21,8 @@ interface FormData {
   iceCube: string;
   sweet: string;
   note: string;
+  spicyLevel: string;
+  addOns: string;
 }
 
 interface ModalHeaderProps {
@@ -128,25 +126,30 @@ const ProductInfo: React.FC<ProductCardProps> = ({
   image,
   price,
   description,
-}) => (
-  <motion.div
-    className="flex items-center gap-4 mb-6"
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ delay: 0.1 }}
-  >
-    <img
-      src={image}
-      alt={title}
-      className="w-16 h-16 rounded-lg object-cover"
-    />
-    <div>
-      <h3 className="font-semibold text-lg">{title}</h3>
-      <p className="text-sm font-normal">{description}</p>
-      <p className="text-gray-600">{formatToIDR(price)}</p>
-    </div>
-  </motion.div>
-);
+}) => {
+  const [img, setImg] = useState(image);
+
+  return (
+    <motion.div
+      className="flex items-center gap-4 mb-6"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.1 }}
+    >
+      <img
+        src={img}
+        alt={title}
+        onError={() => setImg("/images/product-image.webp")}
+        className="w-16 h-16 rounded-lg object-cover"
+      />
+      <div>
+        <h3 className="font-semibold text-lg">{title}</h3>
+        <p className="text-sm font-normal">{description}</p>
+        <p className="text-gray-600">{formatToIDR(price)}</p>
+      </div>
+    </motion.div>
+  );
+};
 
 // Note Input Component
 const NoteInput: React.FC<NoteInputProps> = ({ control }) => (
@@ -206,27 +209,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   </motion.div>
 );
 
-const TYPE_OPTIONS: Option[] = [
-  { value: "hot", label: "Hot", icon: <FaFire /> },
-  { value: "ice", label: "Ice", icon: <FaSnowflake /> },
-];
-
-const SIZE_OPTIONS: Option[] = [
-  { value: "regular", label: "Regular" },
-  { value: "large", label: "Large" },
-];
-
-const ICE_CUBE_OPTIONS: Option[] = [
-  { value: "less", label: "Less" },
-  { value: "normal", label: "Normal" },
-  { value: "more", label: "More Ice" },
-];
-
-const SWEET_OPTIONS: Option[] = [
-  { value: "less", label: "Less sugar" },
-  { value: "normal", label: "Normal" },
-];
-
 // Order Form Component
 const OrderForm: React.FC<OrderFormProps> = ({
   onClose,
@@ -234,8 +216,45 @@ const OrderForm: React.FC<OrderFormProps> = ({
   isOpen = false,
 }) => {
   const router = useRouter();
-
   const [quantity, setQuantity] = useState<number>(1);
+  const [option, setOption] = useState<any>([]);
+
+  const {
+    sweetOptions,
+    iceCubeOptions,
+    sizeOptions,
+    typeOptions,
+    addOnsOptions,
+    spicyLevelOptions,
+  } = useMemo(() => {
+    if (!Array.isArray(option)) {
+      return {
+        sweetOptions: [],
+        iceCubeOptions: [],
+        sizeOptions: [],
+        typeOptions: [],
+        addOnsOptions: [],
+        spicyLevelOptions: [],
+      };
+    }
+
+    const getOptions = (name: string) =>
+      option
+        .find((opt) => opt?.name?.toLowerCase() === name.toLowerCase())
+        ?.value?.map((val: string) => ({
+          value: val,
+          label: val,
+        })) || [];
+
+    return {
+      sweetOptions: getOptions("sweet"),
+      iceCubeOptions: getOptions("ice cube"),
+      sizeOptions: getOptions("size"),
+      typeOptions: getOptions("type"),
+      addOnsOptions: getOptions("add-ons"),
+      spicyLevelOptions: getOptions("spiciness level"),
+    };
+  }, [option]);
 
   const {
     control,
@@ -248,6 +267,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
       iceCube: "",
       sweet: "",
       note: "",
+      spicyLevel: "",
+      addOns: "",
     },
   });
 
@@ -255,9 +276,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const newOrder = {
       ...data,
       quantity,
-      productId: productDetail.productId,
-      basePrice: productDetail.basePrice,
-      imageUrl: productDetail.imageUrl,
+      id: productDetail.id,
+      price: productDetail.price,
+      img: productDetail.img,
     };
     localStorage.setItem("cart", JSON.stringify([newOrder]));
     onClose();
@@ -267,23 +288,26 @@ const OrderForm: React.FC<OrderFormProps> = ({
   const onAddToCart = (data: FormData): void => {
     const newOrder = {
       ...data,
+      name: productDetail.name,
       quantity,
-      productId: productDetail.productId,
-      basePrice: productDetail.basePrice,
-      imageUrl: productDetail.imageUrl,
+      id: productDetail.id,
+      price: productDetail.price,
+      img: productDetail.img,
     };
 
     // Get existing cart from localStorage
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    // Find matching item (same productId, type, size, iceCube, sweet)
+    // Find matching item (same id, type, size, iceCube, sweet)
     const existingIndex = cart.findIndex(
       (item: any) =>
-        item.productId === newOrder.productId &&
+        item.id === newOrder.id &&
         item.type === newOrder.type &&
         item.size === newOrder.size &&
         item.iceCube === newOrder.iceCube &&
         item.sweet === newOrder.sweet &&
+        item.spicyLevel === newOrder.spicyLevel &&
+        item.addOns === newOrder.addOns &&
         item.note === newOrder.note
     );
 
@@ -316,19 +340,17 @@ const OrderForm: React.FC<OrderFormProps> = ({
     }
   };
 
-  const typeOptions = TYPE_OPTIONS.filter((option) =>
-    productDetail?.availableTypes?.includes(option.value)
-  );
-
-  const sizeOptions = SIZE_OPTIONS.filter((option) =>
-    productDetail?.availableSizes?.includes(option.value)
-  );
-
-  const iceCubeOptions = productDetail?.customizable?.iceCube
-    ? ICE_CUBE_OPTIONS
-    : [];
-
-  const sweetOptions = productDetail?.customizable?.sweet ? SWEET_OPTIONS : [];
+  useEffect(() => {
+    if (Array.isArray(productDetail?.options)) {
+      productDetail.options.map((option: string) => {
+        fetcher(`${API_URL}/menus/options/${productDetail?.options[0]}`).then(
+          (res) => {
+            setOption((prev: any) => [...prev, res?.data]);
+          }
+        );
+      });
+    }
+  }, [productDetail?.options]);
 
   useEffect(() => {
     if (isOpen) {
@@ -362,9 +384,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
         <div className="p-6 pb-8">
           <ProductInfo
-            price={productDetail.basePrice}
-            image={productDetail.imageUrl}
-            title={productDetail.productName}
+            price={productDetail.price}
+            image={productDetail.img}
+            title={productDetail.name}
             description={productDetail.description}
           />
 
@@ -409,6 +431,26 @@ const OrderForm: React.FC<OrderFormProps> = ({
             />
           )}
 
+          {spicyLevelOptions.length > 0 && (
+            <CheckboxGroup
+              name="spicyLevel"
+              options={spicyLevelOptions}
+              label="Spiciness Level"
+              control={control}
+              errors={errors}
+            />
+          )}
+
+          {addOnsOptions.length > 0 && (
+            <CheckboxGroup
+              name="addOns"
+              options={addOnsOptions}
+              label="Add-ons"
+              control={control}
+              errors={errors}
+            />
+          )}
+
           {/* Add Note */}
           <NoteInput control={control} />
         </div>
@@ -422,12 +464,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
           >
             <motion.div
               className="text-xl font-bold"
-              key={quantity * productDetail.basePrice}
+              key={quantity * productDetail.price}
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring" }}
             >
-              {formatToIDR(quantity * productDetail.basePrice)}
+              {formatToIDR(quantity * productDetail.price)}
             </motion.div>
             <QuantitySelector
               quantity={quantity}

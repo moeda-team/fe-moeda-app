@@ -14,9 +14,9 @@ interface CartItem {
   sweet: string;
   note: string;
   quantity: number;
-  productId: string;
-  basePrice: number;
-  imageUrl: string;
+  id: string;
+  price: number;
+  img: string;
 }
 
 interface Customer {
@@ -51,7 +51,7 @@ const OrderDetail: React.FC = () => {
   // Calculate totals
   const calculateSubtotal = (): number => {
     return cartItems.reduce(
-      (total, item) => total + item.basePrice * item.quantity,
+      (total, item) => total + item.price * item.quantity,
       0
     );
   };
@@ -82,8 +82,8 @@ const OrderDetail: React.FC = () => {
   };
 
   const getProductName = (item: CartItem): string => {
-    // Convert productId to readable name
-    const name = item.productId
+    // Convert id to readable name
+    const name = item.id
       .replace(/-/g, " ")
       .replace(/\b\w/g, (l) => l.toUpperCase());
     return name.replace(/\d+/g, "").trim();
@@ -205,7 +205,7 @@ const OrderDetail: React.FC = () => {
                 <span className="text-gray-600">
                   {item.quantity}x {getProductName(item)}
                 </span>
-                <span>{formatToIDR(item.basePrice)}</span>
+                <span>{formatToIDR(item.price)}</span>
               </motion.div>
             ))}
 

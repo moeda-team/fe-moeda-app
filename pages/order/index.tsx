@@ -8,43 +8,50 @@ import Image from "next/image";
 
 // Types
 interface OrderProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
   status: "preparing" | "ready" | "completed" | "cancelled";
 }
 
 // Types
 interface CartProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  name: string;
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
 }
 
 const OrderList: React.FC = () => {
   const router = useRouter();
   const [orderProducts, setOrderProducts] = useState<OrderProduct[]>([
     {
-      productId: "1",
-      type: "hot",
-      size: "regular",
-      iceCube: "regular",
-      sweet: "regular",
+      id: "1",
+      type: "Hot",
+      size: "Regular",
+      iceCube: "Less",
+      sweet: "Normal",
+      addOns: "Extra Cheese",
+      spicyLevel: "Mild",
       quantity: 2,
-      basePrice: 5000,
-      imageUrl: "https://via.placeholder.com/150",
+      price: 5000,
+      img: "https://via.placeholder.com/150",
       status: "preparing",
     },
   ]);

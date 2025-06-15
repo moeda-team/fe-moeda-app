@@ -11,24 +11,32 @@ import { FiShoppingCart } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { IoCard } from "react-icons/io5";
 import _ from "lodash";
+import { getMenu, getMenuByCategory } from "@/swr/get/products";
 
 const tables = ["Table 1", "Table 2", "Table 3", "Table 4", "Table 5"];
 
 // Types
 interface CartProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  name: string;
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
 }
 
 const AdminCashierMenu = () => {
   const router = useRouter();
+  const { category } = router.query;
+  const { errorMenusByCategory, isLoadingMenusByCategory, menusByCategory } =
+    getMenuByCategory(category as string);
+  const { errorMenu, isLoadingMenu, menu } = getMenu();
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetail] = useState<any>({});
   const [customerName, setCustomerName] = useState("");
@@ -38,7 +46,7 @@ const AdminCashierMenu = () => {
 
   const subTotal = _.sumBy(
     cartProducts,
-    (product) => product.basePrice * product.quantity
+    (product) => product.price * product.quantity
   );
   const totalAmount = subTotal;
 
@@ -46,15 +54,17 @@ const AdminCashierMenu = () => {
   const removeProduct = (productToRemove: CartProduct) => {
     const updatedProducts = cartProducts.filter((product) => {
       return !(
-        product.basePrice === productToRemove.basePrice &&
+        product.price === productToRemove.price &&
         product.iceCube === productToRemove.iceCube &&
-        product.imageUrl === productToRemove.imageUrl &&
+        product.img === productToRemove.img &&
         product.note === productToRemove.note &&
-        product.productId === productToRemove.productId &&
+        product.id === productToRemove.id &&
         product.quantity === productToRemove.quantity &&
         product.size === productToRemove.size &&
         product.sweet === productToRemove.sweet &&
-        product.type === productToRemove.type
+        product.type === productToRemove.type &&
+        product.spicyLevel === productToRemove.spicyLevel &&
+        product.addOns === productToRemove.addOns
       );
     });
     setCartProducts(updatedProducts);
@@ -73,11 +83,11 @@ const AdminCashierMenu = () => {
     const updatedProducts = cartProducts.map((product) => {
       // Match by all properties to find the exact product
       if (
-        product.basePrice === productToUpdate.basePrice &&
+        product.price === productToUpdate.price &&
         product.iceCube === productToUpdate.iceCube &&
-        product.imageUrl === productToUpdate.imageUrl &&
+        product.img === productToUpdate.img &&
         product.note === productToUpdate.note &&
-        product.productId === productToUpdate.productId &&
+        product.id === productToUpdate.id &&
         product.quantity === productToUpdate.quantity &&
         product.size === productToUpdate.size &&
         product.sweet === productToUpdate.sweet &&
@@ -144,19 +154,34 @@ const AdminCashierMenu = () => {
           <div className="text-lg font-semibold space-y-4">
             <h4>Menu</h4>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
-              {mockProducts.map((product, index) => (
-                <ProductCard
-                  key={index}
-                  title={product.productName}
-                  description={product.description}
-                  price={product.basePrice}
-                  image={product.imageUrl}
-                  onAddToCart={() => {
-                    setOpenPopupOrder(true);
-                    setProductDetail(product);
-                  }}
-                />
-              ))}
+              {category &&
+                Array.isArray(menusByCategory) &&
+                menusByCategory.map((product, index) => (
+                  <ProductCard
+                    key={index}
+                    title={product.name}
+                    description={product.desc}
+                    image={product.img}
+                    onAddToCart={() => {
+                      setOpenPopupOrder(true);
+                      setProductDetail(product);
+                    }}
+                  />
+                ))}
+              {!category &&
+                Array.isArray(menu) &&
+                menu.map((product, index) => (
+                  <ProductCard
+                    key={index}
+                    title={product.name}
+                    description={product.desc}
+                    image={product.img}
+                    onAddToCart={() => {
+                      setOpenPopupOrder(true);
+                      setProductDetail(product);
+                    }}
+                  />
+                ))}
             </div>
           </div>
 
@@ -263,7 +288,7 @@ const AdminCashierMenu = () => {
                     <CartCard
                       index={index}
                       product={product}
-                      key={product.productId}
+                      key={product.id}
                       removeProduct={removeProduct}
                       updateQuantity={updateQuantity}
                     />

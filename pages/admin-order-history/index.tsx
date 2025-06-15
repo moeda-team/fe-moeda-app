@@ -23,7 +23,6 @@ interface Order {
 }
 
 type StatusType = "preparing" | "ready" | "completed" | "cancelled";
-type FilterType = "all" | StatusType;
 type SortableColumns = "id" | "customerName" | "totalAmount" | "orderTime";
 type SortOrder = "asc" | "desc";
 
@@ -33,15 +32,6 @@ interface StatusConfig {
   border: string;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-}
-
-interface ActiveOrderProps {
-  orders?: Order[];
-  onViewOrder?: (orderId: string) => void;
-  onEditOrder?: (orderId: string) => void;
-  onDeleteOrder?: (orderId: string) => void;
-  onBulkComplete?: (orderIds: string[]) => void;
-  onBulkCancel?: (orderIds: string[]) => void;
 }
 
 // Mock data with proper typing

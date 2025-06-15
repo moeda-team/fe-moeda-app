@@ -1,7 +1,7 @@
 // /components/ui/Card/index.tsx
 import { formatToIDR } from "@/utils/formatCurrency";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 export default function Card({
   onAddToCart,
@@ -16,13 +16,15 @@ export default function Card({
   description: string;
   price?: number;
 }) {
+  const [img, setImage] = useState(image);
+
   return (
     <div className="w-full rounded-2xl overflow-hidden shadow-md bg-white flex flex-col h-full">
       {/* Image Section */}
       <div className="h-[140px] w-full relative flex-shrink-0">
         <Image
           className="p-2 rounded-t-[100px_20px] rounded-b-[100px_20px]"
-          src={image}
+          src={img}
           alt="Food"
           fill
           sizes="(min-width: 808px) 50vw, 100vw"
@@ -30,6 +32,7 @@ export default function Card({
             objectFit: "cover",
           }}
           priority
+          onError={() => setImage("/images/product-image.webp")}
         />
       </div>
 

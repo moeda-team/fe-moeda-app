@@ -4,16 +4,18 @@ import { IoCheckmark, IoClose, IoTime, IoStop } from "react-icons/io5";
 import getOptionText from "@/utils/getTagTextOption";
 
 interface OrderProduct {
-  productId: string;
-  productName: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  id: string;
+  name: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice?: number;
-  imageUrl: string;
+  price?: number;
+  img: string;
   status: "preparing" | "ready" | "completed" | "cancelled";
 }
 
@@ -147,7 +149,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
               {selectedOrder && (
                 <div className="bg-neutral-50 rounded-lg p-4 mb-6 text-left">
                   <h3 className="font-medium text-neutral-900 mb-2">
-                    {selectedOrder.productName}
+                    {selectedOrder.name}
                   </h3>
                   {/* Options */}
                   <div className="flex flex-wrap gap-2 mb-3">
@@ -163,12 +165,10 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                       {getOptionText("sweet", selectedOrder.sweet)}
                     </span>
-                    {selectedOrder.iceCube === "more" && (
-                      <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                        More Ice
-                      </span>
-                    )}
+                    <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                      {getOptionText("iceCube", selectedOrder.iceCube)}
+                    </span>
                   </div>
                 </div>
               )}

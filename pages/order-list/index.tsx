@@ -4,16 +4,18 @@ import OrderCard from "@/components/ui/OrderListCard";
 import { useState } from "react";
 
 interface OrderProduct {
-  productId: string;
-  productName: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  id: string;
+  name: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice?: number;
-  imageUrl: string;
+  price?: number;
+  img: string;
   status: "preparing" | "ready" | "completed" | "cancelled";
 }
 
@@ -24,75 +26,18 @@ export default function OrderTable() {
   // Sample order data
   const orders: OrderProduct[] = [
     {
-      productId: "1",
-      productName: "Matcha Latte",
-      imageUrl: "/images/product-image.webp",
-      type: "iced",
-      size: "regular",
-      iceCube: "more",
-      sweet: "less",
-      note: "no sugar please",
-      quantity: 2,
-      status: "ready",
-    },
-    {
-      productId: "2",
-      productName: "Caramel Macchiato",
-      imageUrl: "/images/product-image.webp",
-      type: "hot",
-      size: "large",
-      iceCube: "less",
-      sweet: "regular",
-      note: "extra caramel",
+      id: "1",
+      name: "Cappuccino",
+      type: "Hot",
+      size: "Regular",
+      iceCube: "Less",
+      sweet: "Normal",
+      addOns: "Extra Cheese",
+      spicyLevel: "Mild",
+      note: "No sugar",
       quantity: 1,
-      status: "preparing",
-    },
-    {
-      productId: "3",
-      productName: "Vanilla Cold Brew",
-      imageUrl: "/images/product-image.webp",
-      type: "iced",
-      size: "large",
-      iceCube: "regular",
-      sweet: "less",
-      note: "light ice",
-      quantity: 3,
-      status: "completed",
-    },
-    {
-      productId: "4",
-      productName: "Spicy Tofu Wrap",
-      imageUrl: "/images/product-image.webp",
-      type: "hot",
-      size: "regular",
-      iceCube: "less",
-      sweet: "regular",
-      note: "cut in half",
-      quantity: 1,
-      status: "cancelled",
-    },
-    {
-      productId: "5",
-      productName: "Mango Smoothie",
-      imageUrl: "/images/product-image.webp",
-      type: "iced",
-      size: "large",
-      iceCube: "more",
-      sweet: "less",
-      note: "no straw",
-      quantity: 2,
-      status: "ready",
-    },
-    {
-      productId: "6",
-      productName: "Black Bean Burrito, Indian Style",
-      imageUrl: "/images/product-image.webp",
-      type: "hot",
-      size: "large",
-      iceCube: "regular",
-      sweet: "regular",
-      note: "extra spicy",
-      quantity: 1,
+      price: 5,
+      img: "/images/cappuccino.jpg",
       status: "preparing",
     },
   ];
@@ -106,28 +51,28 @@ export default function OrderTable() {
 
       switch (order.status) {
         case "preparing":
-          response = await fetch(`/api/orders/${order.productId}/prepare`, {
+          response = await fetch(`/api/orders/${order.id}/prepare`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(order),
           });
           break;
         case "ready":
-          response = await fetch(`/api/orders/${order.productId}/ready`, {
+          response = await fetch(`/api/orders/${order.id}/ready`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(order),
           });
           break;
         case "completed":
-          response = await fetch(`/api/orders/${order.productId}/complete`, {
+          response = await fetch(`/api/orders/${order.id}/complete`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(order),
           });
           break;
         case "cancelled":
-          response = await fetch(`/api/orders/${order.productId}/cancel`, {
+          response = await fetch(`/api/orders/${order.id}/cancel`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(order),
@@ -143,7 +88,6 @@ export default function OrderTable() {
       }
 
       const data = await response.json();
-      console.log("API response:", data);
     } catch (error) {
       console.error("Error handling order action:", error);
     }
@@ -152,7 +96,7 @@ export default function OrderTable() {
   const handleConfirm = (): void => {
     // Handle order completion logic here
     if (selectedOrder) {
-      console.log(`Order ${selectedOrder.productId} confirmed as completed`);
+      console.log(`Order ${selectedOrder.id} confirmed as completed`);
     }
     setShowPopup(false);
     setSelectedOrder(null);
@@ -179,7 +123,7 @@ export default function OrderTable() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {orders.map((order: OrderProduct, index: number) => (
             <OrderCard
-              key={order.productId}
+              key={order.id}
               order={order}
               index={index}
               onActionOrder={onActionOrder}

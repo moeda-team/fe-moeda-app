@@ -1,3 +1,8 @@
-export function formatToIDR(amount: number): string {
-  return `Rp. ${amount.toLocaleString('id-ID')}`;
+export function formatToIDR(price: number): string {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(price);
 }

@@ -8,15 +8,18 @@ import { useRouter } from "next/router";
 import { RiFileList3Line } from "react-icons/ri";
 
 interface CartProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  name: string;
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
 }
 
 interface HeroProps {

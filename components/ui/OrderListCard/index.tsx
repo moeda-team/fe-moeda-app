@@ -4,16 +4,18 @@ import Image from "next/image";
 import { IoCheckmark, IoTime, IoStop, IoRefresh } from "react-icons/io5";
 
 interface OrderProduct {
-  productId: string;
-  productName: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  id: string;
+  name: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice?: number;
-  imageUrl: string;
+  price?: number;
+  img: string;
   status: "preparing" | "ready" | "completed" | "cancelled";
 }
 
@@ -94,7 +96,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
       <div className="h-[140px] w-full">
         <Image
           className="p-2 rounded-[32px]"
-          src={order.imageUrl}
+          src={order.img}
           alt="Food"
           width={300}
           height={140}
@@ -125,7 +127,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </span>
         </motion.div>
         <h3 className="font-semibold text-neutral-900 mb-3 leading-tight">
-          {order.productName}
+          {order.name}
         </h3>
 
         {/* Options */}
@@ -139,11 +141,10 @@ const OrderCard: React.FC<OrderCardProps> = ({
           <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
             {getOptionText("sweet", order.sweet)}
           </span>
-          {order.iceCube === "more" && (
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
-              More Ice
-            </span>
-          )}
+
+          <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
+            {getOptionText("iceCube", order.iceCube)}
+          </span>
         </div>
 
         {/* Action Button - Pinned to bottom */}

@@ -16,27 +16,29 @@ import { formatToIDR } from "@/utils/formatCurrency";
 
 // Types
 interface CartProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  name: string;
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
 }
 
 const MatchaCartUI: React.FC = () => {
   const router = useRouter();
 
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
-  console.log({ cartProducts });
 
   // Calculate totals
   const subTotal = _.sumBy(
     cartProducts,
-    (product) => product.basePrice * product.quantity
+    (product) => product.price * product.quantity
   );
   const totalAmount = subTotal;
 
@@ -52,11 +54,11 @@ const MatchaCartUI: React.FC = () => {
     const updatedProducts = cartProducts.map((product) => {
       // Match by all properties to find the exact product
       if (
-        product.basePrice === productToUpdate.basePrice &&
+        product.price === productToUpdate.price &&
         product.iceCube === productToUpdate.iceCube &&
-        product.imageUrl === productToUpdate.imageUrl &&
+        product.img === productToUpdate.img &&
         product.note === productToUpdate.note &&
-        product.productId === productToUpdate.productId &&
+        product.id === productToUpdate.id &&
         product.quantity === productToUpdate.quantity &&
         product.size === productToUpdate.size &&
         product.sweet === productToUpdate.sweet &&
@@ -74,11 +76,11 @@ const MatchaCartUI: React.FC = () => {
   const removeProduct = (productToRemove: CartProduct) => {
     const updatedProducts = cartProducts.filter((product) => {
       return !(
-        product.basePrice === productToRemove.basePrice &&
+        product.price === productToRemove.price &&
         product.iceCube === productToRemove.iceCube &&
-        product.imageUrl === productToRemove.imageUrl &&
+        product.img === productToRemove.img &&
         product.note === productToRemove.note &&
-        product.productId === productToRemove.productId &&
+        product.id === productToRemove.id &&
         product.quantity === productToRemove.quantity &&
         product.size === productToRemove.size &&
         product.sweet === productToRemove.sweet &&
@@ -99,7 +101,7 @@ const MatchaCartUI: React.FC = () => {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <div className="bg-primary-500 text-white px-4 py-6 rounded-b-3xl">
+      <div className="bg-primary-500 text-white px-4 py-6">
         <div className="flex items-center justify-between mx-auto">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -145,7 +147,7 @@ const MatchaCartUI: React.FC = () => {
               <CartCard
                 index={index}
                 product={product}
-                key={product.productId}
+                key={product.id}
                 removeProduct={removeProduct}
                 updateQuantity={updateQuantity}
               />

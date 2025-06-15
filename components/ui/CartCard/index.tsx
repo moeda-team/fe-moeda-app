@@ -1,19 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
 import getOptionText from "@/utils/getTagTextOption";
 import { formatToIDR } from "@/utils/formatCurrency";
 
 interface CartProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  name: string;
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
 }
 
 interface CartCardProps {
@@ -29,25 +32,26 @@ const CartCard = ({
   removeProduct,
   updateQuantity,
 }: CartCardProps) => {
+  const [img, setImg] = useState(product.img);
   return (
     <div
-      key={`${product.productId}-${index}`}
+      key={`${product.id}-${index}`}
       className="bg-white rounded-2xl p-4 mb-4 shadow-sm"
     >
       <div className="flex gap-4">
         {/* Product Image */}
         <div className="w-20 h-24 bg-gray-900 rounded-xl flex-shrink-0 overflow-hidden">
           <img
-            src={product.imageUrl}
+            src={img}
+            onError={() => setImg("/images/product-image.webp")}
             alt="Matcha Latte"
             className="w-full h-full object-cover"
           />
         </div>
-
         {/* Product Details */}
         <div className="flex-1">
           <div className="flex items-start justify-between">
-            <h3 className="font-semibold text-gray-900">Matcha Latte</h3>
+            <h3 className="font-semibold text-gray-900">{product?.name}</h3>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => removeProduct(product)}
@@ -56,7 +60,6 @@ const CartCard = ({
               <FiTrash2 className="w-4 h-4 text-danger-500" />
             </motion.button>
           </div>
-
           {/* Options */}
           <div className="flex flex-wrap gap-2 mb-3">
             {product.size && (
@@ -77,10 +80,22 @@ const CartCard = ({
                 {getOptionText("sweet", product.sweet)}
               </span>
             )}
-            {product.iceCube === "more" && (
+            {product.type && (
               <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
-                More Ice
+                {getOptionText("type", product.type)}
+              </span>
+            )}
+            {product.spicyLevel && (
+              <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                {getOptionText("spicyLevel", product.spicyLevel)}
+              </span>
+            )}
+            {product.addOns && (
+              <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                {getOptionText("addOns", product.addOns)}
               </span>
             )}
           </div>
@@ -89,7 +104,7 @@ const CartCard = ({
       {/* Price and Quantity */}
       <div className="flex items-center justify-between">
         <span className="font-bold text-gray-900">
-          {formatToIDR(product.basePrice)}
+          {formatToIDR(product.price)}
         </span>
 
         <div className="flex items-center gap-3">

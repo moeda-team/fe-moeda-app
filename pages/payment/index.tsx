@@ -1,6 +1,7 @@
 // components/QrisPayment.js
 "use client";
 // import QRCode from "qrcode";
+import useCountdown from "@/hooks/useCountdown";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
@@ -8,6 +9,7 @@ import { useRouter } from "next/router";
 export default function QrisPayment() {
   const router = useRouter();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const { minutes, seconds } = useCountdown("4:30");
 
   // useEffect(() => {
   //   // Generate QR code for demonstration
@@ -141,7 +143,7 @@ export default function QrisPayment() {
           transition={{ delay: 1.6, duration: 0.5 }}
         >
           <p className="text-lg text-neutral-500 font-medium">
-            Payment of 04:30
+            Payment of {minutes}:{seconds}
           </p>
         </motion.div>
 

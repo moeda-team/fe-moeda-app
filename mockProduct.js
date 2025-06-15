@@ -1,11 +1,11 @@
 export const mockProducts = [
   // MATCHA CLASSICS (1-10)
   {
-    productId: "matcha-latte-001",
-    productName: "Matcha Latte",
+    id: "matcha-latte-001",
+    name: "Matcha Latte",
     description: "A creamy blend of premium matcha and milk.",
-    basePrice: 20000,
-    imageUrl: "/images/product-image.webp",
+    price: 20000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -15,11 +15,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "matcha-espresso-002",
-    productName: "Matcha Espresso Fusion",
+    id: "matcha-espresso-002",
+    name: "Matcha Espresso Fusion",
     description: "Layered matcha with a shot of bold espresso.",
-    basePrice: 25000,
-    imageUrl: "/images/product-image.webp",
+    price: 25000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -29,11 +29,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "matcha-float-003",
-    productName: "Matcha Float",
+    id: "matcha-float-003",
+    name: "Matcha Float",
     description: "Iced matcha latte topped with a scoop of vanilla ice cream.",
-    basePrice: 28000,
-    imageUrl: "/images/product-image.webp",
+    price: 28000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -43,11 +43,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "vanilla-matcha-004",
-    productName: "Vanilla Matcha",
+    id: "vanilla-matcha-004",
+    name: "Vanilla Matcha",
     description: "Sweet vanilla twist blended with matcha.",
-    basePrice: 22000,
-    imageUrl: "/images/product-image.webp",
+    price: 22000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -57,11 +57,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "strawberry-matcha-005",
-    productName: "Strawberry Matcha",
+    id: "strawberry-matcha-005",
+    name: "Strawberry Matcha",
     description: "Fruity strawberry syrup mixed with smooth matcha.",
-    basePrice: 24000,
-    imageUrl: "/images/product-image.webp",
+    price: 24000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -71,11 +71,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "honey-matcha-006",
-    productName: "Honey Matcha",
+    id: "honey-matcha-006",
+    name: "Honey Matcha",
     description: "A soothing blend of matcha and natural honey.",
-    basePrice: 23000,
-    imageUrl: "/images/product-image.webp",
+    price: 23000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular"],
     customizable: {
@@ -85,11 +85,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "coconut-matcha-007",
-    productName: "Coconut Matcha",
+    id: "coconut-matcha-007",
+    name: "Coconut Matcha",
     description: "Refreshing matcha with creamy coconut milk.",
-    basePrice: 26000,
-    imageUrl: "/images/product-image.webp",
+    price: 26000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -99,11 +99,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "almond-matcha-008",
-    productName: "Almond Matcha",
+    id: "almond-matcha-008",
+    name: "Almond Matcha",
     description: "Nutty almond flavor blended into a creamy matcha.",
-    basePrice: 25000,
-    imageUrl: "/images/product-image.webp",
+    price: 25000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -113,11 +113,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "brown-sugar-matcha-009",
-    productName: "Brown Sugar Matcha",
+    id: "brown-sugar-matcha-009",
+    name: "Brown Sugar Matcha",
     description: "Rich brown sugar flavor infused with matcha.",
-    basePrice: 27000,
-    imageUrl: "/images/product-image.webp",
+    price: 27000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -127,11 +127,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "mocha-matcha-010",
-    productName: "Mocha Matcha",
+    id: "mocha-matcha-010",
+    name: "Mocha Matcha",
     description: "A fusion of chocolate mocha and vibrant matcha.",
-    basePrice: 28000,
-    imageUrl: "/images/product-image.webp",
+    price: 28000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular"],
     customizable: {
@@ -143,11 +143,11 @@ export const mockProducts = [
 
   // SPECIALTY MATCHA (11-20)
   {
-    productId: "taro-matcha-011",
-    productName: "Taro Matcha Fusion",
+    id: "taro-matcha-011",
+    name: "Taro Matcha Fusion",
     description: "Purple taro root perfectly paired with earthy matcha.",
-    basePrice: 29000,
-    imageUrl: "/images/product-image.webp",
+    price: 29000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -157,11 +157,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "ube-matcha-012",
-    productName: "Ube Matcha Dream",
+    id: "ube-matcha-012",
+    name: "Ube Matcha Dream",
     description: "Filipino purple yam meets Japanese matcha tradition.",
-    basePrice: 30000,
-    imageUrl: "/images/product-image.webp",
+    price: 30000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -171,11 +171,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "black-sesame-matcha-013",
-    productName: "Black Sesame Matcha",
+    id: "black-sesame-matcha-013",
+    name: "Black Sesame Matcha",
     description: "Toasted black sesame with premium matcha powder.",
-    basePrice: 31000,
-    imageUrl: "/images/product-image.webp",
+    price: 31000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -185,11 +185,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "rose-matcha-014",
-    productName: "Rose Garden Matcha",
+    id: "rose-matcha-014",
+    name: "Rose Garden Matcha",
     description: "Delicate rose petals infused with ceremonial matcha.",
-    basePrice: 32000,
-    imageUrl: "/images/product-image.webp",
+    price: 32000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -199,11 +199,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "lavender-matcha-015",
-    productName: "Lavender Matcha Bliss",
+    id: "lavender-matcha-015",
+    name: "Lavender Matcha Bliss",
     description: "Calming lavender essence with smooth matcha base.",
-    basePrice: 30000,
-    imageUrl: "/images/product-image.webp",
+    price: 30000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -213,11 +213,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "pandan-matcha-016",
-    productName: "Pandan Matcha Twist",
+    id: "pandan-matcha-016",
+    name: "Pandan Matcha Twist",
     description: "Southeast Asian pandan leaf with traditional matcha.",
-    basePrice: 28000,
-    imageUrl: "/images/product-image.webp",
+    price: 28000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -227,11 +227,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "yuzu-matcha-017",
-    productName: "Yuzu Matcha Citrus",
+    id: "yuzu-matcha-017",
+    name: "Yuzu Matcha Citrus",
     description: "Bright yuzu citrus balanced with earthy matcha.",
-    basePrice: 33000,
-    imageUrl: "/images/product-image.webp",
+    price: 33000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -241,11 +241,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "sakura-matcha-018",
-    productName: "Sakura Matcha Blossom",
+    id: "sakura-matcha-018",
+    name: "Sakura Matcha Blossom",
     description: "Cherry blossom petals meet spring matcha harmony.",
-    basePrice: 35000,
-    imageUrl: "/images/product-image.webp",
+    price: 35000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular"],
     customizable: {
@@ -255,11 +255,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "mango-matcha-019",
-    productName: "Tropical Mango Matcha",
+    id: "mango-matcha-019",
+    name: "Tropical Mango Matcha",
     description: "Fresh mango puree swirled with cooling matcha.",
-    basePrice: 27000,
-    imageUrl: "/images/product-image.webp",
+    price: 27000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -269,11 +269,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "lychee-matcha-020",
-    productName: "Lychee Matcha Refresher",
+    id: "lychee-matcha-020",
+    name: "Lychee Matcha Refresher",
     description: "Exotic lychee fruit complementing smooth matcha.",
-    basePrice: 29000,
-    imageUrl: "/images/product-image.webp",
+    price: 29000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -285,11 +285,11 @@ export const mockProducts = [
 
   // PREMIUM COLLECTION (21-30)
   {
-    productId: "ceremonial-matcha-021",
-    productName: "Ceremonial Grade Matcha",
+    id: "ceremonial-matcha-021",
+    name: "Ceremonial Grade Matcha",
     description: "Pure ceremonial matcha whisked to perfection.",
-    basePrice: 45000,
-    imageUrl: "/images/product-image.webp",
+    price: 45000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular"],
     customizable: {
@@ -299,11 +299,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "gold-leaf-matcha-022",
-    productName: "Gold Leaf Matcha Royale",
+    id: "gold-leaf-matcha-022",
+    name: "Gold Leaf Matcha Royale",
     description: "Premium matcha adorned with edible gold leaf.",
-    basePrice: 55000,
-    imageUrl: "/images/product-image.webp",
+    price: 55000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -313,11 +313,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "truffle-matcha-023",
-    productName: "White Truffle Matcha",
+    id: "truffle-matcha-023",
+    name: "White Truffle Matcha",
     description: "Luxurious white chocolate truffle with matcha.",
-    basePrice: 48000,
-    imageUrl: "/images/product-image.webp",
+    price: 48000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -327,11 +327,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "aged-matcha-024",
-    productName: "Aged Matcha Reserve",
+    id: "aged-matcha-024",
+    name: "Aged Matcha Reserve",
     description: "Specially aged matcha with complex flavor notes.",
-    basePrice: 52000,
-    imageUrl: "/images/product-image.webp",
+    price: 52000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular"],
     customizable: {
@@ -341,11 +341,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "diamond-dust-matcha-025",
-    productName: "Diamond Dust Matcha",
+    id: "diamond-dust-matcha-025",
+    name: "Diamond Dust Matcha",
     description: "Sparkling matcha with shimmering edible glitter.",
-    basePrice: 42000,
-    imageUrl: "/images/product-image.webp",
+    price: 42000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -355,11 +355,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "caviar-pearls-matcha-026",
-    productName: "Matcha Caviar Pearls",
+    id: "caviar-pearls-matcha-026",
+    name: "Matcha Caviar Pearls",
     description: "Matcha with bursting fruit caviar pearls.",
-    basePrice: 38000,
-    imageUrl: "/images/product-image.webp",
+    price: 38000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -369,11 +369,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "nitrogen-matcha-027",
-    productName: "Nitrogen Infused Matcha",
+    id: "nitrogen-matcha-027",
+    name: "Nitrogen Infused Matcha",
     description: "Creamy nitrogen-infused matcha with velvety texture.",
-    basePrice: 40000,
-    imageUrl: "/images/product-image.webp",
+    price: 40000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -383,11 +383,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "smoke-bubble-matcha-028",
-    productName: "Smoke Bubble Matcha",
+    id: "smoke-bubble-matcha-028",
+    name: "Smoke Bubble Matcha",
     description: "Theatrical matcha served with aromatic smoke bubble.",
-    basePrice: 50000,
-    imageUrl: "/images/product-image.webp",
+    price: 50000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["large"],
     customizable: {
@@ -397,11 +397,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "crystal-matcha-029",
-    productName: "Crystal Clear Matcha",
+    id: "crystal-matcha-029",
+    name: "Crystal Clear Matcha",
     description: "Transparent matcha using molecular gastronomy.",
-    basePrice: 47000,
-    imageUrl: "/images/product-image.webp",
+    price: 47000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -411,11 +411,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "levitating-matcha-030",
-    productName: "Levitating Matcha Sphere",
+    id: "levitating-matcha-030",
+    name: "Levitating Matcha Sphere",
     description: "Gravity-defying matcha presentation experience.",
-    basePrice: 60000,
-    imageUrl: "/images/product-image.webp",
+    price: 60000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular"],
     customizable: {
@@ -427,11 +427,11 @@ export const mockProducts = [
 
   // SEASONAL SPECIALS (31-40)
   {
-    productId: "winter-spice-matcha-031",
-    productName: "Winter Spice Matcha",
+    id: "winter-spice-matcha-031",
+    name: "Winter Spice Matcha",
     description: "Warming spices of cinnamon and cardamom with matcha.",
-    basePrice: 26000,
-    imageUrl: "/images/product-image.webp",
+    price: 26000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -441,11 +441,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "pumpkin-matcha-032",
-    productName: "Pumpkin Spice Matcha",
+    id: "pumpkin-matcha-032",
+    name: "Pumpkin Spice Matcha",
     description: "Autumn pumpkin puree blended with earthy matcha.",
-    basePrice: 28000,
-    imageUrl: "/images/product-image.webp",
+    price: 28000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -455,11 +455,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "cranberry-matcha-033",
-    productName: "Cranberry Matcha Tart",
+    id: "cranberry-matcha-033",
+    name: "Cranberry Matcha Tart",
     description: "Tart cranberry balanced with smooth matcha sweetness.",
-    basePrice: 25000,
-    imageUrl: "/images/product-image.webp",
+    price: 25000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -469,11 +469,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "gingerbread-matcha-034",
-    productName: "Gingerbread Matcha Cookie",
+    id: "gingerbread-matcha-034",
+    name: "Gingerbread Matcha Cookie",
     description: "Holiday gingerbread flavors meet traditional matcha.",
-    basePrice: 30000,
-    imageUrl: "/images/product-image.webp",
+    price: 30000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot"],
     availableSizes: ["large"],
     customizable: {
@@ -483,11 +483,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "mint-chocolate-matcha-035",
-    productName: "Mint Chocolate Matcha",
+    id: "mint-chocolate-matcha-035",
+    name: "Mint Chocolate Matcha",
     description: "Cool mint and rich chocolate layered with matcha.",
-    basePrice: 29000,
-    imageUrl: "/images/product-image.webp",
+    price: 29000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -497,11 +497,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "elderflower-matcha-036",
-    productName: "Elderflower Matcha Spring",
+    id: "elderflower-matcha-036",
+    name: "Elderflower Matcha Spring",
     description: "Delicate elderflower essence with fresh matcha notes.",
-    basePrice: 31000,
-    imageUrl: "/images/product-image.webp",
+    price: 31000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -511,11 +511,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "watermelon-matcha-037",
-    productName: "Watermelon Matcha Cooler",
+    id: "watermelon-matcha-037",
+    name: "Watermelon Matcha Cooler",
     description: "Refreshing summer watermelon with cooling matcha.",
-    basePrice: 24000,
-    imageUrl: "/images/product-image.webp",
+    price: 24000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["large"],
     customizable: {
@@ -525,11 +525,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "peach-matcha-038",
-    productName: "Peach Blossom Matcha",
+    id: "peach-matcha-038",
+    name: "Peach Blossom Matcha",
     description: "Sweet summer peaches harmonized with matcha green.",
-    basePrice: 27000,
-    imageUrl: "/images/product-image.webp",
+    price: 27000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {
@@ -539,11 +539,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "fig-matcha-039",
-    productName: "Fresh Fig Matcha",
+    id: "fig-matcha-039",
+    name: "Fresh Fig Matcha",
     description: "Mediterranean figs paired with Japanese matcha tradition.",
-    basePrice: 33000,
-    imageUrl: "/images/product-image.webp",
+    price: 33000,
+    img: "/images/product-image.webp",
     availableTypes: ["hot", "ice"],
     availableSizes: ["regular"],
     customizable: {
@@ -553,11 +553,11 @@ export const mockProducts = [
     }
   },
   {
-    productId: "pomegranate-matcha-040",
-    productName: "Pomegranate Matcha Antioxidant",
+    id: "pomegranate-matcha-040",
+    name: "Pomegranate Matcha Antioxidant",
     description: "Superfood pomegranate seeds with antioxidant-rich matcha.",
-    basePrice: 32000,
-    imageUrl: "/images/product-image.webp",
+    price: 32000,
+    img: "/images/product-image.webp",
     availableTypes: ["ice"],
     availableSizes: ["regular", "large"],
     customizable: {

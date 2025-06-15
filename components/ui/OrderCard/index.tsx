@@ -4,15 +4,17 @@ import { getStatusConfig } from "@/utils/statusConfig";
 import { formatToIDR } from "@/utils/formatCurrency";
 
 interface OrderProduct {
-  productId: string;
-  type: "hot" | "iced";
-  size: "regular" | "large";
-  iceCube: "regular" | "less" | "more";
-  sweet: "regular" | "less";
+  id: string;
+  type: "Hot" | "Ice";
+  size: "Regular" | "Large";
+  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
+  sweet: "Normal" | "Less Sugar";
+  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
+  spicyLevel: "Mild" | "Medium" | "Hot";
   note?: string;
   quantity: number;
-  basePrice: number;
-  imageUrl: string;
+  price: number;
+  img: string;
   status: "preparing" | "ready" | "completed" | "cancelled";
 }
 
@@ -31,7 +33,7 @@ const OrderCard = (product: OrderProduct, index: number) => {
 
   return (
     <motion.div
-      key={`${product.productId}-${index}`}
+      key={`${product.id}-${index}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
@@ -45,7 +47,7 @@ const OrderCard = (product: OrderProduct, index: number) => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <img
-            src={product.imageUrl}
+            src={product.img}
             alt="Matcha Latte"
             className="w-full h-full object-cover"
             onError={(e) => {
@@ -102,10 +104,10 @@ const OrderCard = (product: OrderProduct, index: number) => {
           {/* Price */}
           <div className="flex items-center w-full text-nowrap">
             <span className="font-bold text-lg text-gray-900">
-              {formatToIDR(product.basePrice * product.quantity)}
+              {formatToIDR(product.price * product.quantity)}
             </span>
             <span className="text-sm text-gray-500 ml-2">
-              ({formatToIDR(product.basePrice)} each)
+              ({formatToIDR(product.price)} each)
             </span>
           </div>
         </div>

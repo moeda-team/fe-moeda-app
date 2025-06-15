@@ -1,0 +1,3 @@
+export const API_URL = process.env.NEXT_PUBLIC_API;
+export const BASIC_AUTH_USERNAME = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME;
+export const BASIC_AUTH_PASSWORD = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD;

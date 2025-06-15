@@ -14,6 +14,8 @@ interface FormData {
   iceCube: string;
   sweet: string;
   note: string;
+  spicyLevel: string;
+  addOns: string;
 }
 
 interface CheckboxGroupProps {

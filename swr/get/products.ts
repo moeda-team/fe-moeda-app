@@ -1,12 +1,11 @@
-import { API_URL } from '@/services'
+import { API_URL, OUTLET_ID } from '@/services'
 import useSWR from 'swr'
 import { fetcher } from '../fetcher'
 import getProfile from '@/helpers/getProfile'
 
 
 export const getMenu = () => {
-  const outletID = process.env.NEXT_PUBLIC_OUTLET_ID || ''
-  const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(`${API_URL}/menus/main/${outletID}`, fetcher)
+  const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(`${API_URL}/menus/main/${OUTLET_ID}`, fetcher)
 
   return {
     menu: data?.data ?? {},
@@ -16,10 +15,8 @@ export const getMenu = () => {
 }
 
 export const getMenuByCategory = (categoryId?: string) => {
-  const outletID = process.env.NEXT_PUBLIC_OUTLET_ID || ''
-
-  const shouldFetch = Boolean(categoryId && categoryId.trim() && outletID);
-  const url = shouldFetch ? `${API_URL}/menus/main/list/category/${outletID}/${categoryId}` : null;
+  const shouldFetch = Boolean(categoryId && categoryId.trim() && OUTLET_ID);
+  const url = shouldFetch ? `${API_URL}/menus/main/list/category/${OUTLET_ID}/${categoryId}` : null;
   
   const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(url, fetcher)
 

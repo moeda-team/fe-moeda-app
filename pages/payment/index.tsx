@@ -2,37 +2,94 @@
 "use client";
 // import QRCode from "qrcode";
 import useCountdown from "@/hooks/useCountdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { usePayment } from "@/contex/paymentContex";
+import axios from "axios";
+import moment from "moment";
+import { toast } from "react-toastify";
 
 export default function QrisPayment() {
-  const { setPaymentNumber, setPaymentMethod, setTotal } = usePayment();
+  const { paymentNumber, paymentMethod, total } = usePayment();
+  const [paymentResponse, setPaymentResponse] = useState<any>({});
   const router = useRouter();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const { minutes, seconds } = useCountdown("4:30");
+  const [expiryTime, setExpiryTime] = useState("");
+  const { minutes, seconds, isFinished } = useCountdown(
+    paymentResponse?.data?.expiry_time
+      ? moment(
+          paymentResponse?.data?.expiry_time,
+          "YYYY-MM-DD HH:mm:ss"
+        ).format("m:ss")
+      : "4:00"
+  );
 
-  // useEffect(() => {
-  //   // Generate QR code for demonstration
-  //   const generateQRCode = async () => {
-  //     try {
-  //       const url = await QRCode.toDataURL("QRIS://DEMO_PAYMENT_04:30", {
-  //         width: 300,
-  //         margin: 1,
-  //         color: {
-  //           dark: "#000000",
-  //           light: "#FFFFFF",
-  //         },
-  //       });
-  //       setQrCodeUrl(url);
-  //     } catch (err) {
-  //       console.error("Error generating QR code:", err);
-  //     }
-  //   };
+  useEffect(() => {
+    if (isFinished) {
+      toast.error("Payment Expired");
+      router.push("/cart");
+    }
+  }, [isFinished]);
 
-  //   generateQRCode();
-  // }, []);
+  useEffect(() => {
+    if (Boolean(paymentMethod) && Boolean(paymentNumber) && Boolean(total)) {
+      const payload = {
+        paymentType: paymentMethod,
+        transactionDetails: {
+          orderId: paymentNumber,
+          grossAmount: total,
+        },
+      };
+      axios
+        .post(`${process.env.NEXT_PUBLIC_API}/transactions/payments`, payload)
+        .then((res) => {
+          if (res.data) {
+            setPaymentResponse(res.data);
+          }
+        });
+    }
+  }, [paymentMethod, paymentNumber, total]);
+
+  useEffect(() => {
+    if (Array.isArray(paymentResponse?.data?.actions)) {
+      setQrCodeUrl(paymentResponse?.data?.actions[0].url);
+    }
+  }, [paymentResponse?.data?.actions]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || "";
+      const password = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || "";
+
+      const basicAuth = `Basic ${btoa(`${username}:${password}`)}`;
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API}/transactions/payments/status/${paymentNumber}`,
+          {
+            headers: {
+              Authorization: basicAuth,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.data.status === "completed") {
+            router.push("/feedback");
+          }
+        });
+    };
+
+    // Initial fetch
+    fetchData();
+
+    // Set up interval
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000); // 3 seconds
+
+    // Cleanup
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-neutral-50">

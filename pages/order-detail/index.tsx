@@ -147,17 +147,23 @@ const OrderDetail: React.FC = () => {
       axios
         .post(process.env.NEXT_PUBLIC_API + "/transactions/main", payload)
         .then((res) => {
-          setPaymentMethod(res.data.data.paymentMethod);
-          setPaymentNumber(res.data.data.paymentNumber);
-          setTotal(res.data.data.total);
-          toast.success("Berhasil melakukan pemesanan", {
-            position: "top-center",
-          });
-          localStorage.removeItem("cart");
-          if (res.data.data.paymentMethod === "cash") {
-            router.push("/feedback");
+          if (res.data.data) {
+            setPaymentMethod(res.data.data.paymentMethod);
+            setPaymentNumber(res.data.data.paymentNumber);
+            setTotal(res.data.data.total);
+            toast.success("Berhasil melakukan pemesanan", {
+              position: "top-center",
+            });
+            localStorage.removeItem("cart");
+            if (res.data.data.paymentMethod === "cash") {
+              router.push("/feedback");
+            } else {
+              router.push("/payment");
+            }
           } else {
-            router.push("/payment");
+            toast.error("Gagal melakukan pemesanan", {
+              position: "top-center",
+            });
           }
         })
         .catch((err) => {

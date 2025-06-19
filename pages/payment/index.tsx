@@ -5,8 +5,10 @@ import useCountdown from "@/hooks/useCountdown";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { usePayment } from "@/contex/paymentContex";
 
 export default function QrisPayment() {
+  const { setPaymentNumber, setPaymentMethod, setTotal } = usePayment();
   const router = useRouter();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const { minutes, seconds } = useCountdown("4:30");

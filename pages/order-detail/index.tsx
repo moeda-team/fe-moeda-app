@@ -5,9 +5,15 @@ import { FiArrowLeft } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
 import { RiFileList3Line } from "react-icons/ri";
+import { OUTLET_ID } from "@/services";
+import { concat, set } from "lodash";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { usePayment } from "@/contex/paymentContex";
 
 // Types
 interface CartItem {
+  name: string;
   type: string;
   size: string;
   iceCube: string;
@@ -17,6 +23,8 @@ interface CartItem {
   id: string;
   price: number;
   img: string;
+  addOns: string;
+  spicyLevel: string;
 }
 
 interface Customer {
@@ -25,6 +33,7 @@ interface Customer {
 }
 
 const OrderDetail: React.FC = () => {
+  const { setPaymentNumber, setPaymentMethod, setTotal } = usePayment();
   const router = useRouter();
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -34,6 +43,8 @@ const OrderDetail: React.FC = () => {
   });
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
+  const [paymentMethodSelect, setPaymentMethodSelect] =
+    useState<string>("cash");
 
   // Load cart data from localStorage on component mount
   useEffect(() => {
@@ -101,8 +112,65 @@ const OrderDetail: React.FC = () => {
       setShowCustomerModal(true);
       return;
     }
-    localStorage.removeItem("cart");
-    router.push("/payment");
+    let payload = {
+      outletId: OUTLET_ID,
+      transactionType: "dine-in",
+      tableNumber: Number(customer.tableNumber),
+      paymentMethod: paymentMethodSelect,
+      customerName: customer.name,
+      discount: 0,
+      additionalNote: "",
+      cart: cartItems.map((item: CartItem) => {
+        const addOn = [
+          item.addOns,
+          item.spicyLevel,
+          item.sweet,
+          item.iceCube,
+          item.size,
+          item.type,
+        ]
+          .filter(Boolean)
+          .join(", ");
+        return {
+          menuId: item.id,
+          menuName: item.name,
+          quantity: item.quantity,
+          price: Number(item.price),
+          subTotal: Number(item.quantity * item.price),
+          addOn: addOn,
+          note: item.note,
+        };
+      }),
+    };
+
+    try {
+      axios
+        .post(process.env.NEXT_PUBLIC_API + "/transactions/main", payload)
+        .then((res) => {
+          setPaymentMethod(res.data.data.paymentMethod);
+          setPaymentNumber(res.data.data.paymentNumber);
+          setTotal(res.data.data.total);
+          toast.success("Berhasil melakukan pemesanan", {
+            position: "top-center",
+          });
+          localStorage.removeItem("cart");
+          if (res.data.data.paymentMethod === "cash") {
+            router.push("/feedback");
+          } else {
+            router.push("/payment");
+          }
+        })
+        .catch((err) => {
+          toast.error("Gagal melakukan pemesanan", {
+            position: "top-center",
+          });
+        });
+    } catch (error) {
+      console.error(error);
+      toast.error("Gagal melakukan pemesanan", {
+        position: "top-center",
+      });
+    }
   };
 
   return (
@@ -140,7 +208,10 @@ const OrderDetail: React.FC = () => {
         </div>
       </motion.div>
 
-      <div className="px-4 mt-4 pb-10">
+      <div
+        className="px-4 mt-4 pb-10 overflow-y-auto"
+        style={{ height: "calc(100vh - 92px - 282px)" }}
+      >
         {/* Customer Info */}
         <motion.div
           className="bg-white rounded-2xl p-4 mb-6 shadow-sm"
@@ -237,21 +308,32 @@ const OrderDetail: React.FC = () => {
             </h2>
           </div>
 
-          <motion.div
-            className="flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="text-2xl font-bold text-neutral-500">QRIS</div>
+          <div className="space-y-2">
             <motion.div
-              className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.9, type: "spring" }}
+              className={`flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg ${
+                paymentMethodSelect === "qris"
+                  ? "bg-primary-500 text-white"
+                  : "text-neutral-500"
+              }`}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setPaymentMethodSelect("qris")}
             >
-              <div className="w-3 h-3 bg-white rounded-full"></div>
+              <div className="text-2xl font-bold">QRIS</div>
             </motion.div>
-          </motion.div>
+            <motion.div
+              className={`flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg ${
+                paymentMethodSelect === "cash"
+                  ? "bg-primary-500 text-white"
+                  : "text-neutral-500"
+              }`}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setPaymentMethodSelect("cash")}
+            >
+              <div className="text-2xl font-bold">Cash</div>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
 

@@ -276,6 +276,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const newOrder = {
       ...data,
       quantity,
+      name: productDetail.name,
       id: productDetail.id,
       price: productDetail.price,
       img: productDetail.img,

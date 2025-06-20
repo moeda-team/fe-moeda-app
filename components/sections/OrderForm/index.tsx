@@ -302,6 +302,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     // Find matching item (same id, type, size, iceCube, sweet)
     const existingIndex = cart.findIndex(
       (item: any) =>
+        item.name === newOrder.name &&
         item.id === newOrder.id &&
         item.type === newOrder.type &&
         item.size === newOrder.size &&

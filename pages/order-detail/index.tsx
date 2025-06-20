@@ -532,7 +532,7 @@ const OrderDetail: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                Your order has been placed successfully. We'll start preparing
+                Your order has been placed successfully. We will start preparing
                 it right away!
               </motion.p>
 

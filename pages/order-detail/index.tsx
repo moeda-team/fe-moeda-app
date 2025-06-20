@@ -10,6 +10,8 @@ import { concat, set } from "lodash";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { usePayment } from "@/contex/paymentContex";
+import { useUserRole } from "@/hooks/useUserRole";
+import { FaCheckCircle } from "react-icons/fa";
 
 // Types
 interface CartItem {
@@ -33,18 +35,33 @@ interface Customer {
 }
 
 const OrderDetail: React.FC = () => {
-  const { setPaymentNumber, setPaymentMethod, setTotal } = usePayment();
+  const { isCustomer, isCashier } = useUserRole();
+  const {
+    setPaymentNumber,
+    setPaymentMethod,
+    setTotal,
+    total,
+    paymentMethod,
+    paymentNumber,
+    tax,
+    serviceCharge,
+    setTax,
+    setServiceCharge,
+    setSubTotal,
+    subTotal,
+  } = usePayment();
   const router = useRouter();
+  const [openModalCash, setOpenModalCash] = useState<boolean>(false);
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [customer, setCustomer] = useState<Customer>({
     tableNumber: "0",
-    name: "Customer Name",
+    name: "",
   });
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
   const [paymentMethodSelect, setPaymentMethodSelect] =
-    useState<string>("cash");
+    useState<string>("qris");
 
   // Load cart data from localStorage on component mount
   useEffect(() => {
@@ -68,14 +85,6 @@ const OrderDetail: React.FC = () => {
   };
 
   const subtotal: number = calculateSubtotal();
-  const tax: number = Math.round(subtotal * 0.1); // 10% tax
-  const serviceFee: number = 500;
-  const beforeRounding: number = subtotal + tax + serviceFee;
-
-  // Calculate rounding UP to nearest 100
-  const roundedAmount: number = Math.ceil(beforeRounding / 100) * 100; // Round UP to nearest 100
-  const roundingAdjustment: number = roundedAmount - beforeRounding;
-  const paymentAmount: number = roundedAmount;
 
   const handleCustomerEdit = (): void => {
     setTempCustomer(customer);
@@ -108,7 +117,7 @@ const OrderDetail: React.FC = () => {
   };
 
   const onPayOrder = (): void => {
-    if (customer.tableNumber === "0") {
+    if (customer.tableNumber === "0" || customer.name === "") {
       setShowCustomerModal(true);
       return;
     }
@@ -143,40 +152,33 @@ const OrderDetail: React.FC = () => {
       }),
     };
 
-    try {
-      axios
-        .post(process.env.NEXT_PUBLIC_API + "/transactions/main", payload)
-        .then((res) => {
-          if (res.data.data) {
-            setPaymentMethod(res.data.data.paymentMethod);
-            setPaymentNumber(res.data.data.paymentNumber);
-            setTotal(res.data.data.total);
-            toast.success("Berhasil melakukan pemesanan", {
-              position: "top-center",
-            });
-            localStorage.removeItem("cart");
-            if (res.data.data.paymentMethod === "cash") {
-              router.push("/feedback");
-            } else {
-              router.push("/payment");
-            }
+    axios
+      .post(process.env.NEXT_PUBLIC_API + "/transactions/main", payload)
+      .then((res) => {
+        if (res.data.data) {
+          setPaymentMethod(res.data.data.paymentMethod);
+          setPaymentNumber(res.data.data.paymentNumber);
+          setTax(res.data.data.tax);
+          setServiceCharge(res.data.data.serviceCharge);
+          setSubTotal(res.data.data.subTotal);
+          setTotal(res.data.data.total);
+          localStorage.removeItem("cart");
+          if (res.data.data.paymentMethod === "cash") {
+            setOpenModalCash(true);
           } else {
-            toast.error("Gagal melakukan pemesanan", {
-              position: "top-center",
-            });
+            router.push("/payment");
           }
-        })
-        .catch((err) => {
+        } else {
           toast.error("Gagal melakukan pemesanan", {
             position: "top-center",
           });
+        }
+      })
+      .catch((err) => {
+        toast.error("Gagal melakukan pemesanan", {
+          position: "top-center",
         });
-    } catch (error) {
-      console.error(error);
-      toast.error("Gagal melakukan pemesanan", {
-        position: "top-center",
       });
-    }
   };
 
   return (
@@ -327,18 +329,20 @@ const OrderDetail: React.FC = () => {
             >
               <div className="text-2xl font-bold">QRIS</div>
             </motion.div>
-            <motion.div
-              className={`flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg ${
-                paymentMethodSelect === "cash"
-                  ? "bg-primary-500 text-white"
-                  : "text-neutral-500"
-              }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setPaymentMethodSelect("cash")}
-            >
-              <div className="text-2xl font-bold">Cash</div>
-            </motion.div>
+            {!isCustomer && isCashier && (
+              <motion.div
+                className={`flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg ${
+                  paymentMethodSelect === "cash"
+                    ? "bg-primary-500 text-white"
+                    : "text-neutral-500"
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setPaymentMethodSelect("cash")}
+              >
+                <div className="text-2xl font-bold">Cash</div>
+              </motion.div>
+            )}
           </div>
         </motion.div>
       </div>
@@ -363,20 +367,6 @@ const OrderDetail: React.FC = () => {
               <span className="text-gray-600">Sub Total</span>
               <span className="font-medium">{formatToIDR(subtotal)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Tax</span>
-              <span>{formatToIDR(tax)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Service Fee</span>
-              <span>{formatToIDR(serviceFee)}</span>
-            </div>
-
-            {/* Add Rounding Section */}
-            <div className="flex justify-between">
-              <span className="text-gray-600">Rounding</span>
-              <span>{formatToIDR(roundingAdjustment)}</span>
-            </div>
 
             <motion.div
               className="border-t pt-3"
@@ -385,8 +375,8 @@ const OrderDetail: React.FC = () => {
               transition={{ delay: 1.2 }}
             >
               <div className="flex justify-between font-semibold text-lg">
-                <span>Amount</span>
-                <span>{formatToIDR(paymentAmount)}</span>
+                <span>Total</span>
+                <span>{formatToIDR(subtotal)}</span>
               </div>
             </motion.div>
           </div>
@@ -489,6 +479,118 @@ const OrderDetail: React.FC = () => {
                   type="button"
                 >
                   Save
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {openModalCash && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="bg-white rounded-2xl p-6 w-full max-w-sm text-center"
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            >
+              <motion.div
+                className="mb-4"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  type: "spring",
+                  damping: 15,
+                  stiffness: 300,
+                  delay: 0.2,
+                }}
+              >
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaCheckCircle className="text-green-500 text-3xl" />
+                </div>
+              </motion.div>
+
+              <motion.h3
+                className="text-xl font-semibold mb-2 text-gray-800"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                Order Successful!
+              </motion.h3>
+
+              <motion.p
+                className="text-gray-600 mb-6"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                Your order has been placed successfully. We'll start preparing
+                it right away!
+              </motion.p>
+
+              <motion.div
+                className="space-y-2 mb-6 text-left bg-gray-50 p-4 rounded-lg"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Order ID:</span>
+                  <span className="font-medium">{paymentNumber}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Table:</span>
+                  <span className="font-medium">{customer.tableNumber}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Name:</span>
+                  <span className="font-medium">{customer.name}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Tax:</span>
+                  <span className="font-medium">{formatToIDR(tax)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Service Charge:</span>
+                  <span className="font-medium">
+                    {formatToIDR(serviceCharge)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="font-medium">{formatToIDR(subTotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 font-bold">Total:</span>
+                  <span className="font-medium">{formatToIDR(total)}</span>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="flex space-x-3"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <motion.button
+                  onClick={() => {
+                    setOpenModalCash(false);
+                    router.push("/feedback");
+                  }}
+                  className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                >
+                  Complete
                 </motion.button>
               </motion.div>
             </motion.div>

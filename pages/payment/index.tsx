@@ -74,7 +74,7 @@ export default function QrisPayment() {
         )
         .then((res) => {
           if (res.data.data.status === "completed") {
-            router.push("/feedback");
+            router.push("/bills-note?orderId=" + res.data.data.details.id);
           }
         });
     };

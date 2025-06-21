@@ -5,6 +5,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
 import OrderCard from "@/components/ui/OrderCard";
 import Image from "next/image";
+import { getDetailOrder } from "@/swr/get/getOrder";
 
 // Types
 interface OrderProduct {
@@ -19,7 +20,7 @@ interface OrderProduct {
   quantity: number;
   price: number;
   img: string;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "cancelled";
 }
 
 // Types
@@ -40,21 +41,8 @@ interface CartProduct {
 
 const OrderList: React.FC = () => {
   const router = useRouter();
-  const [orderProducts, setOrderProducts] = useState<OrderProduct[]>([
-    {
-      id: "1",
-      type: "Hot",
-      size: "Regular",
-      iceCube: "Less",
-      sweet: "Normal",
-      addOns: "Extra Cheese",
-      spicyLevel: "Mild",
-      quantity: 2,
-      price: 5000,
-      img: "https://via.placeholder.com/150",
-      status: "preparing",
-    },
-  ]);
+  const { orderId } = router.query;
+  const { orderDetail } = getDetailOrder(orderId?.toString());
   const [cartItems, setCartItems] = useState<CartProduct[]>([]);
 
   useEffect(() => {
@@ -115,7 +103,8 @@ const OrderList: React.FC = () => {
       {/* Order Items */}
       <div className="px-4 py-6">
         <AnimatePresence>
-          {orderProducts.length === 0 ? (
+          {Array.isArray(orderDetail?.subTransactions) &&
+          orderDetail?.subTransactions.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,9 +119,17 @@ const OrderList: React.FC = () => {
               </p>
             </motion.div>
           ) : (
-            orderProducts.map((product, index) => (
-              <OrderCard {...product} key={index} />
-            ))
+            Array.isArray(orderDetail?.subTransactions) &&
+            orderDetail?.subTransactions.map((product: any, index: number) => {
+              const addOn: string[] = product?.addOn?.split(",") || [];
+              return (
+                <OrderCard
+                  product={{ ...product, addOn }}
+                  index={index}
+                  key={index}
+                />
+              );
+            })
           )}
         </AnimatePresence>
       </div>

@@ -1,7 +1,7 @@
 export const getStatusConfig = (status: string) => {
   const statusConfig = {
-    preparing: {
-      text: "Preparing",
+    preparation: {
+      text: "preparation",
       bgColor: "bg-warning-500",
       textColor: "text-white",
       dotColor: "bg-white"
@@ -25,5 +25,5 @@ export const getStatusConfig = (status: string) => {
       dotColor: "bg-white"
     }
   };
-  return statusConfig[status as keyof typeof statusConfig] || statusConfig.preparing;
+  return statusConfig[status as keyof typeof statusConfig] || statusConfig.preparation;
 };

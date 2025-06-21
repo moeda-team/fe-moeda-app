@@ -16,7 +16,7 @@ interface OrderProduct {
   quantity: number;
   price?: number;
   img: string;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "cancelled";
 }
 
 export default function OrderTable() {
@@ -38,7 +38,7 @@ export default function OrderTable() {
       quantity: 1,
       price: 5,
       img: "/images/cappuccino.jpg",
-      status: "preparing",
+      status: "preparation",
     },
   ];
 
@@ -50,7 +50,7 @@ export default function OrderTable() {
       let response;
 
       switch (order.status) {
-        case "preparing":
+        case "preparation":
           response = await fetch(`/api/orders/${order.id}/prepare`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

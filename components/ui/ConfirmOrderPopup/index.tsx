@@ -16,7 +16,7 @@ interface OrderProduct {
   quantity: number;
   price?: number;
   img: string;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "cancelled";
 }
 
 interface ConfirmationPopupProps {
@@ -44,7 +44,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
 
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case "preparing":
+      case "preparation":
         return {
           icon: IoTime,
           iconColor: "text-blue-600",
@@ -99,7 +99,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
 
   const statusConfig = selectedOrder
     ? getStatusConfig(selectedOrder.status)
-    : getStatusConfig("preparing");
+    : getStatusConfig("preparation");
   const IconComponent = statusConfig.icon;
 
   return (

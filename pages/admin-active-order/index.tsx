@@ -23,12 +23,12 @@ interface Order {
   customerName: string;
   tableNumber: string;
   totalAmount: number;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "cancelled";
   items: number;
   orderTime: string;
 }
 
-type StatusType = "preparing" | "ready" | "completed" | "cancelled";
+type StatusType = "preparation" | "ready" | "completed" | "cancelled";
 type FilterType = "all" | StatusType;
 type SortableColumns = "id" | "customerName" | "totalAmount" | "orderTime";
 type SortOrder = "asc" | "desc";
@@ -75,7 +75,7 @@ const mockOrders: Order[] = [
     customerName: "Kenji Fujimoto",
     tableNumber: "10",
     totalAmount: 227546,
-    status: "preparing",
+    status: "preparation",
     items: 4,
     orderTime: "09:28 AM",
   },
@@ -237,7 +237,7 @@ const mockOrders: Order[] = [
     customerName: "Kristin Watson",
     tableNumber: "4",
     totalAmount: 100742,
-    status: "preparing",
+    status: "preparation",
     items: 4,
     orderTime: "10:24 AM",
   },
@@ -246,7 +246,7 @@ const mockOrders: Order[] = [
     customerName: "Robert Fox",
     tableNumber: "5",
     totalAmount: 189692,
-    status: "preparing",
+    status: "preparation",
     items: 5,
     orderTime: "11:57 AM",
   },
@@ -255,7 +255,7 @@ const mockOrders: Order[] = [
     customerName: "Briana Moore",
     tableNumber: "10",
     totalAmount: 80589,
-    status: "preparing",
+    status: "preparation",
     items: 6,
     orderTime: "11:03 AM",
   },
@@ -309,7 +309,7 @@ const mockOrders: Order[] = [
     customerName: "Akira Nishikawa",
     tableNumber: "9",
     totalAmount: 164161,
-    status: "preparing",
+    status: "preparation",
     items: 4,
     orderTime: "11:54 AM",
   },
@@ -336,7 +336,7 @@ const mockOrders: Order[] = [
     customerName: "Clementina DuBuque",
     tableNumber: "1",
     totalAmount: 35833,
-    status: "preparing",
+    status: "preparation",
     items: 6,
     orderTime: "09:42 AM",
   },
@@ -390,7 +390,7 @@ const mockOrders: Order[] = [
     customerName: "Hiroshi Tanaka",
     tableNumber: "1",
     totalAmount: 59955,
-    status: "preparing",
+    status: "preparation",
     items: 6,
     orderTime: "11:13 AM",
   },
@@ -408,7 +408,7 @@ const mockOrders: Order[] = [
     customerName: "Courtney Henry",
     tableNumber: "8",
     totalAmount: 153822,
-    status: "preparing",
+    status: "preparation",
     items: 1,
     orderTime: "10:21 AM",
   },
@@ -453,7 +453,7 @@ const mockOrders: Order[] = [
     customerName: "Devon Lane",
     tableNumber: "4",
     totalAmount: 135599,
-    status: "preparing",
+    status: "preparation",
     items: 3,
     orderTime: "10:22 AM",
   },
@@ -462,7 +462,7 @@ const mockOrders: Order[] = [
     customerName: "Cody Fisher",
     tableNumber: "9",
     totalAmount: 71883,
-    status: "preparing",
+    status: "preparation",
     items: 6,
     orderTime: "10:33 AM",
   },
@@ -489,7 +489,7 @@ const mockOrders: Order[] = [
     customerName: "Sakura Yamamoto",
     tableNumber: "6",
     totalAmount: 87001,
-    status: "preparing",
+    status: "preparation",
     items: 3,
     orderTime: "09:00 AM",
   },
@@ -654,7 +654,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
   const filterOptions: { value: FilterType; label: string }[] = [
     { value: "all", label: "All Orders" },
     { value: "ready", label: "Ready" },
-    { value: "preparing", label: "Preparing" },
+    { value: "preparation", label: "preparation" },
     { value: "completed", label: "Completed" },
     { value: "cancelled", label: "Cancelled" },
   ];

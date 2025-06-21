@@ -16,7 +16,7 @@ interface OrderProduct {
   quantity: number;
   price?: number;
   img: string;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "cancelled";
 }
 
 interface OrderCardProps {
@@ -44,7 +44,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
   const getButtonConfig = (status: string) => {
     switch (status) {
-      case "preparing":
+      case "preparation":
         return {
           text: "Mark as Ready",
           icon: IoTime,

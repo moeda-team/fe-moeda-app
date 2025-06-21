@@ -17,12 +17,12 @@ interface Order {
   customerName: string;
   tableNumber: string;
   totalAmount: number;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "cancelled";
   items: number;
   orderTime: string;
 }
 
-type StatusType = "preparing" | "ready" | "completed" | "cancelled";
+type StatusType = "preparation" | "ready" | "completed" | "cancelled";
 type SortableColumns = "id" | "customerName" | "totalAmount" | "orderTime";
 type SortOrder = "asc" | "desc";
 

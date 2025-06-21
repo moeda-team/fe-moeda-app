@@ -6,12 +6,12 @@ import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
 import { RiFileList3Line } from "react-icons/ri";
 import { OUTLET_ID } from "@/services";
-import { concat, set } from "lodash";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { usePayment } from "@/contex/paymentContex";
 import { useUserRole } from "@/hooks/useUserRole";
 import { FaCheckCircle } from "react-icons/fa";
+import nookies from "nookies";
 
 // Types
 interface CartItem {
@@ -52,6 +52,7 @@ const OrderDetail: React.FC = () => {
   } = usePayment();
   const router = useRouter();
   const [openModalCash, setOpenModalCash] = useState<boolean>(false);
+  const [orderDetail, setOrderDetail] = useState<any>({});
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [customer, setCustomer] = useState<Customer>({
@@ -164,6 +165,7 @@ const OrderDetail: React.FC = () => {
           setTotal(res.data.data.total);
           localStorage.removeItem("cart");
           if (res.data.data.paymentMethod === "cash") {
+            setOrderDetail(res.data.data);
             setOpenModalCash(true);
           } else {
             router.push("/payment");
@@ -180,6 +182,20 @@ const OrderDetail: React.FC = () => {
         });
       });
   };
+
+  useEffect(() => {
+    const tableNumber = nookies.get().tableNumber;
+    if (tableNumber) {
+      setTempCustomer((customer: Customer) => ({
+        ...customer,
+        tableNumber: tableNumber,
+      }));
+      setCustomer((customer: Customer) => ({
+        ...customer,
+        tableNumber: tableNumber,
+      }));
+    }
+  }, []);
 
   return (
     <motion.div
@@ -583,7 +599,7 @@ const OrderDetail: React.FC = () => {
                 <motion.button
                   onClick={() => {
                     setOpenModalCash(false);
-                    router.push("/feedback");
+                    router.push("/bills-note?orderId=" + orderDetail?.id);
                   }}
                   className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
                   whileHover={{ scale: 1.02 }}

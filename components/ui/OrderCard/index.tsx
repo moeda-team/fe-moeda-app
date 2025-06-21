@@ -5,30 +5,23 @@ import { formatToIDR } from "@/utils/formatCurrency";
 
 interface OrderProduct {
   id: string;
-  type: "Hot" | "Ice";
-  size: "Regular" | "Large";
-  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
-  sweet: "Normal" | "Less Sugar";
-  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
-  spicyLevel: "Mild" | "Medium" | "Hot";
+  addOn: string[];
   note?: string;
   quantity: number;
   price: number;
   img: string;
-  status: "preparing" | "ready" | "completed" | "cancelled";
+  status: string;
+  menuName: string;
+  subTotal: number;
 }
 
-const getOptionText = (type: string, value: string): string => {
-  const optionMap: Record<string, Record<string, string>> = {
-    type: { hot: "Hot", iced: "Iced" },
-    size: { regular: "Regular", large: "Large" },
-    iceCube: { regular: "Ice", less: "Less Ice", more: "More Ice" },
-    sweet: { regular: "Regular", less: "Less Sugar" },
-  };
-  return optionMap[type]?.[value] || value;
-};
-
-const OrderCard = (product: OrderProduct, index: number) => {
+const OrderCard = ({
+  product,
+  index,
+}: {
+  product: OrderProduct;
+  index: number;
+}) => {
   const statusConfig = getStatusConfig(product.status);
 
   return (
@@ -48,7 +41,7 @@ const OrderCard = (product: OrderProduct, index: number) => {
         >
           <img
             src={product.img}
-            alt="Matcha Latte"
+            alt={product.menuName}
             className="w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.src =
@@ -61,7 +54,7 @@ const OrderCard = (product: OrderProduct, index: number) => {
         <div className="flex-1">
           <div className="mb-3">
             <div className="flex justify-between">
-              <h3 className="font-semibold text-lg">Matcha Latte</h3>
+              <h3 className="font-semibold text-lg">{product.menuName}</h3>
               {/* Status Badge */}
               <motion.div
                 className={`${statusConfig.bgColor} px-3 py-1 rounded-full text-xs flex items-center gap-1`}
@@ -83,28 +76,22 @@ const OrderCard = (product: OrderProduct, index: number) => {
 
           {/* Options */}
           <div className="flex flex-wrap gap-2 mb-3">
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("type", product.type)}
-            </span>
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("size", product.size)}
-            </span>
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("iceCube", product.iceCube)}
-            </span>
-            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              {getOptionText("sweet", product.sweet)}
-            </span>
+            {Array.isArray(product.addOn) &&
+              product.addOn.length > 0 &&
+              product.addOn.map((addOn, index) => (
+                <div
+                  key={index}
+                  className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1"
+                >
+                  {addOn}
+                </div>
+              ))}
           </div>
 
           {/* Price */}
           <div className="flex items-center w-full text-nowrap">
             <span className="font-bold text-lg text-gray-900">
-              {formatToIDR(product.price * product.quantity)}
+              {formatToIDR(product.subTotal)}
             </span>
             <span className="text-sm text-gray-500 ml-2">
               ({formatToIDR(product.price)} each)

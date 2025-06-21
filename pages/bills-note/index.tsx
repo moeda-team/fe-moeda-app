@@ -125,7 +125,9 @@ const ReceiptPage = () => {
                   ? moment(orderDetail.createdAt).format("MMMM Do YYYY")
                   : ""}
               </p>
-              <QRCodeGenerator link={`/order?orderId=${orderDetail.id}`} />
+              <QRCodeGenerator
+                link={`${router.basePath}/order?orderId=${orderDetail.id}`}
+              />
               <p className="text-center text-gray-500">
                 Scan here to view your orders
               </p>

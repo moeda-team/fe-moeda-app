@@ -578,7 +578,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({
   // Status styling
   const getStatusConfig = (status: StatusType): StatusConfig => {
     const configs: Record<StatusType, StatusConfig> = {
-      preparing: {
+      preparation: {
         bg: "bg-warning-50",
         text: "text-warning-600",
         border: "border-warning-200",

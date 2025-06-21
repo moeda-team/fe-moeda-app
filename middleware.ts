@@ -7,17 +7,17 @@ export function middleware(request: NextRequest) {
 
   // Allow access to root path if no role (for login/landing page)
   // Redirect to login or allow access to other pages based on your needs
-  if (!role) {
-    // Option 1: Allow access to root path for unauthenticated users
-    if (pathname === '/') {
-      return NextResponse.next();
-    }
-    // Option 2: Redirect to login page for protected routes
-    // return NextResponse.redirect(new URL('/login', request.url));
+  // if (!role) {
+  //   // Option 1: Allow access to root path for unauthenticated users
+  //   if (pathname === '/') {
+  //     return NextResponse.next();
+  //   }
+  //   // Option 2: Redirect to login page for protected routes
+  //   // return NextResponse.redirect(new URL('/login', request.url));
     
-    // For now, redirect non-root pages to root if no role
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  //   // For now, redirect non-root pages to root if no role
+  //   return NextResponse.redirect(new URL('/', request.url));
+  // }
 
   const isCustomer = role === 'customer';
   const isCashier = role === 'cashier';
@@ -74,6 +74,6 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: ['/', '/admin-cashier-menu', '/cart', '/admin-:path*'],
-};
+// export const config = {
+//   matcher: ['/', '/admin-cashier-menu', '/cart', '/admin-:path*'],
+// };

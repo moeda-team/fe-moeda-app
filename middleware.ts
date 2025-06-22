@@ -8,12 +8,12 @@ export function middleware(request: NextRequest) {
   const roleParam = searchParams.get('role');
   const accessToken = request.cookies.get('accessToken')?.value;
 
+  // Handle URL parameters for role and table number
   if (roleParam && tableNumber) {
     const response = NextResponse.redirect(new URL(pathname, request.url));
     
     // Set cookies
     response.cookies.set('role', roleParam);
-    
     response.cookies.set('tableNumber', tableNumber);
     
     role = roleParam;
@@ -21,11 +21,25 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  if (!role) {
-    if (pathname !== '/') {
+  // If user has access token and tries to access login, redirect based on role
+  if (accessToken && pathname === '/login') {
+    if (role === 'cashier') {
+      return NextResponse.redirect(new URL('/admin-cashier-menu', request.url));
+    } else if (role === 'barista') {
+      return NextResponse.redirect(new URL('/order-list', request.url));
+    } else {
       return NextResponse.redirect(new URL('/', request.url));
     }
-    return NextResponse.next();
+  }
+
+  // If no role is set
+  if (!role) {
+    // Allow access to home page and login page
+    if (pathname === '/' || pathname === '/login') {
+      return NextResponse.next();
+    }
+    // Redirect to home page for other routes
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   const isCustomer = role === 'customer';
@@ -64,28 +78,42 @@ export function middleware(request: NextRequest) {
     '/order-list',
   ];
 
-  if(accessToken && pathname === '/login') {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-  
   // Customer role checks
-  if (isCustomer && notAllowedCustomerRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL(customerBaseUrl, request.url));
+  if (isCustomer) {
+    if (notAllowedCustomerRoutes.includes(pathname)) {
+      return NextResponse.redirect(new URL(customerBaseUrl, request.url));
+    }
+    return NextResponse.next();
   }
 
   // Cashier role checks
   if (isCashier) {
-    if (!accessToken) {
+    // If cashier doesn't have access token, redirect to login
+    if (!accessToken && pathname !== '/login') {
       return NextResponse.redirect(new URL('/login', request.url));
     }
-    if(notAllowedCashierRoutes.includes(pathname)){
+    
+    // If cashier has access token but tries to access restricted routes
+    if (accessToken && notAllowedCashierRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL(cashierBaseUrl, request.url));
     }
+    
+    return NextResponse.next();
   }
 
-  // Barista role checks - THIS WAS MISSING!
-  if (isBarista && notAllowedBaristaRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL(baristaBaseUrl, request.url));
+  // Barista role checks
+  if (isBarista) {
+    // If barista doesn't have access token, redirect to login
+    if (!accessToken && pathname !== '/login') {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    
+    // If barista has access token but tries to access restricted routes
+    if (accessToken && notAllowedBaristaRoutes.includes(pathname)) {
+      return NextResponse.redirect(new URL(baristaBaseUrl, request.url));
+    }
+    
+    return NextResponse.next();
   }
 
   return NextResponse.next();

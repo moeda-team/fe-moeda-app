@@ -21,7 +21,8 @@ export default function CategoryList() {
 
   return (
     <div className="relative w-full overflow-x-auto no-scrollbar">
-      <div className="flex gap-4 py-4 px-4 items-center w-fit">
+      <div className="flex gap-2 py-4 px-4 items-center w-fit">
+        <Category image={"/images/product.png"} title={"All"} category={""} />
         {Array.isArray(categories) &&
           categories.map((cat, idx) => {
             const isActive = activeCategory === cat.category;

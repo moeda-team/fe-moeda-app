@@ -37,6 +37,7 @@ export function middleware(request: NextRequest) {
   const baristaBaseUrl = '/order-list';
 
   const notAllowedCustomerRoutes = [
+    '/login',
     '/admin-cashier-menu',
     '/admin-active-order',
     '/admin-cashflow',
@@ -47,6 +48,7 @@ export function middleware(request: NextRequest) {
 
   const notAllowedBaristaRoutes = [
     '/', 
+    '/login',
     '/cart', 
     '/order', 
     '/admin-cashier-menu', 
@@ -61,6 +63,10 @@ export function middleware(request: NextRequest) {
     '/order',
     '/order-list',
   ];
+
+  if(accessToken && pathname === '/login') {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
   
   // Customer role checks
   if (isCustomer && notAllowedCustomerRoutes.includes(pathname)) {
@@ -68,8 +74,13 @@ export function middleware(request: NextRequest) {
   }
 
   // Cashier role checks
-  if (isCashier && notAllowedCashierRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL(cashierBaseUrl, request.url));
+  if (isCashier) {
+    if (!accessToken) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    if(notAllowedCashierRoutes.includes(pathname)){
+      return NextResponse.redirect(new URL(cashierBaseUrl, request.url));
+    }
   }
 
   // Barista role checks - THIS WAS MISSING!
@@ -83,6 +94,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/',
+    '/login',
     '/cart',
     '/order',
     '/order-list',

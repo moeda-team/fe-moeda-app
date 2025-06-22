@@ -10,7 +10,6 @@ import {
   HiCurrencyDollar,
   HiClock,
 } from "react-icons/hi";
-import LoginPopup from "@/components/ui/LoginPopup";
 import { getAccessToken } from "@/helpers/getAccessToken";
 
 interface TabItem {
@@ -65,7 +64,6 @@ const AdminLayout = ({
 
   return (
     <>
-      <LoginPopup isOpen={true} onClose={() => {}} onLogin={() => {}} />
       <div className="bg-neutral-50 overflow-auto">
         <div className="absolute h-[160px] z-20 w-full top-0 left-0">
           <Hero isCustomer={false} />

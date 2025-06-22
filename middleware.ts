@@ -6,6 +6,7 @@ export function middleware(request: NextRequest) {
   let role = request.cookies.get('role')?.value;
   const tableNumber = searchParams.get('tableNumber');
   const roleParam = searchParams.get('role');
+  const accessToken = request.cookies.get('accessToken')?.value;
 
   if (roleParam && tableNumber) {
     const response = NextResponse.redirect(new URL(pathname, request.url));

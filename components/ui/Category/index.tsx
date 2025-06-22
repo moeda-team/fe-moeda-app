@@ -4,25 +4,20 @@ import { useRouter } from "next/router";
 import clsx from "clsx"; // Optional: for cleaner class logic
 
 interface CategoryProps {
-  icon: string; // image path
+  image: string; // image path
   alt?: string;
   title: string;
   category: string;
 }
 
-export default function Category({
-  icon,
-  alt = "Category Icon",
-  title,
-  category,
-}: CategoryProps) {
+export default function Category({ image, title, category }: CategoryProps) {
   const router = useRouter();
   const { query, pathname } = router;
 
   const isActive = pathname === "/" ? true : query.category === category;
 
   return (
-    <div className="text-center flex items-center flex-col">
+    <div className="text-center flex items-center flex-col w-16 sm:w-20 md:w-24 relative h-[110px]">
       <motion.div
         onClick={() => {
           let basePath = "";
@@ -38,7 +33,7 @@ export default function Category({
           router.push(`${basePath}?category=${category}`);
         }}
         className={clsx(
-          "w-16 h-16 rounded-full flex items-center justify-center shadow-md cursor-pointer",
+          "w-16 h-16 rounded-full flex items-center justify-center shadow-md cursor-pointer flex-shrink-0",
           isActive ? "bg-primary-500" : "bg-neutral-300"
         )}
         whileHover={{
@@ -49,8 +44,8 @@ export default function Category({
       >
         <Image
           priority
-          src={icon}
-          alt={alt}
+          src={image}
+          alt={title}
           width={44}
           height={44}
           className={clsx(
@@ -59,7 +54,13 @@ export default function Category({
           )}
         />
       </motion.div>
-      <span className={clsx("font-semibold", !isActive && "text-neutral-200")}>
+      <span
+        className={clsx(
+          "font-semibold text-xs sm:text-sm mt-2 leading-tight break-words hyphens-auto w-full absolute translate-y-14",
+          !isActive && "text-neutral-200"
+        )}
+        style={{ wordWrap: "break-word" }}
+      >
         {title}
       </span>
     </div>

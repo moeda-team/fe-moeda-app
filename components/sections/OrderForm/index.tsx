@@ -83,23 +83,6 @@ const backdropVariants = {
   exit: { opacity: 0 },
 };
 
-const buttonVariants = {
-  hover: { scale: 1.05 },
-  tap: { scale: 0.95 },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
 // Modal Header Component
 const ModalHeader: React.FC<ModalHeaderProps> = ({ onClose }) => (
   <div className="sticky top-0 bg-white rounded-t-2xl border-b px-6 py-4 flex items-center justify-between">
@@ -257,6 +240,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
   }, [option]);
 
   const {
+    watch,
     control,
     handleSubmit,
     formState: { errors },
@@ -272,13 +256,105 @@ const OrderForm: React.FC<OrderFormProps> = ({
     },
   });
 
+  const typeAdditionalPrice: number = useMemo(() => {
+    const filterByType = option.find((opt: any) => opt.name === "Type");
+    if (!filterByType) return 0;
+    const findIndexSelectedType = filterByType?.value?.findIndex(
+      (typeFil: any) => typeFil === watch("type")
+    );
+    if (!findIndexSelectedType) return 0;
+    const addPrices = filterByType?.addPrices[findIndexSelectedType];
+    if (!addPrices) return 0;
+    return addPrices;
+  }, [option, watch("type")]);
+
+  const sizeAdditionalPrice: number = useMemo(() => {
+    const filterBySize = option.find((opt: any) => opt.name === "Size");
+    if (!filterBySize) return 0;
+    const findIndexSelectedSize = filterBySize?.value?.findIndex(
+      (sizeFil: any) => sizeFil === watch("size")
+    );
+    if (!findIndexSelectedSize) return 0;
+    const addPrices = filterBySize?.addPrices[findIndexSelectedSize];
+    if (!addPrices) return 0;
+    return addPrices;
+  }, [option, watch("size")]);
+
+  const iceCubeAdditionalPrice: number = useMemo(() => {
+    const filterByIceCube = option.find((opt: any) => opt.name === "IceCube");
+    if (!filterByIceCube) return 0;
+    const findIndexSelectedIceCube = filterByIceCube?.value?.findIndex(
+      (iceCubeFil: any) => iceCubeFil === watch("iceCube")
+    );
+    if (!findIndexSelectedIceCube) return 0;
+    const addPrices = filterByIceCube?.addPrices[findIndexSelectedIceCube];
+    if (!addPrices) return 0;
+    return addPrices;
+  }, [option, watch("iceCube")]);
+
+  const sweetAdditionalPrice: number = useMemo(() => {
+    const filterBySweet = option.find((opt: any) => opt.name === "Sweet");
+    if (!filterBySweet) return 0;
+    const findIndexSelectedSweet = filterBySweet?.value?.findIndex(
+      (sweetFil: any) => sweetFil === watch("sweet")
+    );
+    if (!findIndexSelectedSweet) return 0;
+    const addPrices = filterBySweet?.addPrices[findIndexSelectedSweet];
+    if (!addPrices) return 0;
+    return addPrices;
+  }, [option, watch("sweet")]);
+
+  const addOnsAdditionalPrice: number = useMemo(() => {
+    const filterByAddOns = option.find((opt: any) => opt.name === "AddOns");
+    if (!filterByAddOns) return 0;
+    const findIndexSelectedAddOns = filterByAddOns?.value?.findIndex(
+      (addOnsFil: any) => addOnsFil === watch("addOns")
+    );
+    if (!findIndexSelectedAddOns) return 0;
+    const addPrices = filterByAddOns?.addPrices[findIndexSelectedAddOns];
+    if (!addPrices) return 0;
+    return addPrices;
+  }, [option, watch("addOns")]);
+
+  const spicyLevelAdditionalPrice: number = useMemo(() => {
+    const filterBySpicyLeve = option.find(
+      (opt: any) => opt.name === "SpicyLeve"
+    );
+    if (!filterBySpicyLeve) return 0;
+    const findIndexSelectedSpicyLeve = filterBySpicyLeve?.value?.findIndex(
+      (spicyLeveFil: any) => spicyLeveFil === watch("spicyLevel")
+    );
+    if (!findIndexSelectedSpicyLeve) return 0;
+    const addPrices = filterBySpicyLeve?.addPrices[findIndexSelectedSpicyLeve];
+    if (!addPrices) return 0;
+    return addPrices;
+  }, [option, watch("spicyLevel")]);
+
+  const totalAddPrice: number = useMemo(() => {
+    return (
+      Number(typeAdditionalPrice) +
+      Number(sizeAdditionalPrice) +
+      Number(iceCubeAdditionalPrice) +
+      Number(sweetAdditionalPrice) +
+      Number(addOnsAdditionalPrice) +
+      Number(spicyLevelAdditionalPrice)
+    );
+  }, [
+    typeAdditionalPrice,
+    sizeAdditionalPrice,
+    iceCubeAdditionalPrice,
+    sweetAdditionalPrice,
+    addOnsAdditionalPrice,
+    spicyLevelAdditionalPrice,
+  ]);
+
   const onOrder = (data: FormData): void => {
     const newOrder = {
       ...data,
       quantity,
       name: productDetail.name,
       id: productDetail.id,
-      price: productDetail.price,
+      price: Number(productDetail.price) + Number(totalAddPrice),
       img: productDetail.img,
     };
     localStorage.setItem("cart", JSON.stringify([newOrder]));
@@ -292,7 +368,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
       name: productDetail.name,
       quantity,
       id: productDetail.id,
-      price: productDetail.price,
+      price: Number(productDetail.price) + Number(totalAddPrice),
       img: productDetail.img,
     };
 
@@ -314,10 +390,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
     );
 
     if (existingIndex !== -1) {
-      // Merge quantities
       cart[existingIndex].quantity += newOrder.quantity;
     } else {
-      // Add new item
       cart.push(newOrder);
     }
 
@@ -471,7 +545,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
               animate={{ scale: 1 }}
               transition={{ type: "spring" }}
             >
-              {formatToIDR(quantity * productDetail.price)}
+              {formatToIDR(
+                quantity * (Number(productDetail.price) + Number(totalAddPrice))
+              )}
             </motion.div>
             <QuantitySelector
               quantity={quantity}

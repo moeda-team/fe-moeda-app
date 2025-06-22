@@ -1,14 +1,11 @@
 /** @type {import('next').NextConfig} */
-const basePath = process.env.BASE_PATH || '';
 const nextConfig = {
-  env: {
-    basePath
-  },
   reactStrictMode: true,
   images: {
     dangerouslyAllowSVG: true,
     domains: [
       'example.com',
+      'moeda-space.s3.ap-southeast-1.amazonaws.com'
     ]
   }
 }

@@ -29,13 +29,10 @@ const CashierMenu = () => {
         <SearchBar onSearch={handleSearch} />
       </div>
 
-      <div className="px-4 text-lg font-semibold space-y-4 mt-8">
-        <h4>Best Seller</h4>
-        <BestSellerSlider
-          onOpenPopupOrder={() => setOpenPopupOrder(true)}
-          onSetProductDetail={setProductDetail}
-        />
-      </div>
+      <BestSellerSlider
+        onOpenPopupOrder={() => setOpenPopupOrder(true)}
+        onSetProductDetail={setProductDetail}
+      />
 
       <div className="mt-8 px-4 text-lg font-semibold space-y-4">
         <h4>Menu</h4>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiArrowLeft,
@@ -13,6 +13,7 @@ import { IoCard } from "react-icons/io5";
 import { RiFileList3Line } from "react-icons/ri";
 import { CartCard } from "@/components/ui";
 import { formatToIDR } from "@/utils/formatCurrency";
+import useTriggerLS from "@/hooks/useTriggerLS";
 
 // Types
 interface CartProduct {
@@ -34,12 +35,12 @@ const MatchaCartUI: React.FC = () => {
   const router = useRouter();
 
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
+  console.log({ cartProducts });
 
   // Calculate totals
-  const subTotal = _.sumBy(
-    cartProducts,
-    (product) => product.price * product.quantity
-  );
+  const subTotal = useMemo(() => {
+    return _.sumBy(cartProducts, (product) => product.price * product.quantity);
+  }, [cartProducts]);
   const totalAmount = subTotal;
 
   // Update quantity and localStorage
@@ -58,7 +59,7 @@ const MatchaCartUI: React.FC = () => {
         product.iceCube === productToUpdate.iceCube &&
         product.img === productToUpdate.img &&
         product.note === productToUpdate.note &&
-        product.id === productToUpdate.id &&
+        // product.id === productToUpdate.id &&
         product.quantity === productToUpdate.quantity &&
         product.size === productToUpdate.size &&
         product.sweet === productToUpdate.sweet &&
@@ -80,7 +81,7 @@ const MatchaCartUI: React.FC = () => {
         product.iceCube === productToRemove.iceCube &&
         product.img === productToRemove.img &&
         product.note === productToRemove.note &&
-        product.id === productToRemove.id &&
+        // product.id === productToRemove.id &&
         product.quantity === productToRemove.quantity &&
         product.size === productToRemove.size &&
         product.sweet === productToRemove.sweet &&
@@ -91,12 +92,7 @@ const MatchaCartUI: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(updatedProducts));
   };
 
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCartProducts(JSON.parse(storedCart));
-    }
-  }, []);
+  useTriggerLS(setCartProducts);
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -127,33 +123,33 @@ const MatchaCartUI: React.FC = () => {
 
       {/* Cart Items */}
       <div className="mx-auto px-4 mt-4 pb-28">
-        <AnimatePresence>
-          {cartProducts.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl p-8 text-center"
-            >
-              <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                Your cart is empty
-              </h3>
-              <p className="text-gray-400">
-                Add some delicious matcha lattes to get started!
-              </p>
-            </motion.div>
-          ) : (
-            cartProducts.map((product, index) => (
+        {Array.isArray(cartProducts) && cartProducts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl p-8 text-center"
+          >
+            <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-600 mb-2">
+              Your cart is empty
+            </h3>
+            <p className="text-gray-400">
+              Add some delicious matcha lattes to get started!
+            </p>
+          </motion.div>
+        )}
+        {Array.isArray(cartProducts) &&
+          cartProducts.length > 0 &&
+          cartProducts.map((product) => {
+            return (
               <CartCard
-                index={index}
                 product={product}
                 key={product.id}
                 removeProduct={removeProduct}
                 updateQuantity={updateQuantity}
               />
-            ))
-          )}
-        </AnimatePresence>
+            );
+          })}
 
         {/* Payment Button */}
         <motion.div

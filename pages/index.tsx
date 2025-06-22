@@ -18,13 +18,10 @@ export default function Home() {
     <div className="bg-neutral-50 min-h-screen">
       <Hero />
 
-      <div className="px-4 text-lg font-semibold space-y-4">
-        <h4>Best Seller</h4>
-        <BestSellerSlider
-          onOpenPopupOrder={() => setOpenPopupOrder(true)}
-          onSetProductDetail={setProductDetail}
-        />
-      </div>
+      <BestSellerSlider
+        onOpenPopupOrder={() => setOpenPopupOrder(true)}
+        onSetProductDetail={setProductDetail}
+      />
 
       <div className="mt-8 px-4 text-lg font-semibold space-y-4">
         <h4>Menu</h4>

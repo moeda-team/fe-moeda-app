@@ -11,8 +11,6 @@ import nookies from "nookies";
 const monserrat = Montserrat({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
   return (
     <PaymentProvider>
       <FloatingOrder />

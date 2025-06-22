@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { RiFileList3Line } from "react-icons/ri";
+import useTriggerLS from "@/hooks/useTriggerLS";
 
 interface CartProduct {
   name: string;
@@ -33,34 +34,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
   // Calculate total quantity of items in cart
   const totalCartItems = cartProducts.length;
 
-  useEffect(() => {
-    const loadCart = () => {
-      const cart = localStorage.getItem("cart");
-      setCartProducts(cart ? JSON.parse(cart) : []);
-    };
-
-    loadCart();
-
-    // Listen for changes in other tabs
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === "cart") {
-        loadCart();
-      }
-    };
-
-    // Listen for custom cart update events (same tab)
-    const handleCartUpdate = () => {
-      loadCart();
-    };
-
-    window.addEventListener("storage", handleStorage);
-    window.addEventListener("cartUpdated", handleCartUpdate);
-
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("cartUpdated", handleCartUpdate);
-    };
-  }, []);
+  useTriggerLS(setCartProducts);
 
   return (
     <>

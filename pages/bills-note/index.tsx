@@ -126,7 +126,7 @@ const ReceiptPage = () => {
                   : ""}
               </p>
               <QRCodeGenerator
-                link={`${router.basePath}/order?orderId=${orderDetail.id}`}
+                link={`${process.env.NEXT_PUBLIC_BASE_PATH}/order?orderId=${orderDetail.id}`}
               />
               <p className="text-center text-gray-500">
                 Scan here to view your orders

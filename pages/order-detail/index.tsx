@@ -102,14 +102,6 @@ const OrderDetail: React.FC = () => {
     setShowCustomerModal(false);
   };
 
-  const getProductName = (item: CartItem): string => {
-    // Convert id to readable name
-    const name = item.id
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase());
-    return name.replace(/\d+/g, "").trim();
-  };
-
   const handleInputChange = (field: keyof Customer, value: string): void => {
     setTempCustomer((prev) => ({
       ...prev,
@@ -298,7 +290,7 @@ const OrderDetail: React.FC = () => {
                 transition={{ delay: 0.4 + index * 0.1 }}
               >
                 <span className="text-gray-600">
-                  {item.quantity}x {getProductName(item)}
+                  {item.quantity}x {item.name}
                 </span>
                 <span>{formatToIDR(item.price)}</span>
               </motion.div>

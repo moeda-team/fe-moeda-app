@@ -28,8 +28,7 @@ export default function CategoryList() {
             return (
               <div key={idx} ref={isActive ? activeRef : null}>
                 <Category
-                  icon={"/images/product.png"}
-                  alt={`${cat.name}`}
+                  image={"/images/product.png"}
                   title={cat.name}
                   category={cat.id}
                 />

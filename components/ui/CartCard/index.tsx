@@ -21,23 +21,18 @@ interface CartProduct {
 
 interface CartCardProps {
   product: CartProduct;
-  index: number;
   removeProduct: (product: CartProduct) => void;
   updateQuantity: (productToUpdate: CartProduct, newQuantity: number) => void;
 }
 
 const CartCard = ({
   product,
-  index,
   removeProduct,
   updateQuantity,
 }: CartCardProps) => {
   const [img, setImg] = useState(product.img);
   return (
-    <div
-      key={`${product.id}-${index}`}
-      className="bg-white rounded-2xl p-4 mb-4 shadow-sm"
-    >
+    <div className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
       <div className="flex gap-4">
         {/* Product Image */}
         <div className="w-20 h-24 bg-gray-900 rounded-xl flex-shrink-0 overflow-hidden">

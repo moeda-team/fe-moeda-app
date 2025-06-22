@@ -268,33 +268,33 @@ const AdminCashierMenu = () => {
                   </AnimatePresence>
                 </div>
               </div>
-              <AnimatePresence>
-                {cartProducts.length === 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-2xl p-8 text-center"
-                  >
-                    <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                      Your cart is empty
-                    </h3>
-                    <p className="text-gray-400">
-                      Add some delicious matcha lattes to get started!
-                    </p>
-                  </motion.div>
-                ) : (
-                  cartProducts.map((product, index) => (
+              {Array.isArray(cartProducts) && cartProducts.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-2xl p-8 text-center"
+                >
+                  <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    Your cart is empty
+                  </h3>
+                  <p className="text-gray-400">
+                    Add some delicious matcha lattes to get started!
+                  </p>
+                </motion.div>
+              )}
+              {Array.isArray(cartProducts) &&
+                cartProducts.length > 0 &&
+                cartProducts.map((product) => {
+                  return (
                     <CartCard
-                      index={index}
                       product={product}
                       key={product.id}
                       removeProduct={removeProduct}
                       updateQuantity={updateQuantity}
                     />
-                  ))
-                )}
-              </AnimatePresence>
+                  );
+                })}
             </div>
           </div>
 

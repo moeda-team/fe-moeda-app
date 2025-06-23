@@ -74,7 +74,6 @@ export function middleware(request: NextRequest) {
   const notAllowedCashierRoutes = [
     '/',
     '/cart',
-    '/order',
     '/order-list',
   ];
 

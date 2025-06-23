@@ -15,7 +15,6 @@ export default function QrisPayment() {
   const [paymentResponse, setPaymentResponse] = useState<any>({});
   const router = useRouter();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [expiryTime, setExpiryTime] = useState("");
   const { minutes, seconds, isFinished } = useCountdown(
     paymentResponse?.data?.expiry_time
       ? moment(
@@ -178,9 +177,6 @@ export default function QrisPayment() {
                     src={qrCodeUrl}
                     alt="QR Code"
                     className="w-60 h-60 object-contain"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.4, duration: 0.6, ease: "easeOut" }}
                   />
                 ) : (
                   <motion.div
@@ -204,26 +200,6 @@ export default function QrisPayment() {
           <p className="text-lg text-neutral-500 font-medium">
             Payment of {minutes}:{seconds}
           </p>
-        </motion.div>
-
-        <motion.div
-          className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t"
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <motion.button
-            className="w-full bg-primary-500 text-white py-4 rounded-2xl font-semibold flex items-center justify-center space-x-2 disabled:bg-neutral-400"
-            whileHover={{ scale: 1.02, backgroundColor: "#225049" }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 400 }}
-            type="button"
-            onClick={() => {
-              router.push("/feedback");
-            }}
-          >
-            <span>Completed</span>
-          </motion.button>
         </motion.div>
       </div>
     </div>

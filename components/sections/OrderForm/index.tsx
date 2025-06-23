@@ -149,9 +149,8 @@ const NoteInput: React.FC<NoteInputProps> = ({ control }) => (
       render={({ field }) => (
         <motion.textarea
           {...field}
-          placeholder="Write feedback here"
+          placeholder="Tambahkan note"
           className="w-full p-3 border border-neutral-200 rounded-lg bg-neutral-50 resize-none h-20 text-sm"
-          whileFocus={{ scale: 1.02, borderColor: "#0f766e" }}
           transition={{ type: "spring" }}
         />
       )}
@@ -463,7 +462,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             price={productDetail.price}
             image={productDetail.img}
             title={productDetail.name}
-            description={productDetail.description}
+            description={productDetail.desc}
           />
 
           {/* Type Selection */}

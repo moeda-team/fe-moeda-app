@@ -122,7 +122,7 @@ const ReceiptPage = () => {
               </h1>
               <p className="text-gray-600 mb-4">
                 {orderDetail.createdAt
-                  ? moment(orderDetail.createdAt).format("MMMM Do YYYY")
+                  ? moment(orderDetail.createdAt).format("DD/MM/YYYY")
                   : ""}
               </p>
               <QRCodeGenerator

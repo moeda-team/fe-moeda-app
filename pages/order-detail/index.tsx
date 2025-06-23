@@ -376,17 +376,10 @@ const OrderDetail: React.FC = () => {
               <span className="font-medium">{formatToIDR(subtotal)}</span>
             </div>
 
-            <motion.div
-              className="border-t pt-3"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 1.2 }}
-            >
-              <div className="flex justify-between font-semibold text-lg">
-                <span>Total</span>
-                <span>{formatToIDR(subtotal)}</span>
-              </div>
-            </motion.div>
+            <div className="flex justify-between font-semibold text-lg">
+              <span>Total</span>
+              <span>{formatToIDR(subtotal)}</span>
+            </div>
           </div>
         </motion.div>
         <motion.button

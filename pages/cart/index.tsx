@@ -35,7 +35,6 @@ const MatchaCartUI: React.FC = () => {
   const router = useRouter();
 
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
-  console.log({ cartProducts });
 
   // Calculate totals
   const subTotal = useMemo(() => {

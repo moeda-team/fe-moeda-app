@@ -18,7 +18,12 @@ const CashierMenu = () => {
   const [productDetail, setProductDetail] = useState<any>({});
 
   const handleSearch = (query: string) => {
-    router.push(`/menu?search=${query}`);
+    router.push(router.pathname, {
+      query: {
+        ...router.query,
+        search: query,
+      },
+    });
   };
 
   return (

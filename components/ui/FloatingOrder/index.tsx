@@ -10,7 +10,11 @@ const FloatingOrder = () => {
   if (
     "/cart" === pathname ||
     "/order" === pathname ||
-    "/order-detail" === pathname
+    "/order-detail" === pathname ||
+    "/admin-active-order" === pathname ||
+    "/admin-cashier-menu" === pathname ||
+    "/admin-cashflow" === pathname ||
+    "/admin-order-history" === pathname
   ) {
     return null;
   }

@@ -17,7 +17,6 @@ const ReceiptPage = () => {
   // Manual download function
   const downloadReceipt = async () => {
     if (!receiptRef.current || !orderDetail?.id) {
-      console.log("Missing ref or orderDetail");
       return;
     }
 

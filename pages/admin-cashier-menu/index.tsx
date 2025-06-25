@@ -11,7 +11,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { IoCard } from "react-icons/io5";
 import _ from "lodash";
-import { getMenu, getMenuByCategory } from "@/swr/get/products";
+import { getMenu } from "@/swr/get/products";
 
 const tables = ["Table 1", "Table 2", "Table 3", "Table 4", "Table 5"];
 
@@ -33,16 +33,18 @@ interface CartProduct {
 
 const AdminCashierMenu = () => {
   const router = useRouter();
-  const { category } = router.query;
-  const { errorMenusByCategory, isLoadingMenusByCategory, menusByCategory } =
-    getMenuByCategory(category as string);
-  const { errorMenu, isLoadingMenu, menu } = getMenu();
+  const { category, search } = router.query;
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetail] = useState<any>({});
   const [customerName, setCustomerName] = useState("");
   const [selectedTable, setSelectedTable] = useState("");
   const [isTableDropdownOpen, setIsTableDropdownOpen] = useState(false);
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
+  const { menu, mutate } = getMenu({
+    search: search as string,
+    category: category as string,
+    best: "",
+  });
 
   const subTotal = _.sumBy(
     cartProducts,
@@ -101,8 +103,13 @@ const AdminCashierMenu = () => {
     localStorage.setItem("cart", JSON.stringify(updatedProducts));
   };
 
-  const handleSearch = (query: string) => {
-    router.push(`/admin-cashier-menu?search=${query}`);
+  const handleSearch = (search: string) => {
+    router.push({
+      pathname: router.pathname,
+      query: {
+        search: search,
+      },
+    });
   };
 
   useEffect(() => {
@@ -154,22 +161,7 @@ const AdminCashierMenu = () => {
           <div className="text-lg font-semibold space-y-4">
             <h4>Menu</h4>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
-              {category &&
-                Array.isArray(menusByCategory) &&
-                menusByCategory.map((product, index) => (
-                  <ProductCard
-                    key={index}
-                    title={product.name}
-                    description={product.desc}
-                    image={product.img}
-                    onAddToCart={() => {
-                      setOpenPopupOrder(true);
-                      setProductDetail(product);
-                    }}
-                  />
-                ))}
-              {!category &&
-                Array.isArray(menu) &&
+              {Array.isArray(menu) &&
                 menu.map((product, index) => (
                   <ProductCard
                     key={index}

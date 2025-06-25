@@ -49,7 +49,6 @@ const AdminLayout = ({
   isHome?: boolean;
 }) => {
   const isLoggedIn = getAccessToken();
-  console.log({ isLoggedIn });
   const router = useRouter();
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState("home");

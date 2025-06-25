@@ -1,5 +1,6 @@
 import { BestSellerCard } from "@/components/ui";
 import { getBestSeller } from "@/swr/get/bestSeller";
+import { getMenu } from "@/swr/get/products";
 
 interface BestSellerSliderProps {
   onOpenPopupOrder: () => void;
@@ -10,25 +11,29 @@ export default function BestSellerSlider({
   onOpenPopupOrder,
   onSetProductDetail,
 }: BestSellerSliderProps) {
-  const { bestSeller, errorBestSeller } = getBestSeller();
+  const { errorMenu, isLoadingMenu, menu } = getMenu({
+    search: "",
+    category: "",
+    best: "true",
+  });
 
-  if (errorBestSeller) {
+  if (errorMenu) {
     return null;
   }
 
   return (
-    <div className="px-4 text-lg font-semibold space-y-4 mt-8">
+    <div className="px-4 text-lg font-semibold space-y-4">
       <h4>Best Seller</h4>
       <div className="w-full overflow-x-auto cursor-grab no-scrollbar">
         <div className="flex w-max space-x-4">
-          {Array.isArray(bestSeller) &&
-            bestSeller.map((bestSell, index) => (
+          {Array.isArray(menu) &&
+            menu.map((menu, index) => (
               <BestSellerCard
                 key={index}
                 onOpenPopupOrder={onOpenPopupOrder}
-                onSetProductDetail={() => onSetProductDetail(bestSell)}
-                image={bestSell.img}
-                title={bestSell.name}
+                onSetProductDetail={() => onSetProductDetail(menu)}
+                image={menu.img}
+                title={menu.name}
               />
             ))}
         </div>

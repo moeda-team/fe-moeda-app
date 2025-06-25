@@ -14,23 +14,26 @@ export default function Category({ image, title, category }: CategoryProps) {
   const router = useRouter();
   const { query, pathname } = router;
 
-  const isActive = pathname === "/" ? true : query.category === category;
+  const isActive =
+    !Boolean(query.category) && query.category !== category
+      ? true
+      : query.category === category;
 
   return (
     <div className="text-center flex items-center flex-col w-16 sm:w-20 md:w-24 relative h-[110px]">
       <motion.div
         onClick={() => {
-          let basePath = "";
-          if (pathname === "/") {
-            basePath = "/menu";
-          } else if (pathname === "/cashier-menu") {
-            basePath = "/cashier-menu";
-          } else if (pathname === "/menu") {
-            basePath = "/menu";
-          } else if (pathname === "admin-cashier-menu") {
-            basePath = "/admin-cashier-menu";
+          if (title === "All") {
+            router.push(router.pathname);
+            return;
           }
-          router.push(`${basePath}?category=${category}`);
+          router.push({
+            pathname: pathname,
+            query: {
+              ...query,
+              category: category,
+            },
+          });
         }}
         className={clsx(
           "w-16 h-16 rounded-full flex items-center justify-center shadow-md cursor-pointer flex-shrink-0",

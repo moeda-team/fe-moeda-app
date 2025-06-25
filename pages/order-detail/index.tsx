@@ -41,7 +41,6 @@ const OrderDetail: React.FC = () => {
     setPaymentMethod,
     setTotal,
     total,
-    paymentMethod,
     paymentNumber,
     tax,
     serviceCharge,
@@ -63,6 +62,24 @@ const OrderDetail: React.FC = () => {
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
   const [paymentMethodSelect, setPaymentMethodSelect] =
     useState<string>("qris");
+
+  useEffect(() => {
+    if (customer.name !== "" && customer.tableNumber !== "0") {
+      nookies.set(null, "customerName", customer.name);
+      nookies.set(null, "tableNumber", customer.tableNumber);
+    }
+  }, [customer]);
+
+  useEffect(() => {
+    const customerTable = nookies.get(null).tableNumber;
+    const customerName = nookies.get(null).customerName;
+    if (customerTable && customerName) {
+      setCustomer({
+        tableNumber: customerTable,
+        name: customerName,
+      });
+    }
+  }, []);
 
   // Load cart data from localStorage on component mount
   useEffect(() => {

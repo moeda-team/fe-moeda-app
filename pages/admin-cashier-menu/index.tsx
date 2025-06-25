@@ -1,7 +1,7 @@
 import { AdminLayout } from "@/components/layout";
 import { CategoryList, OrderForm, SearchBar } from "@/components/sections";
 import { CartCard, ProductCard } from "@/components/ui";
-import { mockProducts } from "@/mockProduct";
+import nookies from "nookies";
 import { AnimatePresence } from "motion/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import { IoCard } from "react-icons/io5";
 import _ from "lodash";
 import { getMenu } from "@/swr/get/products";
 
-const tables = ["Table 1", "Table 2", "Table 3", "Table 4", "Table 5"];
+const tables = ["1", "2", "3", "4", "5"];
 
 // Types
 interface CartProduct {
@@ -37,7 +37,7 @@ const AdminCashierMenu = () => {
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetail] = useState<any>({});
   const [customerName, setCustomerName] = useState("");
-  const [selectedTable, setSelectedTable] = useState("");
+  const [selectedTable, setSelectedTable] = useState<number>(1);
   const [isTableDropdownOpen, setIsTableDropdownOpen] = useState(false);
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
   const { menu, mutate } = getMenu({
@@ -141,6 +141,14 @@ const AdminCashierMenu = () => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log("Effect triggered", { customerName, selectedTable });
+    if (customerName !== "" && selectedTable !== 0) {
+      nookies.set(null, "customerName", customerName);
+      nookies.set(null, "tableNumber", selectedTable.toString());
+    }
+  }, [customerName, selectedTable]);
+
   return (
     <AdminLayout isHome={true}>
       <div className="grid grid-cols-9 gap-4">
@@ -206,6 +214,7 @@ const AdminCashierMenu = () => {
                 {/* Customer Name Input */}
                 <div>
                   <input
+                    required
                     type="text"
                     placeholder="Customer Name"
                     value={customerName}
@@ -216,48 +225,14 @@ const AdminCashierMenu = () => {
 
                 {/* Table Selection Dropdown */}
                 <div className="relative">
-                  <button
-                    onClick={() => setIsTableDropdownOpen(!isTableDropdownOpen)}
-                    className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 flex items-center justify-between text-left"
-                  >
-                    <span
-                      className={
-                        selectedTable ? "text-neutral-800" : "text-neutral-400"
-                      }
-                    >
-                      {selectedTable || "Select Table"}
-                    </span>
-                    <HiChevronDown
-                      className={`w-5 h-5 transition-transform duration-200 ${
-                        isTableDropdownOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  <AnimatePresence>
-                    {isTableDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full mt-1 w-full bg-white border border-neutral-200 rounded-lg shadow-lg z-20"
-                      >
-                        {tables.map((table) => (
-                          <button
-                            key={table}
-                            onClick={() => {
-                              setSelectedTable(table);
-                              setIsTableDropdownOpen(false);
-                            }}
-                            className="w-full px-4 py-3 text-left hover:bg-neutral-50 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg"
-                          >
-                            {table}
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <input
+                    type="number"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedTable(Number(e.target.value))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="Enter table number"
+                  />
                 </div>
               </div>
               {Array.isArray(cartProducts) && cartProducts.length === 0 && (

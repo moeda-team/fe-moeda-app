@@ -83,7 +83,7 @@ export default function QrisPayment() {
     // Set up interval
     const interval = setInterval(() => {
       fetchData();
-    }, 5000); // 3 seconds
+    }, 2000); // 2 seconds
 
     // Cleanup
     return () => clearInterval(interval);

@@ -14,17 +14,12 @@ interface Order {
   customerName: string;
   tableNumber: string;
   totalAmount: number;
-  status: "preparation" | "ready" | "completed" | "cancelled" | "pending";
+  status: "preparation" | "ready" | "completed" | "failed" | "pending";
   items: number;
   orderTime: string;
 }
 
-type StatusType =
-  | "preparation"
-  | "ready"
-  | "completed"
-  | "cancelled"
-  | "pending";
+type StatusType = "preparation" | "ready" | "completed" | "failed" | "pending";
 type FilterType = "all" | StatusType;
 
 interface StatusConfig {
@@ -35,7 +30,7 @@ interface StatusConfig {
   label: string;
 }
 
-interface ActiveOrderProps {
+interface HistoryProps {
   orders?: Order[];
   onViewOrder?: (orderId: string) => void;
   onEditOrder?: (orderId: string) => void;
@@ -44,7 +39,7 @@ interface ActiveOrderProps {
   onBulkCancel?: (orderIds: string[]) => void;
 }
 
-const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
+const ActiveOrder: React.FC<HistoryProps> = ({}) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -103,12 +98,12 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
         icon: FiCheck,
         label: "Completed",
       },
-      cancelled: {
+      failed: {
         bg: "bg-danger-50",
         text: "text-danger-600",
         border: "border-danger-200",
         icon: FiX,
-        label: "Cancelled",
+        label: "Failed",
       },
       pending: {
         bg: "bg-warning-50",
@@ -143,14 +138,6 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
     debouncedSearch(e.target.value);
   };
 
-  const filterOptions: { value: FilterType; label: string }[] = [
-    { value: "all", label: "All Orders" },
-    { value: "ready", label: "Ready" },
-    { value: "preparation", label: "preparation" },
-    { value: "completed", label: "Completed" },
-    { value: "cancelled", label: "Cancelled" },
-  ];
-
   return (
     <AdminLayout>
       <div
@@ -162,7 +149,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-neutral-900">
-                Order List
+                Active Order List
               </h1>
               <p className="text-neutral-500 mt-1">
                 Total {activeOrder?.transactions?.length} orders
@@ -229,7 +216,9 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
                             const statusConfig: StatusConfig = getStatusConfig(
                               order.status
                             );
-                            const StatusIcon = statusConfig.icon;
+                            const StatusIcon = statusConfig
+                              ? statusConfig.icon
+                              : null;
 
                             return (
                               <motion.tr
@@ -259,7 +248,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
                                 </td>
                                 <td className="w-20 px-6 py-4 text-sm text-neutral-900">
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800">
-                                    Table {order.tableNumber}
+                                    {order.tableNumber}
                                   </span>
                                 </td>
                                 <td className="w-20 px-6 py-4 text-sm text-neutral-500">
@@ -272,9 +261,15 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({}) => {
                                 </td>
                                 <td className="w-32 px-6 py-4">
                                   <div
-                                    className={`flex items-center gap-2 ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text} w-fit rounded-full px-2 py-1`}
+                                    className={`flex items-center gap-2 ${
+                                      statusConfig?.bg || ""
+                                    } ${statusConfig?.border || ""} ${
+                                      statusConfig?.text || ""
+                                    } w-fit rounded-full px-2 py-1`}
                                   >
-                                    <StatusIcon className="w-4 h-4" />
+                                    {StatusIcon && (
+                                      <StatusIcon className="w-4 h-4" />
+                                    )}
                                     <div className="text-sm font-medium">
                                       {order.status}
                                     </div>

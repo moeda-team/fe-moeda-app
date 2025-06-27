@@ -28,7 +28,8 @@ export const getActiveOrder = (
   search: string,
   status: boolean
 ) => {
-  const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(`${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}&active=${status}`, fetcher)
+  const active = status ? '&active=true' : ''
+  const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(`${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}${active}`, fetcher)
 
   return {
     activeOrder: data?.data ?? {},

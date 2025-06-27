@@ -16,8 +16,8 @@ const HalfRadialProgress = ({
   const maxValue = max;
   const progressPercentage = (progress / maxValue) * 100;
 
-  const size = 250;
-  const strokeWidth = 32;
+  const size = 100;
+  const strokeWidth = 10;
   const center = size / 2;
   const radius = center - strokeWidth / 2;
 
@@ -44,12 +44,12 @@ const HalfRadialProgress = ({
 
   return (
     <motion.div
-      className="flex flex-col items-center justify-center bg-gray-50 p-8 rounded-md h-full w-full"
+      className="flex flex-col items-center justify-center bg-gray-50 rounded-md h-full w-full"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h4 className="text-gray-900 mb-2 text-left w-full text-base font-medium">
+      <h4 className="text-gray-900 mb-2 text-left w-full text-xs font-medium">
         {label}
       </h4>
 
@@ -82,14 +82,14 @@ const HalfRadialProgress = ({
         </div>
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <motion.span className="text-6xl font-bold text-gray-900">
+          <motion.span className="text-xl font-bold text-gray-900">
             {animatedNumber}
           </motion.span>
         </div>
 
-        <div className="flex justify-between items-center px-4 -mt-8">
-          <span className="text-lg font-medium text-gray-600">0</span>
-          <span className="text-lg font-medium text-gray-600">{max}</span>
+        <div className="flex justify-between items-center px-4 -mt-4">
+          <span className="text-sm font-medium text-gray-600">0</span>
+          <span className="text-sm font-medium text-gray-600">{max}</span>
         </div>
       </div>
     </motion.div>

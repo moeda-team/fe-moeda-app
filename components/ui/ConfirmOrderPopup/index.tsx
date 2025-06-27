@@ -16,7 +16,7 @@ interface OrderProduct {
   quantity: number;
   price?: number;
   img: string;
-  status: "preparation" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "failed";
 }
 
 interface ConfirmationPopupProps {
@@ -74,13 +74,13 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
           confirmText: "OK",
           confirmBg: "bg-gray-600 hover:bg-gray-700",
         };
-      case "cancelled":
+      case "failed":
         return {
           icon: IoStop,
           iconColor: "text-red-600",
           bgColor: "bg-red-100",
           title: "Reactivate Order",
-          message: "Would you like to reactivate this cancelled order?",
+          message: "Would you like to reactivate this failed order?",
           confirmText: "Reactivate",
           confirmBg: "bg-red-600 hover:bg-red-700",
         };

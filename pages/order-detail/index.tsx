@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoPencil, IoCard } from "react-icons/io5";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiInfo } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
 import { RiFileList3Line } from "react-icons/ri";
@@ -43,11 +43,13 @@ const OrderDetail: React.FC = () => {
     total,
     paymentNumber,
     tax,
+    rounding,
     serviceCharge,
     setTax,
     setServiceCharge,
     setSubTotal,
     subTotal,
+    setRounding,
   } = usePayment();
   const router = useRouter();
   const [openModalCash, setOpenModalCash] = useState<boolean>(false);
@@ -170,6 +172,7 @@ const OrderDetail: React.FC = () => {
           setPaymentNumber(res.data.data.paymentNumber);
           setTax(res.data.data.tax);
           setServiceCharge(res.data.data.serviceCharge);
+          setRounding(res.data.data.rounding);
           setSubTotal(res.data.data.subTotal);
           setTotal(res.data.data.total);
           localStorage.removeItem("cart");
@@ -382,11 +385,16 @@ const OrderDetail: React.FC = () => {
         {/* Payment Summary */}
         {/* Payment Summary */}
         <motion.div
-          className="bg-white rounded-2xl mb-2 shadow-sm"
+          className="bg-white rounded-2xl mb-2 shadow-sm space-y-2"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
+          <div className="border border-warning-400 rounded-md bg-warning-100 text-neutral-500 p-2 flex items-center gap-2">
+            <FiInfo size={24} className="text-warning-500" />
+            <span>Harga di bawah belum termasuk pajak dan lain-lain</span>
+          </div>
+
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Sub Total</span>
@@ -581,6 +589,10 @@ const OrderDetail: React.FC = () => {
                   <span className="font-medium">
                     {formatToIDR(serviceCharge)}
                   </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Rounding:</span>
+                  <span className="font-medium">{formatToIDR(rounding)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal:</span>

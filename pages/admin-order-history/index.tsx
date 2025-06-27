@@ -14,17 +14,12 @@ interface Order {
   customerName: string;
   tableNumber: string;
   totalAmount: number;
-  status: "preparation" | "ready" | "completed" | "cancelled" | "pending";
+  status: "preparation" | "ready" | "completed" | "failed" | "pending";
   items: number;
   orderTime: string;
 }
 
-type StatusType =
-  | "preparation"
-  | "ready"
-  | "completed"
-  | "cancelled"
-  | "pending";
+type StatusType = "preparation" | "ready" | "completed" | "failed" | "pending";
 type FilterType = "all" | StatusType;
 
 interface StatusConfig {
@@ -103,12 +98,12 @@ const History: React.FC<HistoryProps> = ({}) => {
         icon: FiCheck,
         label: "Completed",
       },
-      cancelled: {
+      failed: {
         bg: "bg-danger-50",
         text: "text-danger-600",
         border: "border-danger-200",
         icon: FiX,
-        label: "Cancelled",
+        label: "Failed",
       },
       pending: {
         bg: "bg-warning-50",
@@ -142,14 +137,6 @@ const History: React.FC<HistoryProps> = ({}) => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
   };
-
-  const filterOptions: { value: FilterType; label: string }[] = [
-    { value: "all", label: "All Orders" },
-    { value: "ready", label: "Ready" },
-    { value: "preparation", label: "preparation" },
-    { value: "completed", label: "Completed" },
-    { value: "cancelled", label: "Cancelled" },
-  ];
 
   return (
     <AdminLayout>
@@ -229,7 +216,9 @@ const History: React.FC<HistoryProps> = ({}) => {
                             const statusConfig: StatusConfig = getStatusConfig(
                               order.status
                             );
-                            const StatusIcon = statusConfig.icon;
+                            const StatusIcon = statusConfig
+                              ? statusConfig.icon
+                              : null;
 
                             return (
                               <motion.tr
@@ -259,7 +248,7 @@ const History: React.FC<HistoryProps> = ({}) => {
                                 </td>
                                 <td className="w-20 px-6 py-4 text-sm text-neutral-900">
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800">
-                                    Table {order.tableNumber}
+                                    {order.tableNumber}
                                   </span>
                                 </td>
                                 <td className="w-20 px-6 py-4 text-sm text-neutral-500">
@@ -272,9 +261,15 @@ const History: React.FC<HistoryProps> = ({}) => {
                                 </td>
                                 <td className="w-32 px-6 py-4">
                                   <div
-                                    className={`flex items-center gap-2 ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text} w-fit rounded-full px-2 py-1`}
+                                    className={`flex items-center gap-2 ${
+                                      statusConfig?.bg || ""
+                                    } ${statusConfig?.border || ""} ${
+                                      statusConfig?.text || ""
+                                    } w-fit rounded-full px-2 py-1`}
                                   >
-                                    <StatusIcon className="w-4 h-4" />
+                                    {StatusIcon && (
+                                      <StatusIcon className="w-4 h-4" />
+                                    )}
                                     <div className="text-sm font-medium">
                                       {order.status}
                                     </div>

@@ -129,7 +129,7 @@ const LineChart = ({ rawData }: { rawData: any }) => {
       </div>
 
       {/* Chart with fixed height */}
-      <div className="h-[200px]">
+      <div className="h-[250px]">
         <Line
           data={getDataByFilter()}
           options={{
@@ -144,10 +144,32 @@ const LineChart = ({ rawData }: { rawData: any }) => {
                 grid: { display: false },
               },
               y: {
-                min: 100000,
-                max: 2000000,
+                min: Math.min(
+                  getDataByFilter()?.datasets
+                    ? getDataByFilter()?.datasets[0]?.data
+                    : 0,
+                  getDataByFilter()?.datasets
+                    ? getDataByFilter()?.datasets[1]?.data
+                    : 0
+                ),
+                max: Math.max(
+                  getDataByFilter()?.datasets
+                    ? getDataByFilter()?.datasets[0]?.data
+                    : 0,
+                  getDataByFilter()?.datasets
+                    ? getDataByFilter()?.datasets[1]?.data
+                    : 0
+                ),
                 ticks: {
-                  stepSize: 500000,
+                  stepSize:
+                    Math.max(
+                      getDataByFilter()?.datasets
+                        ? getDataByFilter()?.datasets[0]?.data
+                        : 0,
+                      getDataByFilter()?.datasets
+                        ? getDataByFilter()?.datasets[1]?.data
+                        : 0
+                    ) / 10,
                   color: "#6b7280",
                   callback: (value: any) => value / 1000 + "k",
                 },

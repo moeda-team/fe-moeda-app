@@ -459,7 +459,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
         <div className="p-6 pb-8">
           <ProductInfo
-            price={productDetail.price}
+            price={totalAddPrice + Number(productDetail.price)}
             image={productDetail.img}
             title={productDetail.name}
             description={productDetail.desc}

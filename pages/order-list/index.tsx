@@ -16,7 +16,7 @@ interface OrderProduct {
   quantity: number;
   price?: number;
   img: string;
-  status: "preparation" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "failed";
 }
 
 export default function OrderTable() {
@@ -71,7 +71,7 @@ export default function OrderTable() {
             body: JSON.stringify(order),
           });
           break;
-        case "cancelled":
+        case "failed":
           response = await fetch(`/api/orders/${order.id}/cancel`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

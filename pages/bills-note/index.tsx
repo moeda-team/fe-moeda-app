@@ -219,6 +219,12 @@ const ReceiptPage = () => {
                     {formatToIDR(orderDetail.serviceCharge)}
                   </span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Rounding</span>
+                  <span className="text-gray-700">
+                    {formatToIDR(orderDetail.rounding)}
+                  </span>
+                </div>
               </div>
 
               {/* Total */}

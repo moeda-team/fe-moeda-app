@@ -256,24 +256,26 @@ const AdminCashFlow = () => {
             {/* Top row - Radial Progress components */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {/* First HalfRadialProgress */}
-              {Array.isArray(categoryProgressCart) &&
-                categoryProgressCart.length > 0 &&
-                categoryProgressCart.map((category, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-center min-h-[200px] bg-gray-50 rounded-lg p-4"
-                  >
-                    <HalfRadialProgress
-                      current={category.dataSets}
-                      max={100}
-                      label={category.name}
-                      color={category.color}
-                    />
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-8 gap-4 h-full col-span-4">
+                {Array.isArray(categoryProgressCart) &&
+                  categoryProgressCart.length > 0 &&
+                  categoryProgressCart.map((category, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-center min-h-[100px] bg-gray-50 rounded-lg p-4"
+                    >
+                      <HalfRadialProgress
+                        current={category.dataSets}
+                        max={100}
+                        label={category.name}
+                        color={category.color}
+                      />
+                    </div>
+                  ))}
+              </div>
 
               {/* LineChart - spans remaining columns on larger screens */}
-              <div className="col-span-1 sm:col-span-2 xl:col-span-4 min-h-[342px] flex items-center justify-center rounded-lg p-4 bg-gray-50">
+              <div className="col-span-4 min-h-[342px] flex items-center justify-center rounded-lg p-4 bg-gray-50">
                 <div className="w-full h-full">
                   <LineChart
                     rawData={{
@@ -288,7 +290,7 @@ const AdminCashFlow = () => {
             </div>
 
             {/* WeeklyOrdersChart - full width */}
-            <div className="w-full bg-gray-50 shadow-md rounded-md p-4 min-h-[300px]">
+            {/* <div className="w-full bg-gray-50 shadow-md rounded-md p-4 min-h-[300px]">
               <div className="overflow-x-auto">
                 <WeeklyOrdersChart
                   dailyTarget={100}
@@ -303,7 +305,7 @@ const AdminCashFlow = () => {
                   ]}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

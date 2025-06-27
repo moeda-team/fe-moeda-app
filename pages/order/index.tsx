@@ -20,7 +20,7 @@ interface OrderProduct {
   quantity: number;
   price: number;
   img: string;
-  status: "preparation" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "failed";
 }
 
 // Types

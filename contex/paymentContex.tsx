@@ -14,6 +14,8 @@ type PaymentContextType = {
   setServiceCharge: (val: number) => void;
   subTotal: number;
   setSubTotal: (val: number) => void;
+  rounding: number;
+  setRounding: (val: number) => void;
 };
 
 const PaymentContext = createContext<PaymentContextType | undefined>(undefined);
@@ -25,6 +27,7 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
   const [tax, setTax] = useState(0);
   const [serviceCharge, setServiceCharge] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [rounding, setRounding] = useState(0);
 
   return (
     <PaymentContext.Provider
@@ -36,11 +39,13 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
         total,
         setTotal,
         tax,
+        rounding,
         setTax,
         serviceCharge,
         setServiceCharge,
         subTotal,
         setSubTotal,
+        setRounding,
       }}
     >
       {children}

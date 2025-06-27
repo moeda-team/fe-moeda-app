@@ -16,7 +16,7 @@ interface OrderProduct {
   quantity: number;
   price?: number;
   img: string;
-  status: "preparation" | "ready" | "completed" | "cancelled";
+  status: "preparation" | "ready" | "completed" | "failed";
 }
 
 interface OrderCardProps {
@@ -65,7 +65,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           bgColor: "bg-gray-400",
           disabled: true,
         };
-      case "cancelled":
+      case "failed":
         return {
           text: "Reactivate",
           icon: IoRefresh,

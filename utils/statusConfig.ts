@@ -18,8 +18,8 @@ export const getStatusConfig = (status: string) => {
       textColor: "text-white",
       dotColor: "bg-white"
     },
-    cancelled: {
-      text: "Cancelled",
+    failed: {
+      text: "Failed",
       bgColor: "bg-danger-500",
       textColor: "text-white",
       dotColor: "bg-white"

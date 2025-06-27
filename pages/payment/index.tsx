@@ -37,7 +37,6 @@ export default function QrisPayment() {
         paymentType: paymentMethod,
         transactionDetails: {
           orderId: paymentNumber,
-          grossAmount: total,
         },
       };
       axios

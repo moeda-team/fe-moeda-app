@@ -9,7 +9,7 @@ interface OrderProduct {
   note?: string;
   quantity: number;
   price: number;
-  img: string;
+  menu: { img: string };
   status: string;
   menuName: string;
   subTotal: number;
@@ -40,7 +40,7 @@ const OrderCard = ({
           transition={{ type: "spring", stiffness: 300 }}
         >
           <img
-            src={product.img}
+            src={product.menu.img}
             alt={product.menuName}
             className="w-full h-full object-cover"
             onError={(e) => {

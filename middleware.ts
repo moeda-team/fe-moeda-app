@@ -6,6 +6,7 @@ export function middleware(request: NextRequest) {
   let role = request.cookies.get('role')?.value;
   const tableNumber = searchParams.get('tableNumber');
   const roleParam = searchParams.get('role');
+  const orderId = searchParams.get('orderId');
   const accessToken = request.cookies.get('accessToken')?.value;
 
   // Handle URL parameters for role and table number
@@ -19,6 +20,15 @@ export function middleware(request: NextRequest) {
     role = roleParam;
     
     return response;
+  }
+
+  // Handle orderId parameter - set cookie and continue processing
+  let response: NextResponse | null = null;
+  
+  if(orderId) {
+    // We'll set the cookie on whatever response we end up returning
+    response = NextResponse.next();
+    response.cookies.set('orderId', orderId);
   }
 
   // If user has access token and tries to access login, redirect based on role
@@ -36,7 +46,7 @@ export function middleware(request: NextRequest) {
   if (!role) {
     // Allow access to home page and login page
     if (pathname === '/' || pathname === '/login') {
-      return NextResponse.next();
+      return response || NextResponse.next();
     }
     // Redirect to home page for other routes
     return NextResponse.redirect(new URL('/', request.url));
@@ -82,7 +92,7 @@ export function middleware(request: NextRequest) {
     if (notAllowedCustomerRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL(customerBaseUrl, request.url));
     }
-    return NextResponse.next();
+    return response || NextResponse.next();
   }
 
   // Cashier role checks
@@ -97,7 +107,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(cashierBaseUrl, request.url));
     }
     
-    return NextResponse.next();
+    return response || NextResponse.next();
   }
 
   // Barista role checks
@@ -112,10 +122,10 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(baristaBaseUrl, request.url));
     }
     
-    return NextResponse.next();
+    return response || NextResponse.next();
   }
 
-  return NextResponse.next();
+  return response || NextResponse.next();
 }
 
 export const config = {
@@ -129,6 +139,7 @@ export const config = {
     '/admin-active-order', 
     '/admin-cashflow',
     '/admin-order-history',
-    '/admin-barista-dashboard'
+    '/admin-barista-dashboard',
+    '/bills-note'
   ],
 };

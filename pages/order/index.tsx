@@ -6,22 +6,7 @@ import { useRouter } from "next/router";
 import OrderCard from "@/components/ui/OrderCard";
 import Image from "next/image";
 import { getDetailOrder } from "@/swr/get/getOrder";
-
-// Types
-interface OrderProduct {
-  id: string;
-  type: "Hot" | "Ice";
-  size: "Regular" | "Large";
-  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
-  sweet: "Normal" | "Less Sugar";
-  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
-  spicyLevel: "Mild" | "Medium" | "Hot";
-  note?: string;
-  quantity: number;
-  price: number;
-  img: string;
-  status: "preparation" | "ready" | "completed" | "failed";
-}
+import nookies from "nookies";
 
 // Types
 interface CartProduct {
@@ -42,7 +27,10 @@ interface CartProduct {
 const OrderList: React.FC = () => {
   const router = useRouter();
   const { orderId } = router.query;
-  const { orderDetail } = getDetailOrder(orderId?.toString());
+  const [idOrder, setIdOrder] = useState<string | undefined>(
+    orderId?.toString()
+  );
+  const { orderDetail } = getDetailOrder(idOrder);
   const [cartItems, setCartItems] = useState<CartProduct[]>([]);
 
   useEffect(() => {
@@ -50,6 +38,10 @@ const OrderList: React.FC = () => {
     const cart = localStorage.getItem("cart");
     if (cart) {
       setCartItems(JSON.parse(cart));
+    }
+    const orderId = nookies.get().orderId;
+    if (orderId) {
+      setIdOrder(orderId);
     }
   }, []);
 

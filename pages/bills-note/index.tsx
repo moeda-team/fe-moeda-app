@@ -4,16 +4,26 @@ import { formatToIDR } from "@/utils/formatCurrency";
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiDownload } from "react-icons/fi";
+import nookies from "nookies";
 
 const ReceiptPage = () => {
   const router = useRouter();
   const { orderId } = router.query;
-  const { orderDetail } = getDetailOrder(orderId?.toString());
+  const [idOrder, setIdOrder] = useState<string | undefined>(
+    orderId?.toString()
+  );
+  const { orderDetail } = getDetailOrder(idOrder);
   const receiptRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  useEffect(() => {
+    const orderId = nookies.get().orderId;
+    if (orderId) {
+      setIdOrder(orderId);
+    }
+  }, []);
   // Manual download function
   const downloadReceipt = async () => {
     if (!receiptRef.current || !orderDetail?.id) {

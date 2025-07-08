@@ -12,6 +12,7 @@ import { formatToIDR } from "@/utils/formatCurrency";
 import { IoCard } from "react-icons/io5";
 import _ from "lodash";
 import { getMenu } from "@/swr/get/products";
+import { BiChevronDown } from "react-icons/bi";
 
 const tables = ["1", "2", "3", "4", "5"];
 
@@ -142,7 +143,6 @@ const AdminCashierMenu = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Effect triggered", { customerName, selectedTable });
     if (customerName !== "" && selectedTable !== 0) {
       nookies.set(null, "customerName", customerName);
       nookies.set(null, "tableNumber", selectedTable.toString());
@@ -224,14 +224,20 @@ const AdminCashierMenu = () => {
                 </div>
 
                 {/* Table Selection Dropdown */}
-                <div className="relative">
-                  <input
-                    type="number"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedTable(Number(e.target.value))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="Enter table number"
+                <div className="relative flex items-center">
+                  <select
+                    className="w-full px-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
+                    onChange={(e) => setSelectedTable(Number(e.target.value))}
+                  >
+                    {Array.from({ length: 30 }, (_, i) => (
+                      <option key={i} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                  <BiChevronDown
+                    size={20}
+                    className="absolute right-3 pointer-events-none text-gray-500"
                   />
                 </div>
               </div>

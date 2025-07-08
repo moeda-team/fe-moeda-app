@@ -12,6 +12,7 @@ import { usePayment } from "@/contex/paymentContex";
 import { useUserRole } from "@/hooks/useUserRole";
 import { FaCheckCircle } from "react-icons/fa";
 import nookies from "nookies";
+import { BiChevronDown } from "react-icons/bi";
 
 // Types
 interface CartItem {
@@ -64,6 +65,7 @@ const OrderDetail: React.FC = () => {
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
   const [paymentMethodSelect, setPaymentMethodSelect] =
     useState<string>("qris");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (customer.name !== "" && customer.tableNumber !== "0") {
@@ -133,6 +135,7 @@ const OrderDetail: React.FC = () => {
       setShowCustomerModal(true);
       return;
     }
+    setIsLoading((prev) => true);
     let payload = {
       outletId: OUTLET_ID,
       transactionType: "dine-in",
@@ -187,8 +190,10 @@ const OrderDetail: React.FC = () => {
             position: "top-center",
           });
         }
+        setIsLoading((prev) => !prev);
       })
       .catch((err) => {
+        setIsLoading((prev) => !prev);
         toast.error("Gagal melakukan pemesanan", {
           position: "top-center",
         });
@@ -413,7 +418,7 @@ const OrderDetail: React.FC = () => {
           whileTap={{ scale: 0.98 }}
           transition={{ type: "spring", stiffness: 400 }}
           type="button"
-          disabled={cartItems.length === 0}
+          disabled={cartItems.length === 0 || isLoading}
           onClick={onPayOrder}
         >
           <IoCard className="w-5 h-5" />
@@ -451,15 +456,24 @@ const OrderDetail: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Table Number
                   </label>
-                  <input
-                    type="number"
-                    value={tempCustomer.tableNumber}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange("tableNumber", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="Enter table number"
-                  />
+                  <div className="relative flex items-center">
+                    <select
+                      className="w-full px-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
+                      onChange={(e) =>
+                        handleInputChange("tableNumber", e.target.value)
+                      }
+                    >
+                      {Array.from({ length: 30 }, (_, i) => (
+                        <option key={i} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                    <BiChevronDown
+                      size={20}
+                      className="absolute right-3 pointer-events-none text-gray-500"
+                    />
+                  </div>
                 </motion.div>
 
                 <motion.div

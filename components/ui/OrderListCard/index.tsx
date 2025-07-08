@@ -5,7 +5,7 @@ import { IoCheckmark, IoTime, IoStop, IoRefresh } from "react-icons/io5";
 
 interface OrderProduct {
   id: string;
-  name: string;
+  menuName: string;
   type: "Hot" | "Ice";
   size: "Regular" | "Large";
   iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
@@ -17,12 +17,13 @@ interface OrderProduct {
   price?: number;
   img: string;
   status: "preparation" | "ready" | "completed" | "failed";
+  addOn: string[];
 }
 
 interface OrderCardProps {
   order: OrderProduct;
   index: number;
-  onActionOrder: (order: OrderProduct) => void;
+  onActionOrder: (order: OrderProduct) => Promise<void>;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({
@@ -32,30 +33,13 @@ const OrderCard: React.FC<OrderCardProps> = ({
 }) => {
   const statusConfig = getStatusConfig(order.status);
 
-  const getOptionText = (type: string, value: string): string => {
-    const optionMap: Record<string, Record<string, string>> = {
-      type: { hot: "Hot", iced: "Iced" },
-      size: { regular: "Regular", large: "Large" },
-      iceCube: { regular: "Ice", less: "Less Ice", more: "More Ice" },
-      sweet: { regular: "Regular", less: "Less Sugar" },
-    };
-    return optionMap[type]?.[value] || value;
-  };
-
   const getButtonConfig = (status: string) => {
     switch (status) {
       case "preparation":
         return {
-          text: "Mark as Ready",
-          icon: IoTime,
-          bgColor: "bg-blue-600 hover:bg-blue-700",
-          disabled: false,
-        };
-      case "ready":
-        return {
           text: "Complete Order",
-          icon: IoCheckmark,
-          bgColor: "bg-green-600 hover:bg-green-700",
+          icon: IoTime,
+          bgColor: "bg-primary-600 hover:bg-primary-700",
           disabled: false,
         };
       case "completed":
@@ -64,13 +48,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
           icon: IoCheckmark,
           bgColor: "bg-gray-400",
           disabled: true,
-        };
-      case "failed":
-        return {
-          text: "Reactivate",
-          icon: IoRefresh,
-          bgColor: "bg-red-600 hover:bg-red-700",
-          disabled: false,
         };
       default:
         return {
@@ -127,24 +104,25 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </span>
         </motion.div>
         <h3 className="font-semibold text-neutral-900 mb-3 leading-tight">
-          {order.name}
+          {order.menuName}
         </h3>
 
         {/* Options */}
         <div className="flex flex-wrap gap-2 mb-6 flex-1">
-          <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
-            {getOptionText("size", order.size)}
-          </span>
-          <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
-            {getOptionText("iceCube", order.iceCube)}
-          </span>
-          <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
-            {getOptionText("sweet", order.sweet)}
-          </span>
+          {Array.isArray(order.addOn) &&
+            order.addOn.length > 0 &&
+            order.addOn.map((addOn, index) => {
+              if (!addOn) return null;
 
-          <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit">
-            {getOptionText("iceCube", order.iceCube)}
-          </span>
+              return (
+                <span
+                  key={index}
+                  className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit"
+                >
+                  {addOn}
+                </span>
+              );
+            })}
         </div>
 
         {/* Action Button - Pinned to bottom */}

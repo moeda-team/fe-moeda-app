@@ -1,5 +1,5 @@
 import { getAccessToken } from '@/helpers/getAccessToken';
-import { API_URL, OUTLET_ID } from '@/services'
+import { API_URL } from '@/services'
 import axios, { AxiosRequestConfig } from 'axios';
 import useSWR from 'swr'
 
@@ -22,18 +22,14 @@ export const fetcher = async <T = any>(
   return response.data;
 };
 
-export const getActiveOrder = (
-  page?: number | string,
-  limit?: number | string,
-  search?: string,
-  status?: boolean
+export const getBaristaOrder = (
 ) => {
-  const active = status ? '&active=true' : ''
-  const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(`${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}${active}`, fetcher)
+  const { data, error, isLoading, mutate }: { data: any, error: any, isLoading: boolean, mutate: any } = useSWR(`${API_URL}/transactions/main/view/table`, fetcher)
 
   return {
-    activeOrder: data?.data ?? {},
-    errorActiveOrder: error,
-    isLoadingActiveOrder: isLoading
+    baristaOrder: data?.data ?? {},
+    errorBaristaOrder: error,
+    isLoadingBaristaOrder: isLoading,
+    mutate,
   }
 }

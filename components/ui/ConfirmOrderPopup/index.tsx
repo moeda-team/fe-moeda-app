@@ -1,17 +1,11 @@
 import { AnimatePresence } from "motion/react";
 import { motion } from "framer-motion";
 import { IoCheckmark, IoClose, IoTime, IoStop } from "react-icons/io5";
-import getOptionText from "@/utils/getTagTextOption";
 
 interface OrderProduct {
   id: string;
-  name: string;
-  type: "Hot" | "Ice";
-  size: "Regular" | "Large";
-  iceCube: "Less" | "Normal" | "More Ice" | "No Ice Cube";
-  sweet: "Normal" | "Less Sugar";
-  addOns: "Extra Cheese" | "Fried Egg" | "Crackers";
-  spicyLevel: "Mild" | "Medium" | "Hot";
+  menuName: string;
+  addOn: string[] | string;
   note?: string;
   quantity: number;
   price?: number;
@@ -49,21 +43,12 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
           icon: IoTime,
           iconColor: "text-blue-600",
           bgColor: "bg-blue-100",
-          title: "Mark as Ready",
-          message: "Is this order ready for pickup?",
-          confirmText: "Mark Ready",
-          confirmBg: "bg-blue-600 hover:bg-blue-700",
-        };
-      case "ready":
-        return {
-          icon: IoCheckmark,
-          iconColor: "text-green-600",
-          bgColor: "bg-green-100",
           title: "Complete Order",
-          message: "Has this order been picked up by the customer?",
-          confirmText: "Complete",
-          confirmBg: "bg-green-600 hover:bg-green-700",
+          message: "Is this order ready for pickup?",
+          confirmText: "Complete Order",
+          confirmBg: "bg-primary-600 hover:bg-primary-700",
         };
+
       case "completed":
         return {
           icon: IoCheckmark,
@@ -73,16 +58,6 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
           message: "This order has already been completed.",
           confirmText: "OK",
           confirmBg: "bg-gray-600 hover:bg-gray-700",
-        };
-      case "failed":
-        return {
-          icon: IoStop,
-          iconColor: "text-red-600",
-          bgColor: "bg-red-100",
-          title: "Reactivate Order",
-          message: "Would you like to reactivate this failed order?",
-          confirmText: "Reactivate",
-          confirmBg: "bg-red-600 hover:bg-red-700",
         };
       default:
         return {
@@ -149,26 +124,29 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
               {selectedOrder && (
                 <div className="bg-neutral-50 rounded-lg p-4 mb-6 text-left">
                   <h3 className="font-medium text-neutral-900 mb-2">
-                    {selectedOrder.name}
+                    {selectedOrder.menuName}
                   </h3>
                   {/* Options */}
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                      {getOptionText("size", selectedOrder.size)}
-                    </span>
-                    <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                      {getOptionText("iceCube", selectedOrder.iceCube)}
-                    </span>
-                    <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                      {getOptionText("sweet", selectedOrder.sweet)}
-                    </span>
-                    <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                      {getOptionText("iceCube", selectedOrder.iceCube)}
-                    </span>
+                    {Array.isArray(selectedOrder.addOn) &&
+                      selectedOrder.addOn.length > 0 &&
+                      selectedOrder.addOn.map((addOn, index) => {
+                        if (addOn === "") return null;
+
+                        return (
+                          <>
+                            <div className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                              <span
+                                key={index}
+                                className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 h-fit"
+                              >
+                                {addOn}
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })}
                   </div>
                 </div>
               )}

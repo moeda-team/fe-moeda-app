@@ -4,6 +4,9 @@ import { IoArrowBack, IoCart } from "react-icons/io5";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { BiCoffee } from "react-icons/bi";
 import { useRouter } from "next/router";
+import axios from "axios";
+import { OUTLET_ID } from "@/services";
+import { toast } from "react-toastify";
 
 interface FeedbackScreenProps {}
 
@@ -20,6 +23,12 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
     "I'm enjoy on this drinks",
     "I'm enjoy on this foods",
   ];
+
+  const disableButton: boolean = (() => {
+    if (rating === 0) return true;
+    if (feedback === "" && selectedTags.length === 0) return true;
+    return false;
+  })();
 
   // Countdown timer
   useEffect(() => {
@@ -39,12 +48,42 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
     );
   };
 
-  const handleSubmitFeedback = () => {
+  const handleSubmitFeedback = async () => {
     // Handle form submission here
-    console.log("Rating:", rating);
-    console.log("Feedback:", feedback);
-    console.log("Selected Tags:", selectedTags);
-    router.push("/order");
+    try {
+      const url = process.env.NEXT_PUBLIC_API + "/messages";
+      const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || "";
+      const authPassword = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || "";
+
+      const basicAuth = `Basic ${btoa(`${username}:${authPassword}`)}`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: basicAuth,
+        },
+        body: JSON.stringify({
+          outletId: OUTLET_ID,
+          message:
+            feedback ||
+            selectedTags.toString().replace("[", "").replace("]", ""),
+          rating: rating,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.data) {
+        toast.success("Terkirim");
+        router.push("/order");
+      } else {
+        toast.error("Gagal Terkirim");
+        router.push("/order");
+      }
+    } catch (error) {
+      toast.error("Terjadi kesalahan" + error);
+    }
   };
 
   return (
@@ -187,6 +226,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           whileTap={{ scale: 0.98 }}
           transition={{ type: "spring", stiffness: 400 }}
           type="button"
+          disabled={disableButton}
           onClick={handleSubmitFeedback}
         >
           <span>Submit</span>

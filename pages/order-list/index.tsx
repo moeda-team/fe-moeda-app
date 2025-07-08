@@ -18,7 +18,9 @@ interface OrderProduct {
   note?: string;
   quantity: number;
   price?: number;
-  img: string;
+  menu: {
+    img: string;
+  };
   status: "preparation" | "ready" | "completed" | "failed";
   addOn: string[] | string;
 }

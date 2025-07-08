@@ -15,7 +15,9 @@ interface OrderProduct {
   note?: string;
   quantity: number;
   price?: number;
-  img: string;
+  menu: {
+    img: string;
+  };
   status: "preparation" | "ready" | "completed" | "failed";
   addOn: string[];
 }
@@ -70,13 +72,13 @@ const OrderCard: React.FC<OrderCardProps> = ({
       className="bg-white rounded-xl shadow-sm border border-neutral-200 hover:shadow-md transition-shadow duration-200 flex flex-col h-full"
     >
       {/* Product Image */}
-      <div className="h-[140px] w-full">
+      <div className="h-[240px] w-full">
         <Image
           className="p-2 rounded-[32px]"
-          src={order.img}
+          src={order.menu.img}
           alt="Food"
           width={300}
-          height={140}
+          height={240}
           sizes="(min-width: 808px) 50vw, 100vw"
           style={{
             objectFit: "cover",

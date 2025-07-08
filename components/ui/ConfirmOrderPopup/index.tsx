@@ -41,8 +41,8 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
       case "preparation":
         return {
           icon: IoTime,
-          iconColor: "text-blue-600",
-          bgColor: "bg-blue-100",
+          iconColor: "text-primary-600",
+          bgColor: "bg-primary-100",
           title: "Complete Order",
           message: "Is this order ready for pickup?",
           confirmText: "Complete Order",
@@ -52,12 +52,12 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
       case "completed":
         return {
           icon: IoCheckmark,
-          iconColor: "text-gray-600",
-          bgColor: "bg-gray-100",
-          title: "Order Already Completed",
-          message: "This order has already been completed.",
-          confirmText: "OK",
-          confirmBg: "bg-gray-600 hover:bg-gray-700",
+          iconColor: "text-primary-600",
+          bgColor: "bg-primary-100",
+          title: "Make Order To Preparation",
+          message: "This order status will be changed to Preparation",
+          confirmText: "Confirm",
+          confirmBg: "bg-primary-600 hover:bg-primary-700",
         };
       default:
         return {
@@ -126,6 +126,9 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                   <h3 className="font-medium text-neutral-900 mb-2">
                     {selectedOrder.menuName}
                   </h3>
+                  <p>
+                    Note: {selectedOrder.note ? selectedOrder.note : "No Note"}
+                  </p>
                   {/* Options */}
                   <div className="flex flex-wrap gap-2 mb-3">
                     {Array.isArray(selectedOrder.addOn) &&

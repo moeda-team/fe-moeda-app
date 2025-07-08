@@ -43,6 +43,8 @@ export default function OrderTable() {
 
       if (status === "preparation") {
         status = "completed";
+      } else {
+        status = "preparation";
       }
 
       const response = await fetch(

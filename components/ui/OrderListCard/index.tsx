@@ -48,8 +48,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
         return {
           text: "Completed",
           icon: IoCheckmark,
-          bgColor: "bg-gray-400",
-          disabled: true,
+          bgColor: "bg-primary-600 hover:bg-primary-700",
+          disabled: false,
         };
       default:
         return {

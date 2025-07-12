@@ -42,7 +42,7 @@ const PopupMustLogin = ({ isOpen = false }) => {
                       How to scan:
                     </h4>
                     <div className="text-sm text-primary-700 space-y-1">
-                      <p>1. Open your phone's camera app</p>
+                      <p>1. Open your phones camera app</p>
                       <p>2. Point it at the QR code on your table</p>
                       <p>3. Tap the notification to open the menu</p>
                     </div>

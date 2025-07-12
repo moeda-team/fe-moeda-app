@@ -39,7 +39,6 @@ const AdminCashierMenu = () => {
   const [productDetail, setProductDetail] = useState<any>({});
   const [customerName, setCustomerName] = useState("");
   const [selectedTable, setSelectedTable] = useState<number>(1);
-  const [isTableDropdownOpen, setIsTableDropdownOpen] = useState(false);
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
   const { menu, mutate } = getMenu({
     search: search as string,
@@ -148,6 +147,14 @@ const AdminCashierMenu = () => {
       nookies.set(null, "tableNumber", selectedTable.toString());
     }
   }, [customerName, selectedTable]);
+
+  //mutate every 10 second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      mutate();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [mutate]);
 
   return (
     <AdminLayout isHome={true}>

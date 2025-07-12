@@ -30,6 +30,14 @@ export default function Home() {
     });
   };
 
+  //mutate every 10 second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      mutate();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [mutate]);
+
   return (
     <div className="bg-neutral-50 min-h-screen">
       <Hero />

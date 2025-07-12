@@ -2,11 +2,12 @@
 import Image from "next/image";
 import { CategoryList } from "@/components/sections";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { FiShoppingCart } from "react-icons/fi";
+import { useMemo, useState } from "react";
+import { FiMoreVertical, FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
-import { RiFileList3Line } from "react-icons/ri";
 import useTriggerLS from "@/hooks/useTriggerLS";
+import useOutsideClick from "@/hooks/useOutsideClick";
+import { parseCookies, destroyCookie } from "nookies";
 
 interface CartProduct {
   name: string;
@@ -30,9 +31,33 @@ interface HeroProps {
 export default function Hero({ isCustomer = true }: HeroProps) {
   const router = useRouter();
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
+  const [openLogout, setOpenLogout] = useState(false);
+  const ref = useOutsideClick({
+    callback: () => setOpenLogout(false),
+  });
+
+  const isShowLogout = useMemo(() => {
+    let isBlockedPath = ["/payment", "/bill-note", "/order-detail"].includes(
+      router.pathname
+    );
+    return !isBlockedPath && !isCustomer;
+  }, [isCustomer, router.pathname]);
 
   // Calculate total quantity of items in cart
   const totalCartItems = cartProducts.length;
+  const onLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+
+    const allCookies = parseCookies();
+    Object.keys(allCookies).forEach((cookieName) => {
+      destroyCookie(null, cookieName, { path: "/" });
+    });
+
+    setOpenLogout(false);
+
+    router.push("/");
+  };
 
   useTriggerLS(setCartProducts);
 
@@ -67,6 +92,34 @@ export default function Hero({ isCustomer = true }: HeroProps) {
                 </span>
               )}
             </motion.div>
+          </div>
+        )}
+        {isShowLogout && (
+          <div
+            ref={ref}
+            className="flex gap-2 relative"
+            onClick={() => setOpenLogout((prev) => !prev)}
+          >
+            <motion.div
+              whileTap={{ scale: 0.95 }}
+              className="bg-white rounded-full p-3 shadow-lg relative"
+              onClick={() => router.push("/cart")}
+            >
+              <FiMoreVertical className="w-5 h-5 text-gray-700" />
+              {totalCartItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-danger-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalCartItems}
+                </span>
+              )}
+            </motion.div>
+            {openLogout && (
+              <div
+                onClick={onLogout}
+                className="absolute z-50 bg-red-500 p-3 rounded -translate-x-10 translate-y-12 hover:bg-red-200 text-white cursor-pointer"
+              >
+                Keluar
+              </div>
+            )}
           </div>
         )}
       </div>

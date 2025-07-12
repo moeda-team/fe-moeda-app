@@ -91,20 +91,25 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
       {/* Product Info */}
       <div className="p-4 flex flex-col flex-1">
-        <motion.div
-          className={`${statusConfig.bgColor} px-3 py-1 rounded-full text-xs flex items-center gap-1 w-fit mb-2`}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{
-            delay: index * 0.1 + 0.3,
-            type: "spring",
-            stiffness: 300,
-          }}
-        >
-          <span className={`${statusConfig.textColor}`}>
-            {statusConfig.text}
+        <div className="flex justify-between items-center">
+          <motion.div
+            className={`${statusConfig.bgColor} px-3 py-1 rounded-full text-xs flex items-center gap-1 w-fit mb-2`}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{
+              delay: index * 0.1 + 0.3,
+              type: "spring",
+              stiffness: 300,
+            }}
+          >
+            <span className={`${statusConfig.textColor}`}>
+              {statusConfig.text}
+            </span>
+          </motion.div>
+          <span className="font-semibold text-neutral-900">
+            {`${order.quantity}x`}
           </span>
-        </motion.div>
+        </div>
         <h3 className="font-semibold text-neutral-900 mb-3 leading-tight">
           {order.menuName}
         </h3>

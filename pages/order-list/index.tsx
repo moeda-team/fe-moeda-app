@@ -102,7 +102,7 @@ export default function OrderTable() {
           activeOrder?.transactions.length > 0 &&
           activeOrder?.transactions.map((tx: any) => {
             return (
-              <div className="mb-8">
+              <div className="mb-8" key={tx.id}>
                 <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">
                   ORDER TABLE {tx.tableNumber}
                 </h1>

@@ -462,6 +462,7 @@ const OrderDetail: React.FC = () => {
                       onChange={(e) =>
                         handleInputChange("tableNumber", e.target.value)
                       }
+                      value={tempCustomer.tableNumber}
                     >
                       {Array.from({ length: 30 }, (_, i) => (
                         <option key={i} value={i + 1}>

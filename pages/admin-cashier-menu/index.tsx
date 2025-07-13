@@ -6,15 +6,12 @@ import { AnimatePresence } from "motion/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { HiChevronDown } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { IoCard } from "react-icons/io5";
 import _ from "lodash";
 import { getMenu } from "@/swr/get/products";
 import { BiChevronDown } from "react-icons/bi";
-
-const tables = ["1", "2", "3", "4", "5"];
 
 // Types
 interface CartProduct {
@@ -32,13 +29,21 @@ interface CartProduct {
   img: string;
 }
 
+interface Customer {
+  tableNumber: string;
+  name: string;
+}
+
 const AdminCashierMenu = () => {
   const router = useRouter();
   const { category, search } = router.query;
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetail] = useState<any>({});
-  const [customerName, setCustomerName] = useState("");
-  const [selectedTable, setSelectedTable] = useState<number>(1);
+  const [customer, setCustomer] = useState<Customer>({
+    tableNumber: "1", // Changed from "0" to "1" as default
+    name: "",
+  });
+  const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
   const { menu, mutate } = getMenu({
     search: search as string,
@@ -112,6 +117,43 @@ const AdminCashierMenu = () => {
     });
   };
 
+  const handleInputChange = (field: keyof Customer, value: string): void => {
+    setTempCustomer((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // Save customer data to cookies when tempCustomer changes
+  useEffect(() => {
+    if (tempCustomer.name !== "" && tempCustomer.tableNumber !== "") {
+      nookies.set(null, "customerName", tempCustomer.name);
+      nookies.set(null, "tableNumber", tempCustomer.tableNumber);
+
+      // Update the main customer state
+      setCustomer({
+        name: tempCustomer.name,
+        tableNumber: tempCustomer.tableNumber,
+      });
+    }
+  }, [tempCustomer.name, tempCustomer.tableNumber]);
+
+  useEffect(() => {
+    const cookies = nookies.get(null);
+    const customerTable = cookies.tableNumber;
+    const customerName = cookies.customerName;
+
+    if (customerTable) {
+      const loadedCustomer = {
+        tableNumber: customerTable,
+        name: customerName === "undefined" ? "" : customerName,
+      };
+
+      setCustomer(loadedCustomer);
+      setTempCustomer(loadedCustomer);
+    }
+  }, []);
+
   useEffect(() => {
     const loadCart = () => {
       const cart = localStorage.getItem("cart");
@@ -140,13 +182,6 @@ const AdminCashierMenu = () => {
       window.removeEventListener("cartUpdated", handleCartUpdate);
     };
   }, []);
-
-  useEffect(() => {
-    if (customerName !== "" && selectedTable !== 0) {
-      nookies.set(null, "customerName", customerName);
-      nookies.set(null, "tableNumber", selectedTable.toString());
-    }
-  }, [customerName, selectedTable]);
 
   //mutate every 10 second
   useEffect(() => {
@@ -224,8 +259,10 @@ const AdminCashierMenu = () => {
                     required
                     type="text"
                     placeholder="Customer Name"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
+                    value={tempCustomer.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange("name", e.target.value)
+                    }
                     className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   />
                 </div>
@@ -234,11 +271,14 @@ const AdminCashierMenu = () => {
                 <div className="relative flex items-center">
                   <select
                     className="w-full px-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
-                    onChange={(e) => setSelectedTable(Number(e.target.value))}
+                    onChange={(e) =>
+                      handleInputChange("tableNumber", e.target.value)
+                    }
+                    value={tempCustomer.tableNumber}
                   >
                     {Array.from({ length: 30 }, (_, i) => (
                       <option key={i} value={i + 1}>
-                        {i + 1}
+                        Table {i + 1}
                       </option>
                     ))}
                   </select>

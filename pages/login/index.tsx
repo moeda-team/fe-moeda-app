@@ -70,15 +70,6 @@ const LoginPage = () => {
           sameSite: "strict",
         });
 
-        // Optionally store token type and other info
-        setCookie(null, "tokenType", data.token_type, {
-          maxAge: data.expires_in,
-          expires: expirationDate,
-          path: "/",
-          secure: true,
-          sameSite: "strict",
-        });
-
         toast.success("Login successful!");
         router.push("/");
       } else {

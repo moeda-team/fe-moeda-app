@@ -104,7 +104,7 @@ const AdminCashFlow = () => {
       },
       {
         mainCourseAsianCount: 0,
-        name: "Main Course (Asian)",
+        name: "Main-Course Asian",
       },
       {
         milkBaseCount: 0,
@@ -131,7 +131,7 @@ const AdminCashFlow = () => {
           if (name === "Signature Coffee") totals.appetizerCount += count;
           if (name === "Rice Bowl") totals.riceBowlCount += count;
           if (name === "Pasta") totals.pastaCount += count;
-          if (name === "Main Course (Asian)")
+          if (name === "Main-Course Asian")
             totals.mainCourseAsianCount += count;
           if (name === "Milk Base") totals.milkBaseCount += count;
           if (name === "Tea") totals.teaCount += count;
@@ -167,7 +167,7 @@ const AdminCashFlow = () => {
       },
       {
         mainCourseAsianCount: acc.mainCourseAsianCount,
-        name: "Main Course (Asian)",
+        name: "Main-Course Asian",
       },
       {
         milkBaseCount: acc.milkBaseCount,
@@ -193,7 +193,7 @@ const AdminCashFlow = () => {
     return {
       name: item.name,
       dataSets: value,
-      color: "#f59e0b", // Pick a color or map category name to a specific color
+      color: "#f59e0b",
     };
   });
 

@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { RiFileList3Line } from "react-icons/ri";
 import { useRouter } from "next/router";
+import nookies from "nookies";
 
 const FloatingOrder = () => {
   const router = useRouter();
   const { pathname } = router;
+  const [orderId, setOrderId] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    const storedOrderId = nookies.get(null, "orderId").orderId;
+    if (storedOrderId) {
+      setOrderId(storedOrderId);
+    }
+  }, []);
 
   if (
     "/cart" === pathname ||
@@ -17,6 +26,10 @@ const FloatingOrder = () => {
     "/admin-cashflow" === pathname ||
     "/admin-order-history" === pathname
   ) {
+    return null;
+  }
+
+  if (!orderId) {
     return null;
   }
 

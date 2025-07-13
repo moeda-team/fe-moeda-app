@@ -29,11 +29,12 @@ export const getActiveOrder = (
   status?: boolean
 ) => {
   const active = status ? '&active=true' : ''
-  const { data, error, isLoading }: { data: any, error: any, isLoading: boolean } = useSWR(`${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}${active}`, fetcher)
+  const { data, error, isLoading, mutate }: { data: any, error: any, isLoading: boolean, mutate: any } = useSWR(`${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}${active}`, fetcher)
 
   return {
     activeOrder: data?.data ?? {},
     errorActiveOrder: error,
-    isLoadingActiveOrder: isLoading
+    isLoadingActiveOrder: isLoading,
+    mutate,
   }
 }

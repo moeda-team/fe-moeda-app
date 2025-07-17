@@ -12,15 +12,7 @@ import {
 import { Line } from "react-chartjs-2";
 import clsx from "clsx";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  Filler
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
 const filters = ["All", "Cash", "QRIS"] as const;
 type FilterType = (typeof filters)[number];
@@ -92,10 +84,7 @@ const LineChart = ({ rawData }: { rawData: any }) => {
       <div className="flex justify-center gap-6 mt-6">
         {typesToRender.map((type) => (
           <div key={type} className="flex items-center space-x-2">
-            <span
-              className="inline-block w-3 h-3 rounded-full"
-              style={{ backgroundColor: colorMap[type] }}
-            ></span>
+            <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: colorMap[type] }}></span>
             <span className="text-sm text-gray-700 font-medium">{type}</span>
           </div>
         ))}
@@ -106,9 +95,7 @@ const LineChart = ({ rawData }: { rawData: any }) => {
   return (
     <div className="bg-gray-50 rounded-md p-6 h-full">
       <div className="flex justify-between">
-        <h4 className="text-base font-medium text-gray-800 mb-4">
-          Sales Overview
-        </h4>
+        <h4 className="text-base font-medium text-gray-800 mb-4">Sales Overview</h4>
 
         <div className="flex space-x-3 mb-4">
           {filters.map((f) => (
@@ -117,9 +104,7 @@ const LineChart = ({ rawData }: { rawData: any }) => {
               onClick={() => setFilter(f)}
               className={clsx(
                 "px-4 py-2 rounded-md text-sm font-medium transition-all",
-                filter === f
-                  ? "bg-primary-500 text-white"
-                  : "bg-gray-100 text-gray-800 hover:bg-blue-100"
+                filter === f ? "bg-primary-500 text-white" : "bg-gray-100 text-gray-800 hover:bg-blue-100"
               )}
             >
               {f}
@@ -145,30 +130,18 @@ const LineChart = ({ rawData }: { rawData: any }) => {
               },
               y: {
                 min: Math.min(
-                  getDataByFilter()?.datasets
-                    ? getDataByFilter()?.datasets[0]?.data
-                    : 0,
-                  getDataByFilter()?.datasets
-                    ? getDataByFilter()?.datasets[1]?.data
-                    : 0
+                  getDataByFilter()?.datasets ? getDataByFilter()?.datasets[0]?.data : 0,
+                  getDataByFilter()?.datasets ? getDataByFilter()?.datasets[1]?.data : 0
                 ),
                 max: Math.max(
-                  getDataByFilter()?.datasets
-                    ? getDataByFilter()?.datasets[0]?.data
-                    : 0,
-                  getDataByFilter()?.datasets
-                    ? getDataByFilter()?.datasets[1]?.data
-                    : 0
+                  getDataByFilter()?.datasets ? getDataByFilter()?.datasets[0]?.data : 0,
+                  getDataByFilter()?.datasets ? getDataByFilter()?.datasets[1]?.data : 0
                 ),
                 ticks: {
                   stepSize:
                     Math.max(
-                      getDataByFilter()?.datasets
-                        ? getDataByFilter()?.datasets[0]?.data
-                        : 0,
-                      getDataByFilter()?.datasets
-                        ? getDataByFilter()?.datasets[1]?.data
-                        : 0
+                      getDataByFilter()?.datasets ? getDataByFilter()?.datasets[0]?.data : 0,
+                      getDataByFilter()?.datasets ? getDataByFilter()?.datasets[1]?.data : 0
                     ) / 10,
                   color: "#6b7280",
                   callback: (value: any) => value / 1000 + "k",

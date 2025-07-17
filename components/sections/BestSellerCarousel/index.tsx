@@ -1,17 +1,13 @@
 import { BestSellerCard } from "@/components/ui";
-import { getBestSeller } from "@/swr/get/bestSeller";
-import { getMenu } from "@/swr/get/products";
+import { useMenu } from "@/swr/get/products";
 
 interface BestSellerSliderProps {
   onOpenPopupOrder: () => void;
   onSetProductDetail: (product: any) => void;
 }
 
-export default function BestSellerSlider({
-  onOpenPopupOrder,
-  onSetProductDetail,
-}: BestSellerSliderProps) {
-  const { errorMenu, isLoadingMenu, menu } = getMenu({
+export default function BestSellerSlider({ onOpenPopupOrder, onSetProductDetail }: BestSellerSliderProps) {
+  const { errorMenu, isLoadingMenu, menu } = useMenu({
     search: "",
     category: "",
     best: "true",

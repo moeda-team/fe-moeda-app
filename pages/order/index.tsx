@@ -5,7 +5,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
 import OrderCard from "@/components/ui/OrderCard";
 import Image from "next/image";
-import { getDetailOrder } from "@/swr/get/getOrder";
+import { useDetailOrder } from "@/swr/get/getOrder";
 import nookies from "nookies";
 
 // Types
@@ -30,7 +30,7 @@ const OrderList: React.FC = () => {
   const [idOrder, setIdOrder] = useState<string | undefined>(
     orderId?.toString()
   );
-  const { orderDetail } = getDetailOrder(idOrder);
+  const { orderDetail } = useDetailOrder(idOrder);
   const [cartItems, setCartItems] = useState<CartProduct[]>([]);
 
   useEffect(() => {

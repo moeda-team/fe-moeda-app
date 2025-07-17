@@ -1,12 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  FiArrowLeft,
-  FiShoppingCart,
-  FiTrash2,
-  FiMinus,
-  FiPlus,
-} from "react-icons/fi";
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { FiArrowLeft, FiShoppingCart } from "react-icons/fi";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { IoCard } from "react-icons/io5";
@@ -43,10 +37,7 @@ const MatchaCartUI: React.FC = () => {
   const totalAmount = subTotal;
 
   // Update quantity and localStorage
-  const updateQuantity = (
-    productToUpdate: CartProduct,
-    newQuantity: number
-  ) => {
+  const updateQuantity = (productToUpdate: CartProduct, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeProduct(productToUpdate);
       return;
@@ -129,12 +120,8 @@ const MatchaCartUI: React.FC = () => {
             className="bg-white rounded-2xl p-8 text-center"
           >
             <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">
-              Your cart is empty
-            </h3>
-            <p className="text-gray-400">
-              Add some delicious matcha lattes to get started!
-            </p>
+            <h3 className="text-lg font-semibold text-gray-600 mb-2">Your cart is empty</h3>
+            <p className="text-gray-400">Add some delicious matcha lattes to get started!</p>
           </motion.div>
         )}
         {Array.isArray(cartProducts) &&
@@ -159,9 +146,7 @@ const MatchaCartUI: React.FC = () => {
         >
           <div className="flex justify-between pb-2">
             <span className="font-bold text-lg">Amount</span>
-            <span className="font-bold text-lg">
-              {formatToIDR(totalAmount)}
-            </span>
+            <span className="font-bold text-lg">{formatToIDR(totalAmount)}</span>
           </div>
           <motion.button
             disabled={cartProducts.length === 0}

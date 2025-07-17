@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import clsx from "clsx"; // Optional: for cleaner class logic
+import clsx from "clsx";
 
 interface CategoryProps {
   image: string; // image path
@@ -14,10 +14,7 @@ export default function Category({ image, title, category }: CategoryProps) {
   const router = useRouter();
   const { query, pathname } = router;
 
-  const isActive =
-    !Boolean(query.category) && query.category !== category
-      ? true
-      : query.category === category;
+  const isActive = !Boolean(query.category) && query.category !== category ? true : query.category === category;
 
   return (
     <div className="text-center flex items-center flex-col w-16 sm:w-20 md:w-24 relative h-[110px]">
@@ -51,10 +48,7 @@ export default function Category({ image, title, category }: CategoryProps) {
           alt={title}
           width={44}
           height={44}
-          className={clsx(
-            "object-contain",
-            !isActive && "grayscale opacity-60"
-          )}
+          className={clsx("object-contain", !isActive && "grayscale opacity-60")}
         />
       </motion.div>
       <span

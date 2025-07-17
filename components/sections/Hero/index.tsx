@@ -37,9 +37,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
   });
 
   const isShowLogout = useMemo(() => {
-    let isBlockedPath = ["/payment", "/bill-note", "/order-detail"].includes(
-      router.pathname
-    );
+    let isBlockedPath = ["/payment", "/bill-note", "/order-detail"].includes(router.pathname);
     return !isBlockedPath && !isCustomer;
   }, [isCustomer, router.pathname]);
 
@@ -95,11 +93,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
           </div>
         )}
         {isShowLogout && (
-          <div
-            ref={ref}
-            className="flex gap-2 relative"
-            onClick={() => setOpenLogout((prev) => !prev)}
-          >
+          <div ref={ref} className="flex gap-2 relative" onClick={() => setOpenLogout((prev) => !prev)}>
             <motion.div
               whileTap={{ scale: 0.95 }}
               className="bg-white rounded-full p-3 shadow-lg relative"

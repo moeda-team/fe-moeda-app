@@ -1,17 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useForm, Controller, Control } from "react-hook-form";
+import { useForm, Controller, Control, useWatch } from "react-hook-form";
 import { motion } from "framer-motion";
-import {
-  FaFire,
-  FaSnowflake,
-  FaShoppingCart,
-  FaCreditCard,
-  FaTimes,
-} from "react-icons/fa";
+import { FaShoppingCart, FaCreditCard, FaTimes } from "react-icons/fa";
 import { CheckboxGroup, QuantitySelector } from "@/components/ui";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import Image from "next/image";
 import { API_URL } from "@/services";
 import { fetcher } from "@/swr/fetcher";
 
@@ -104,12 +99,7 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({ onClose }) => (
 );
 
 // Product Info Component
-const ProductInfo: React.FC<ProductCardProps> = ({
-  title,
-  image,
-  price,
-  description,
-}) => {
+const ProductInfo: React.FC<ProductCardProps> = ({ title, image, price, description }) => {
   const [img, setImg] = useState(image);
 
   return (
@@ -119,12 +109,17 @@ const ProductInfo: React.FC<ProductCardProps> = ({
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.1 }}
     >
-      <img
-        src={img}
-        alt={title}
-        onError={() => setImg("/images/product-image.webp")}
-        className="w-16 h-16 rounded-lg object-cover"
-      />
+      <div className="relative w-16 h-16 flex-shrink-0">
+        <Image
+          src={img}
+          alt={title}
+          fill
+          sizes="(max-width: 64px) 100vw, 64px"
+          className="rounded-lg object-cover"
+          onError={() => setImg("/images/product-image.webp")}
+          unoptimized={!img.startsWith("/")}
+        />
+      </div>
       <div>
         <h3 className="font-semibold text-lg">{title}</h3>
         <p className="text-sm font-normal">{description}</p>
@@ -159,10 +154,7 @@ const NoteInput: React.FC<NoteInputProps> = ({ control }) => (
 );
 
 // Action Buttons Component
-const ActionButtons: React.FC<ActionButtonsProps> = ({
-  onSubmit,
-  onAddToCart,
-}) => (
+const ActionButtons: React.FC<ActionButtonsProps> = ({ onSubmit, onAddToCart }) => (
   <motion.div
     className="flex gap-3 w-full"
     initial={{ opacity: 0, y: 20 }}
@@ -192,23 +184,12 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 );
 
 // Order Form Component
-const OrderForm: React.FC<OrderFormProps> = ({
-  onClose,
-  productDetail,
-  isOpen = false,
-}) => {
+const OrderForm: React.FC<OrderFormProps> = ({ onClose, productDetail, isOpen = false }) => {
   const router = useRouter();
   const [quantity, setQuantity] = useState<number>(1);
   const [option, setOption] = useState<any>([]);
 
-  const {
-    sweetOptions,
-    iceCubeOptions,
-    sizeOptions,
-    typeOptions,
-    addOnsOptions,
-    spicyLevelOptions,
-  } = useMemo(() => {
+  const { sweetOptions, iceCubeOptions, sizeOptions, typeOptions, addOnsOptions, spicyLevelOptions } = useMemo(() => {
     if (!Array.isArray(option)) {
       return {
         sweetOptions: [],
@@ -255,79 +236,75 @@ const OrderForm: React.FC<OrderFormProps> = ({
     },
   });
 
+  const typeValue = useWatch({ control, name: "type" });
   const typeAdditionalPrice: number = useMemo(() => {
     const filterByType = option.find((opt: any) => opt.name === "Type");
     if (!filterByType) return 0;
-    const findIndexSelectedType = filterByType?.value?.findIndex(
-      (typeFil: any) => typeFil === watch("type")
-    );
-    if (!findIndexSelectedType) return 0;
+    const findIndexSelectedType = filterByType?.value?.findIndex((typeFil: any) => typeFil === typeValue);
+    if (findIndexSelectedType === -1) return 0;
     const addPrices = filterByType?.addPrices[findIndexSelectedType];
     if (!addPrices) return 0;
     return addPrices;
-  }, [option, watch("type")]);
+  }, [option, typeValue]);
 
+  const sizeValue = useWatch({ control, name: "size" });
   const sizeAdditionalPrice: number = useMemo(() => {
     const filterBySize = option.find((opt: any) => opt.name === "Size");
     if (!filterBySize) return 0;
-    const findIndexSelectedSize = filterBySize?.value?.findIndex(
-      (sizeFil: any) => sizeFil === watch("size")
-    );
-    if (!findIndexSelectedSize) return 0;
+    const findIndexSelectedSize = filterBySize?.value?.findIndex((sizeFil: any) => sizeFil === sizeValue);
+    if (findIndexSelectedSize === -1) return 0;
     const addPrices = filterBySize?.addPrices[findIndexSelectedSize];
     if (!addPrices) return 0;
     return addPrices;
-  }, [option, watch("size")]);
+  }, [option, sizeValue]);
 
+  const iceCubeValue = useWatch({ control, name: "iceCube" });
   const iceCubeAdditionalPrice: number = useMemo(() => {
     const filterByIceCube = option.find((opt: any) => opt.name === "IceCube");
     if (!filterByIceCube) return 0;
     const findIndexSelectedIceCube = filterByIceCube?.value?.findIndex(
-      (iceCubeFil: any) => iceCubeFil === watch("iceCube")
+      (iceCubeFil: any) => iceCubeFil === iceCubeValue
     );
-    if (!findIndexSelectedIceCube) return 0;
+    if (findIndexSelectedIceCube === -1) return 0;
     const addPrices = filterByIceCube?.addPrices[findIndexSelectedIceCube];
     if (!addPrices) return 0;
     return addPrices;
-  }, [option, watch("iceCube")]);
+  }, [option, iceCubeValue]);
 
+  const sweetValue = useWatch({ control, name: "sweet" });
   const sweetAdditionalPrice: number = useMemo(() => {
     const filterBySweet = option.find((opt: any) => opt.name === "Sweet");
     if (!filterBySweet) return 0;
-    const findIndexSelectedSweet = filterBySweet?.value?.findIndex(
-      (sweetFil: any) => sweetFil === watch("sweet")
-    );
+    const findIndexSelectedSweet = filterBySweet?.value?.findIndex((sweetFil: any) => sweetFil === sweetValue);
     if (!findIndexSelectedSweet) return 0;
     const addPrices = filterBySweet?.addPrices[findIndexSelectedSweet];
     if (!addPrices) return 0;
     return addPrices;
-  }, [option, watch("sweet")]);
+  }, [option, sweetValue]);
 
+  const addOnsValue = useWatch({ control, name: "addOns" });
   const addOnsAdditionalPrice: number = useMemo(() => {
     const filterByAddOns = option.find((opt: any) => opt.name === "AddOns");
     if (!filterByAddOns) return 0;
-    const findIndexSelectedAddOns = filterByAddOns?.value?.findIndex(
-      (addOnsFil: any) => addOnsFil === watch("addOns")
-    );
+    const findIndexSelectedAddOns = filterByAddOns?.value?.findIndex((addOnsFil: any) => addOnsFil === addOnsValue);
     if (!findIndexSelectedAddOns) return 0;
     const addPrices = filterByAddOns?.addPrices[findIndexSelectedAddOns];
     if (!addPrices) return 0;
     return addPrices;
-  }, [option, watch("addOns")]);
+  }, [option, addOnsValue]);
 
+  const spicyLevelValue = useWatch({ control, name: "spicyLevel" });
   const spicyLevelAdditionalPrice: number = useMemo(() => {
-    const filterBySpicyLeve = option.find(
-      (opt: any) => opt.name === "SpicyLeve"
+    const filterBySpicyLevel = option.find((opt: any) => opt.name === "SpicyLevel");
+    if (!filterBySpicyLevel) return 0;
+    const findIndexSelectedSpicyLevel = filterBySpicyLevel?.value?.findIndex(
+      (spicyLevelFil: any) => spicyLevelFil === spicyLevelValue
     );
-    if (!filterBySpicyLeve) return 0;
-    const findIndexSelectedSpicyLeve = filterBySpicyLeve?.value?.findIndex(
-      (spicyLeveFil: any) => spicyLeveFil === watch("spicyLevel")
-    );
-    if (!findIndexSelectedSpicyLeve) return 0;
-    const addPrices = filterBySpicyLeve?.addPrices[findIndexSelectedSpicyLeve];
+    if (!findIndexSelectedSpicyLevel) return 0;
+    const addPrices = filterBySpicyLevel?.addPrices[findIndexSelectedSpicyLevel];
     if (!addPrices) return 0;
     return addPrices;
-  }, [option, watch("spicyLevel")]);
+  }, [option, spicyLevelValue]);
 
   const totalAddPrice: number = useMemo(() => {
     return (
@@ -405,8 +382,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
   };
 
   const incrementQuantity = (): void => setQuantity((prev) => prev + 1);
-  const decrementQuantity = (): void =>
-    setQuantity((prev) => Math.max(1, prev - 1));
+  const decrementQuantity = (): void => setQuantity((prev) => Math.max(1, prev - 1));
 
   // Handle backdrop click to close modal
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>): void => {
@@ -418,11 +394,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
   useEffect(() => {
     if (Array.isArray(productDetail?.options)) {
       productDetail.options.map((option: string) => {
-        fetcher(`${API_URL}/menus/options/${productDetail?.options[0]}`).then(
-          (res) => {
-            setOption((prev: any) => [...prev, res?.data]);
-          }
-        );
+        fetcher(`${API_URL}/menus/options/${productDetail?.options[0]}`).then((res) => {
+          setOption((prev: any) => [...prev, res?.data]);
+        });
       });
     }
   }, [productDetail?.options]);
@@ -467,43 +441,19 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
           {/* Type Selection */}
           {typeOptions.length > 0 && (
-            <CheckboxGroup
-              name="type"
-              options={typeOptions}
-              label="Type"
-              control={control}
-              errors={errors}
-            />
+            <CheckboxGroup name="type" options={typeOptions} label="Type" control={control} errors={errors} />
           )}
 
           {sizeOptions.length > 0 && (
-            <CheckboxGroup
-              name="size"
-              options={sizeOptions}
-              label="Size"
-              control={control}
-              errors={errors}
-            />
+            <CheckboxGroup name="size" options={sizeOptions} label="Size" control={control} errors={errors} />
           )}
 
           {iceCubeOptions.length > 0 && (
-            <CheckboxGroup
-              name="iceCube"
-              options={iceCubeOptions}
-              label="Ice cube"
-              control={control}
-              errors={errors}
-            />
+            <CheckboxGroup name="iceCube" options={iceCubeOptions} label="Ice cube" control={control} errors={errors} />
           )}
 
           {sweetOptions.length > 0 && (
-            <CheckboxGroup
-              name="sweet"
-              options={sweetOptions}
-              label="Sweet"
-              control={control}
-              errors={errors}
-            />
+            <CheckboxGroup name="sweet" options={sweetOptions} label="Sweet" control={control} errors={errors} />
           )}
 
           {spicyLevelOptions.length > 0 && (
@@ -517,13 +467,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
           )}
 
           {addOnsOptions.length > 0 && (
-            <CheckboxGroup
-              name="addOns"
-              options={addOnsOptions}
-              label="Add-ons"
-              control={control}
-              errors={errors}
-            />
+            <CheckboxGroup name="addOns" options={addOnsOptions} label="Add-ons" control={control} errors={errors} />
           )}
 
           {/* Add Note */}
@@ -544,21 +488,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
               animate={{ scale: 1 }}
               transition={{ type: "spring" }}
             >
-              {formatToIDR(
-                quantity * (Number(productDetail.price) + Number(totalAddPrice))
-              )}
+              {formatToIDR(quantity * (Number(productDetail.price) + Number(totalAddPrice)))}
             </motion.div>
-            <QuantitySelector
-              quantity={quantity}
-              onIncrement={incrementQuantity}
-              onDecrement={decrementQuantity}
-            />
+            <QuantitySelector quantity={quantity} onIncrement={incrementQuantity} onDecrement={decrementQuantity} />
           </motion.div>
           {/* Action Buttons */}
-          <ActionButtons
-            onSubmit={handleSubmit(onOrder)}
-            onAddToCart={handleSubmit(onAddToCart)}
-          />
+          <ActionButtons onSubmit={handleSubmit(onOrder)} onAddToCart={handleSubmit(onAddToCart)} />
         </div>
       </motion.div>
     </motion.div>

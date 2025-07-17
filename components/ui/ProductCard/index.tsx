@@ -39,12 +39,8 @@ export default function Card({
       {/* Content Section */}
       <div className="p-2 flex flex-col flex-1">
         <div className="flex-1">
-          <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
-            {title}
-          </h3>
-          <p className="text-xs text-neutral-400 mt-1 font-normal line-clamp-2">
-            {description}
-          </p>
+          <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">{title}</h3>
+          <p className="text-xs text-neutral-400 mt-1 font-normal line-clamp-2">{description}</p>
           {price && <p>{formatToIDR(price)}</p>}
         </div>
 

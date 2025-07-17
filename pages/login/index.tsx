@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 import { setCookie } from "nookies";
@@ -129,9 +129,7 @@ const LoginPage = () => {
         >
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
             <div className="relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -159,9 +157,7 @@ const LoginPage = () => {
 
           {/* Password Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <div className="relative">
               <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -180,11 +176,7 @@ const LoginPage = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {showPassword ? (
-                  <FiEyeOff className="w-5 h-5" />
-                ) : (
-                  <FiEye className="w-5 h-5" />
-                )}
+                {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
               </button>
             </div>
             {errors.password && (

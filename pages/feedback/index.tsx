@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { IoArrowBack, IoCart } from "react-icons/io5";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { BiCoffee } from "react-icons/bi";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { OUTLET_ID } from "@/services";
 import { toast } from "react-toastify";
 
@@ -18,11 +16,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   const [countdown, setCountdown] = useState<number>(60);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const feedbackTags: string[] = [
-    "I'm enjoy on this caffe",
-    "I'm enjoy on this drinks",
-    "I'm enjoy on this foods",
-  ];
+  const feedbackTags: string[] = ["I'm enjoy on this cafe", "I'm enjoy on this drinks", "I'm enjoy on this foods"];
 
   const disableButton: boolean = (() => {
     if (rating === 0) return true;
@@ -43,9 +37,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
   };
 
   const handleTagClick = (tag: string): void => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
   const handleSubmitFeedback = async () => {
@@ -65,9 +57,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         },
         body: JSON.stringify({
           outletId: OUTLET_ID,
-          message:
-            feedback ||
-            selectedTags.toString().replace("[", "").replace("]", ""),
+          message: feedback || selectedTags.toString().replace("[", "").replace("]", ""),
           rating: rating,
         }),
       });
@@ -121,9 +111,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           transition={{ delay: 0.4 }}
           className="text-center mb-8"
         >
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Share your experience
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Share your experience</h2>
           <p className="text-gray-600 text-lg">How is your experience?</p>
         </motion.div>
 
@@ -192,9 +180,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
         >
           <textarea
             value={feedback}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setFeedback(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFeedback(e.target.value)}
             placeholder="Write feedback here"
             className="w-full h-32 p-4 border-2 border-gray-200 rounded-2xl resize-none focus:border-teal-500 focus:outline-none transition-colors duration-200 text-gray-700 placeholder-gray-400"
           />
@@ -208,8 +194,7 @@ const FeedbackScreen: React.FC<FeedbackScreenProps> = () => {
           className="text-center"
         >
           <p className="text-gray-400 text-lg">
-            Back to home in{" "}
-            <span className="font-semibold text-gray-600">{countdown}</span> sec
+            Back to home in <span className="font-semibold text-gray-600">{countdown}</span> sec
           </p>
         </motion.div>
       </motion.div>

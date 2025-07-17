@@ -13,24 +13,21 @@ const monserrat = Montserrat({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isLoggedUsingCookie, setIsLoggedUsingCookie] = useState(false);
+  const { role, tableNumber } = nookies.get();
 
   useEffect(() => {
-    const role = nookies.get().role;
-    const tableNumber = nookies.get().tableNumber;
     if (role && tableNumber) {
       setIsLoggedUsingCookie(true);
     } else {
       setIsLoggedUsingCookie(false);
     }
-  }, [nookies.get().role, nookies.get().tableNumber, setIsLoggedUsingCookie]);
+  }, [role, tableNumber]);
 
   return (
     <PaymentProvider>
       <FloatingOrder />
       <ToastContainer />
-      <div
-        className={`min-h-screen flex items-center justify-center bg-neutral-50 ${monserrat.className}`}
-      >
+      <div className={`min-h-screen flex items-center justify-center bg-neutral-50 ${monserrat.className}`}>
         <PopupMustLogin isOpen={!isLoggedUsingCookie} />
         <div className="w-full bg-white shadow-lg min-h-screen">
           <Component {...pageProps} />

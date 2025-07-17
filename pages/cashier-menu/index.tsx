@@ -1,10 +1,4 @@
-import {
-  BestSellerSlider,
-  CategoryList,
-  Hero,
-  OrderForm,
-  SearchBar,
-} from "@/components/sections";
+import { BestSellerSlider, Hero, OrderForm, SearchBar } from "@/components/sections";
 import { ProductCard } from "@/components/ui";
 import { mockProducts } from "@/mockProduct";
 import { map } from "lodash";
@@ -34,10 +28,7 @@ const CashierMenu = () => {
         <SearchBar onSearch={handleSearch} />
       </div>
 
-      <BestSellerSlider
-        onOpenPopupOrder={() => setOpenPopupOrder(true)}
-        onSetProductDetail={setProductDetail}
-      />
+      <BestSellerSlider onOpenPopupOrder={() => setOpenPopupOrder(true)} onSetProductDetail={setProductDetail} />
 
       <div className="mt-8 px-4 text-lg font-semibold space-y-4">
         <h4>Menu</h4>

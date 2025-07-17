@@ -49,9 +49,7 @@ const HalfRadialProgress = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h4 className="text-gray-900 mb-2 text-left w-full text-xs font-medium">
-        {label}
-      </h4>
+      <h4 className="text-gray-900 mb-2 text-left w-full text-xs font-medium">{label}</h4>
 
       <div className="relative">
         <div className="relative transform rotate-[145deg]">
@@ -82,9 +80,7 @@ const HalfRadialProgress = ({
         </div>
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <motion.span className="text-xl font-bold text-gray-900">
-            {animatedNumber}
-          </motion.span>
+          <motion.span className="text-xl font-bold text-gray-900">{animatedNumber}</motion.span>
         </div>
 
         <div className="flex justify-between items-center px-4 -mt-4">

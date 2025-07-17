@@ -2,8 +2,7 @@ import { Hero } from "@/components/sections";
 import ConfirmationPopup from "@/components/ui/ConfirmOrderPopup";
 import OrderCard from "@/components/ui/OrderListCard";
 import { getAccessToken } from "@/helpers/getAccessToken";
-import { getActiveOrder } from "@/swr/get/activeOrder";
-import { getBaristaOrder } from "@/swr/get/getBaristaOrder";
+import { useActiveOrder } from "@/swr/get/activeOrder";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -28,7 +27,7 @@ interface OrderProduct {
 
 export default function OrderTable() {
   const accessToken = getAccessToken();
-  const { activeOrder, mutate } = getActiveOrder("", "", "", true);
+  const { activeOrder, mutate } = useActiveOrder("", "", "", true);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 

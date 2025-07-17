@@ -31,13 +31,7 @@ const optionVariants = {
   tap: { scale: 0.98 },
 };
 
-const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
-  name,
-  options,
-  label,
-  control,
-  errors,
-}) => (
+const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ name, options, label, control, errors }) => (
   <motion.div
     className="mb-6"
     initial={{ opacity: 0, x: -20 }}

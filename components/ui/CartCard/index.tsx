@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
 import getOptionText from "@/utils/getTagTextOption";
 import { formatToIDR } from "@/utils/formatCurrency";
+import Image from "next/image";
 
 interface CartProduct {
   name: string;
@@ -25,22 +26,21 @@ interface CartCardProps {
   updateQuantity: (productToUpdate: CartProduct, newQuantity: number) => void;
 }
 
-const CartCard = ({
-  product,
-  removeProduct,
-  updateQuantity,
-}: CartCardProps) => {
+const CartCard = ({ product, removeProduct, updateQuantity }: CartCardProps) => {
   const [img, setImg] = useState(product.img);
   return (
     <div className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
       <div className="flex gap-4">
         {/* Product Image */}
-        <div className="w-20 h-24 bg-gray-900 rounded-xl flex-shrink-0 overflow-hidden">
-          <img
+        <div className="w-20 h-24 bg-gray-900 rounded-xl flex-shrink-0 overflow-hidden relative">
+          <Image
             src={img}
+            alt={product?.name || "Product"}
+            fill
+            sizes="(max-width: 80px) 100vw, 80px"
+            className="object-cover"
             onError={() => setImg("/images/product-image.webp")}
-            alt="Matcha Latte"
-            className="w-full h-full object-cover"
+            unoptimized={!img.startsWith("/")}
           />
         </div>
         {/* Product Details */}
@@ -98,9 +98,7 @@ const CartCard = ({
       </div>
       {/* Price and Quantity */}
       <div className="flex items-center justify-between">
-        <span className="font-bold text-gray-900">
-          {formatToIDR(product.price)}
-        </span>
+        <span className="font-bold text-gray-900">{formatToIDR(product.price)}</span>
 
         <div className="flex items-center gap-3">
           <motion.button
@@ -111,9 +109,7 @@ const CartCard = ({
             <FiMinus className="w-4 h-4" />
           </motion.button>
 
-          <span className="font-semibold text-gray-900 min-w-[20px] text-center">
-            {product.quantity}
-          </span>
+          <span className="font-semibold text-gray-900 min-w-[20px] text-center">{product.quantity}</span>
 
           <motion.button
             whileTap={{ scale: 0.95 }}

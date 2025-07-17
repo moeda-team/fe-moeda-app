@@ -10,7 +10,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { IoCard } from "react-icons/io5";
 import _ from "lodash";
-import { getMenu } from "@/swr/get/products";
+import { useMenu } from "@/swr/get/products";
 import { BiChevronDown } from "react-icons/bi";
 
 // Types
@@ -45,7 +45,7 @@ const AdminCashierMenu = () => {
   });
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
-  const { menu, mutate } = getMenu({
+  const { menu, mutate } = useMenu({
     search: search as string,
     category: category as string,
     best: "",

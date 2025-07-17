@@ -1,4 +1,3 @@
-// components/SearchBar.tsx
 import { useState, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { debounce } from "lodash";

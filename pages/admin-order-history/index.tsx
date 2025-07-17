@@ -4,7 +4,7 @@ import { FiSearch, FiCheck, FiClock, FiX, FiRefreshCw } from "react-icons/fi";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { AdminLayout } from "@/components/layout";
-import { getActiveOrder } from "@/swr/get/activeOrder";
+import { useActiveOrder } from "@/swr/get/activeOrder";
 import { debounce } from "lodash";
 import moment from "moment";
 
@@ -44,7 +44,7 @@ const History: React.FC<HistoryProps> = ({}) => {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const { activeOrder } = getActiveOrder(
+  const { activeOrder } = useActiveOrder(
     currentPage,
     rowsPerPage,
     searchQuery,

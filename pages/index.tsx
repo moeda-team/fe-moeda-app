@@ -1,13 +1,8 @@
-import {
-  Hero,
-  BestSellerSlider,
-  OrderForm,
-  SearchBar,
-} from "@/components/sections";
+import { Hero, BestSellerSlider, OrderForm, SearchBar } from "@/components/sections";
 import { ProductCard } from "@/components/ui";
 import { AnimatePresence } from "motion/react";
-import { use, useEffect, useState } from "react";
-import { getMenu } from "@/swr/get/products";
+import { useEffect, useState } from "react";
+import { useMenu } from "@/swr/get/products";
 import { useRouter } from "next/router";
 
 export default function Home() {
@@ -15,7 +10,7 @@ export default function Home() {
   const { category, search } = router.query;
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetail] = useState<any>({});
-  const { menu, mutate } = getMenu({
+  const { menu, mutate } = useMenu({
     search: search as string,
     category: category as string,
     best: "",
@@ -42,10 +37,7 @@ export default function Home() {
     <div className="bg-neutral-50 min-h-screen">
       <Hero />
 
-      <BestSellerSlider
-        onOpenPopupOrder={() => setOpenPopupOrder(true)}
-        onSetProductDetail={setProductDetail}
-      />
+      <BestSellerSlider onOpenPopupOrder={() => setOpenPopupOrder(true)} onSetProductDetail={setProductDetail} />
       <div className="mt-8 px-4 text-lg font-semibold space-y-4">
         <SearchBar onSearch={handleSearch} />
       </div>

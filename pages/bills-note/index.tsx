@@ -1,5 +1,5 @@
 import QRCodeGenerator from "@/components/ui/QRCodeGenerator";
-import { getDetailOrder } from "@/swr/get/getOrder";
+import { useDetailOrder } from "@/swr/get/getOrder";
 import { formatToIDR } from "@/utils/formatCurrency";
 import moment from "moment";
 import Link from "next/link";
@@ -11,10 +11,8 @@ import nookies from "nookies";
 const ReceiptPage = () => {
   const router = useRouter();
   const { orderId } = router.query;
-  const [idOrder, setIdOrder] = useState<string | undefined>(
-    orderId?.toString()
-  );
-  const { orderDetail } = getDetailOrder(idOrder);
+  const [idOrder, setIdOrder] = useState<string | undefined>(orderId?.toString());
+  const { orderDetail } = useDetailOrder(idOrder);
   const receiptRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -126,27 +124,15 @@ const ReceiptPage = () => {
           <div ref={receiptRef} className="space-y-4 bg-white p-6 w-full">
             {/* Header */}
             <div className="flex flex-col items-center justify-center mb-6">
-              <h1 className="text-2xl font-bold mb-2 text-gray-800">
-                Thank You For Order
-              </h1>
+              <h1 className="text-2xl font-bold mb-2 text-gray-800">Thank You For Order</h1>
               <p className="text-gray-600 mb-4">
-                {orderDetail.createdAt
-                  ? moment(orderDetail.createdAt).format("DD/MM/YYYY")
-                  : ""}
+                {orderDetail.createdAt ? moment(orderDetail.createdAt).format("DD/MM/YYYY") : ""}
               </p>
-              <QRCodeGenerator
-                link={`${process.env.NEXT_PUBLIC_BASE_PATH}/order?orderId=${orderDetail.id}`}
-              />
-              <p className="text-center text-gray-500">
-                Scan here to view your orders
-              </p>
+              <QRCodeGenerator link={`${process.env.NEXT_PUBLIC_BASE_PATH}/order?orderId=${orderDetail.id}`} />
+              <p className="text-center text-gray-500">Scan here to view your orders</p>
               <p>
                 or{" "}
-                <Link
-                  className="text-blue-500 font-bold"
-                  href={`/order?orderId=${orderDetail.id}`}
-                  target="_blank"
-                >
+                <Link className="text-blue-500 font-bold" href={`/order?orderId=${orderDetail.id}`} target="_blank">
                   Click Here
                 </Link>
               </p>
@@ -156,45 +142,33 @@ const ReceiptPage = () => {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between">
                 <span className="text-gray-600">Order ID</span>
-                <span className="text-gray-800 font-medium">
-                  {orderDetail.id}
-                </span>
+                <span className="text-gray-800 font-medium">{orderDetail.id}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Customer Name</span>
-                <span className="text-gray-800 font-medium">
-                  {orderDetail.customerName}
-                </span>
+                <span className="text-gray-800 font-medium">{orderDetail.customerName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Table</span>
-                <span className="text-gray-800 font-medium">
-                  {orderDetail.tableNumber}
-                </span>
+                <span className="text-gray-800 font-medium">{orderDetail.tableNumber}</span>
               </div>
             </div>
 
             {/* Payment Details */}
             <div className="border-t border-gray-200 pt-4">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">
-                Payment Details
-              </h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-4">Payment Details</h2>
 
               {/* Order Items */}
               <div className="space-y-2 mb-4">
                 {Array.isArray(orderDetail.subTransactions) &&
-                  orderDetail.subTransactions.map(
-                    (detail: any, index: number) => (
-                      <div key={index} className="flex justify-between">
-                        <span className="text-gray-700">
-                          {detail.quantity}x {detail.menuName}
-                        </span>
-                        <span className="text-gray-700">
-                          {formatToIDR(detail.price)}
-                        </span>
-                      </div>
-                    )
-                  )}
+                  orderDetail.subTransactions.map((detail: any, index: number) => (
+                    <div key={index} className="flex justify-between">
+                      <span className="text-gray-700">
+                        {detail.quantity}x {detail.menuName}
+                      </span>
+                      <span className="text-gray-700">{formatToIDR(detail.price)}</span>
+                    </div>
+                  ))}
               </div>
 
               {/* Subtotal */}
@@ -203,15 +177,10 @@ const ReceiptPage = () => {
                   <span className="text-gray-700">
                     Subtotal{" "}
                     <span className="text-gray-500">
-                      (
-                      {Array.isArray(orderDetail.subTransactions) &&
-                        orderDetail.subTransactions.length}{" "}
-                      menu)
+                      ({Array.isArray(orderDetail.subTransactions) && orderDetail.subTransactions.length} menu)
                     </span>
                   </span>
-                  <span className="text-gray-700">
-                    {formatToIDR(orderDetail.subTotal)}
-                  </span>
+                  <span className="text-gray-700">{formatToIDR(orderDetail.subTotal)}</span>
                 </div>
               </div>
 
@@ -219,21 +188,15 @@ const ReceiptPage = () => {
               <div className="space-y-2 border-t border-gray-200 pt-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-700">Tax</span>
-                  <span className="text-gray-700">
-                    {formatToIDR(orderDetail.tax)}
-                  </span>
+                  <span className="text-gray-700">{formatToIDR(orderDetail.tax)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-700">Service Charge</span>
-                  <span className="text-gray-700">
-                    {formatToIDR(orderDetail.serviceCharge)}
-                  </span>
+                  <span className="text-gray-700">{formatToIDR(orderDetail.serviceCharge)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-700">Rounding</span>
-                  <span className="text-gray-700">
-                    {formatToIDR(orderDetail.rounding)}
-                  </span>
+                  <span className="text-gray-700">{formatToIDR(orderDetail.rounding)}</span>
                 </div>
               </div>
 
@@ -241,9 +204,7 @@ const ReceiptPage = () => {
               <div className="border-t-2 border-gray-300 pt-3">
                 <div className="flex justify-between">
                   <span className="text-lg font-bold text-gray-800">Total</span>
-                  <span className="text-lg font-bold text-gray-800">
-                    {formatToIDR(orderDetail.total)}
-                  </span>
+                  <span className="text-lg font-bold text-gray-800">{formatToIDR(orderDetail.total)}</span>
                 </div>
               </div>
             </div>

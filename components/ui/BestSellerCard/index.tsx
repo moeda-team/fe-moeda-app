@@ -7,12 +7,7 @@ interface BestSellerCardProps {
   image: string;
 }
 
-const BestSellerCard = ({
-  title,
-  image,
-  onOpenPopupOrder,
-  onSetProductDetail,
-}: BestSellerCardProps) => {
+const BestSellerCard = ({ title, image, onOpenPopupOrder, onSetProductDetail }: BestSellerCardProps) => {
   return (
     <div
       className="h-[160px] w-[140px] bg-black rounded-t-[100px_12px] rounded-b-[100px_12px] bg-cover bg-center bg-no-repeat flex items-end justify-center"
@@ -22,9 +17,7 @@ const BestSellerCard = ({
         onSetProductDetail();
       }}
     >
-      <span className="text-sm text-center font-semibold text-primary-500 py-2">
-        {title}
-      </span>
+      <span className="text-sm text-center font-semibold text-primary-500 py-2">{title}</span>
     </div>
   );
 };

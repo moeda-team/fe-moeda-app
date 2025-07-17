@@ -63,8 +63,7 @@ const OrderDetail: React.FC = () => {
   });
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
-  const [paymentMethodSelect, setPaymentMethodSelect] =
-    useState<string>("qris");
+  const [paymentMethodSelect, setPaymentMethodSelect] = useState<string>("qris");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -100,10 +99,7 @@ const OrderDetail: React.FC = () => {
 
   // Calculate totals
   const calculateSubtotal = (): number => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const subtotal: number = calculateSubtotal();
@@ -145,14 +141,7 @@ const OrderDetail: React.FC = () => {
       discount: 0,
       additionalNote: "",
       cart: cartItems.map((item: CartItem) => {
-        const addOn = [
-          item.addOns,
-          item.spicyLevel,
-          item.sweet,
-          item.iceCube,
-          item.size,
-          item.type,
-        ]
+        const addOn = [item.addOns, item.spicyLevel, item.sweet, item.iceCube, item.size, item.type]
           .filter(Boolean)
           .join(", ");
         return {
@@ -249,10 +238,7 @@ const OrderDetail: React.FC = () => {
         </div>
       </motion.div>
 
-      <div
-        className="px-4 mt-4 pb-10 overflow-y-auto"
-        style={{ height: "calc(100vh - 92px - 282px)" }}
-      >
+      <div className="px-4 mt-4 pb-10 overflow-y-auto" style={{ height: "calc(100vh - 92px - 282px)" }}>
         {/* Customer Info */}
         <motion.div
           className="bg-white rounded-2xl p-4 mb-6 shadow-sm"
@@ -263,15 +249,11 @@ const OrderDetail: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-warning-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">
-                  {customer.tableNumber}
-                </span>
+                <span className="text-white font-bold">{customer.tableNumber}</span>
               </div>
               <div>
                 <p className="text-gray-600 text-sm">Customer</p>
-                <p className="font-semibold text-neutral-500">
-                  {customer.name}
-                </p>
+                <p className="font-semibold text-neutral-500">{customer.name}</p>
               </div>
             </div>
             <motion.button
@@ -300,9 +282,7 @@ const OrderDetail: React.FC = () => {
 
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">
-                Subtotal ({cartItems.length} menu)
-              </span>
+              <span className="text-gray-600">Subtotal ({cartItems.length} menu)</span>
               <span className="font-medium">{formatToIDR(subtotal)}</span>
             </div>
 
@@ -344,17 +324,13 @@ const OrderDetail: React.FC = () => {
         >
           <div className="flex items-center space-x-2 mb-4">
             <IoCard className="w-5 h-5 text-primary-500" />
-            <h2 className="font-semibold text-neutral-500">
-              Select Payment Method
-            </h2>
+            <h2 className="font-semibold text-neutral-500">Select Payment Method</h2>
           </div>
 
           <div className="space-y-2">
             <motion.div
               className={`flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg ${
-                paymentMethodSelect === "qris"
-                  ? "bg-primary-500 text-white"
-                  : "text-neutral-500"
+                paymentMethodSelect === "qris" ? "bg-primary-500 text-white" : "text-neutral-500"
               }`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -365,9 +341,7 @@ const OrderDetail: React.FC = () => {
             {!isCustomer && isCashier && (
               <motion.div
                 className={`flex items-center justify-between p-3 border-2 border-primary-500 rounded-lg ${
-                  paymentMethodSelect === "cash"
-                    ? "bg-primary-500 text-white"
-                    : "text-neutral-500"
+                  paymentMethodSelect === "cash" ? "bg-primary-500 text-white" : "text-neutral-500"
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -443,25 +417,15 @@ const OrderDetail: React.FC = () => {
               exit={{ scale: 0.8, opacity: 0, y: 50 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
             >
-              <h3 className="text-lg font-semibold mb-4 text-neutral-500">
-                Edit Customer
-              </h3>
+              <h3 className="text-lg font-semibold mb-4 text-neutral-500">Edit Customer</h3>
 
               <div className="space-y-4">
-                <motion.div
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Table Number
-                  </label>
+                <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Table Number</label>
                   <div className="relative flex items-center">
                     <select
                       className="w-full px-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
-                      onChange={(e) =>
-                        handleInputChange("tableNumber", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("tableNumber", e.target.value)}
                       value={tempCustomer.tableNumber}
                     >
                       {Array.from({ length: 30 }, (_, i) => (
@@ -470,27 +434,16 @@ const OrderDetail: React.FC = () => {
                         </option>
                       ))}
                     </select>
-                    <BiChevronDown
-                      size={20}
-                      className="absolute right-3 pointer-events-none text-gray-500"
-                    />
+                    <BiChevronDown size={20} className="absolute right-3 pointer-events-none text-gray-500" />
                   </div>
                 </motion.div>
 
-                <motion.div
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Customer Name
-                  </label>
+                <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
                   <input
                     type="text"
                     value={tempCustomer.name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange("name", e.target.value)
-                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("name", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="Enter customer name"
                   />
@@ -573,8 +526,7 @@ const OrderDetail: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                Your order has been placed successfully. We will start preparing
-                it right away!
+                Your order has been placed successfully. We will start preparing it right away!
               </motion.p>
 
               <motion.div
@@ -601,9 +553,7 @@ const OrderDetail: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Service Charge:</span>
-                  <span className="font-medium">
-                    {formatToIDR(serviceCharge)}
-                  </span>
+                  <span className="font-medium">{formatToIDR(serviceCharge)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Rounding:</span>

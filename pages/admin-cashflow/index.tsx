@@ -1,27 +1,20 @@
 import { AdminLayout } from "@/components/layout";
 import { HalfRadialProgress } from "@/components/ui";
 import LineChart from "@/components/ui/LineChart";
-import WeeklyOrdersChart from "@/components/ui/WeeklyOrderChart";
-import { getCashFlow } from "@/swr/get/cashFlow";
+import { useCashFlow } from "@/swr/get/cashFlow";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
 
 const AdminCashFlow = () => {
-  const [selectedStartDate, setSelectedStartDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [selectedEndDate, setSelectedEndDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [method, setMethod] = useState<
-    "daily" | "weekly" | "monthly" | "annually" | "range"
-  >("weekly");
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedEndDate, setSelectedEndDate] = useState(new Date().toISOString().split("T")[0]);
+  const [method, setMethod] = useState<"daily" | "weekly" | "monthly" | "annually" | "range">("weekly");
   const {
     cashFlow: { data: cashFlow },
-  } = getCashFlow(method, selectedStartDate, selectedEndDate, "cashflow");
+  } = useCashFlow(method, selectedStartDate, selectedEndDate, "cashflow");
   const {
     cashFlow: { data: summaryCategory },
-  } = getCashFlow(method, selectedStartDate, selectedEndDate, "category");
+  } = useCashFlow(method, selectedStartDate, selectedEndDate, "category");
 
   const cashFlowLine: {
     legend: string[];
@@ -45,15 +38,11 @@ const AdminCashFlow = () => {
     });
 
     const dataQrisAll = cashFlow
-      .flatMap((cash: any) =>
-        cash.paymentMethodGroup.filter((p: any) => p.name === "qris")
-      )
+      .flatMap((cash: any) => cash.paymentMethodGroup.filter((p: any) => p.name === "qris"))
       .map((entry: any) => entry.total);
 
     const dataCashAll = cashFlow
-      .flatMap((cash: any) =>
-        cash.paymentMethodGroup.filter((p: any) => p.name === "cash")
-      )
+      .flatMap((cash: any) => cash.paymentMethodGroup.filter((p: any) => p.name === "cash"))
       .map((entry: any) => entry.total);
 
     if (method === "range") {
@@ -131,8 +120,7 @@ const AdminCashFlow = () => {
           if (name === "Signature Coffee") totals.appetizerCount += count;
           if (name === "Rice Bowl") totals.riceBowlCount += count;
           if (name === "Pasta") totals.pastaCount += count;
-          if (name === "Main-Course Asian")
-            totals.mainCourseAsianCount += count;
+          if (name === "Main-Course Asian") totals.mainCourseAsianCount += count;
           if (name === "Milk Base") totals.milkBaseCount += count;
           if (name === "Tea") totals.teaCount += count;
           if (name === "Espresso") totals.espressoCount += count;
@@ -186,7 +174,7 @@ const AdminCashFlow = () => {
         name: "Signature Coffee",
       },
     ];
-  }, [summaryCategory, method]);
+  }, [summaryCategory]);
 
   const categoryProgressCart = rawCategoryProgressCart.map((item: any) => {
     const [key, value] = Object.entries(item).find(([k]) => k !== "name")!;
@@ -216,16 +204,7 @@ const AdminCashFlow = () => {
           <select
             id="sales-method"
             value={method}
-            onChange={(e) =>
-              setMethod(
-                e.target.value as
-                  | "daily"
-                  | "weekly"
-                  | "monthly"
-                  | "annually"
-                  | "range"
-              )
-            }
+            onChange={(e) => setMethod(e.target.value as "daily" | "weekly" | "monthly" | "annually" | "range")}
             className="px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-neutral-900"
           >
             <option value="range">Range</option>

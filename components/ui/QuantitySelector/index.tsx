@@ -1,19 +1,13 @@
-// Quantity Selector Component
-// Checkbox Group Component
 interface QuantitySelectorProps {
   quantity: number;
   onIncrement: () => void;
   onDecrement: () => void;
 }
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-const QuantitySelector: React.FC<QuantitySelectorProps> = ({
-  quantity,
-  onIncrement,
-  onDecrement,
-}) => (
+const QuantitySelector: React.FC<QuantitySelectorProps> = ({ quantity, onIncrement, onDecrement }) => (
   <div className="flex items-center gap-3">
     <motion.button
       type="button"

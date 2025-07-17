@@ -1,6 +1,6 @@
 import { AnimatePresence } from "motion/react";
 import { motion } from "framer-motion";
-import { IoCheckmark, IoClose, IoTime, IoStop } from "react-icons/io5";
+import { IoCheckmark, IoClose, IoTime } from "react-icons/io5";
 
 interface OrderProduct {
   id: string;
@@ -20,12 +20,7 @@ interface ConfirmationPopupProps {
   onCancel: () => void;
 }
 
-const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
-  isOpen,
-  selectedOrder,
-  onConfirm,
-  onCancel,
-}) => {
+const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({ isOpen, selectedOrder, onConfirm, onCancel }) => {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onCancel();
@@ -72,9 +67,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
     }
   };
 
-  const statusConfig = selectedOrder
-    ? getStatusConfig(selectedOrder.status)
-    : getStatusConfig("preparation");
+  const statusConfig = selectedOrder ? getStatusConfig(selectedOrder.status) : getStatusConfig("preparation");
   const IconComponent = statusConfig.icon;
 
   return (
@@ -115,20 +108,14 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                 <IconComponent size={32} className={statusConfig.iconColor} />
               </div>
 
-              <h2 className="text-xl font-bold text-neutral-900 mb-2">
-                {statusConfig.title}
-              </h2>
+              <h2 className="text-xl font-bold text-neutral-900 mb-2">{statusConfig.title}</h2>
 
               <p className="text-neutral-600 mb-6">{statusConfig.message}</p>
 
               {selectedOrder && (
                 <div className="bg-neutral-50 rounded-lg p-4 mb-6 text-left">
-                  <h3 className="font-medium text-neutral-900 mb-2">
-                    {selectedOrder.menuName}
-                  </h3>
-                  <p>
-                    Note: {selectedOrder.note ? selectedOrder.note : "No Note"}
-                  </p>
+                  <h3 className="font-medium text-neutral-900 mb-2">{selectedOrder.menuName}</h3>
+                  <p>Note: {selectedOrder.note ? selectedOrder.note : "No Note"}</p>
                   {/* Options */}
                   <div className="flex flex-wrap gap-2 mb-3">
                     {Array.isArray(selectedOrder.addOn) &&
@@ -172,9 +159,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={onConfirm}
-                  className={`${
-                    selectedOrder?.status === "completed" ? "w-full" : "flex-1"
-                  } px-4 py-3 ${
+                  className={`${selectedOrder?.status === "completed" ? "w-full" : "flex-1"} px-4 py-3 ${
                     statusConfig.confirmBg
                   } text-white font-medium rounded-lg transition-colors duration-200`}
                   type="button"

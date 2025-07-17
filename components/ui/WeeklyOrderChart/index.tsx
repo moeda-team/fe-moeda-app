@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 
-const WeeklyOrdersChart = ({
-  weekData,
-  dailyTarget,
-}: {
-  weekData: any;
-  dailyTarget: number;
-}) => {
+const WeeklyOrdersChart = ({ weekData, dailyTarget }: { weekData: any; dailyTarget: number }) => {
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -56,16 +50,8 @@ const WeeklyOrdersChart = ({
         <div className="space-y-1 text-xs mb-3 bg-gray-600 p-2 rounded">
           <div className="flex items-center justify-between gap-4">
             <span>Remaining:</span>
-            <span
-              className={
-                Math.max(0, dailyTarget - total) > 0
-                  ? "text-red-300"
-                  : "text-green-300"
-              }
-            >
-              {Math.max(0, dailyTarget - total) > 0
-                ? Math.max(0, dailyTarget - total)
-                : "Achieved!"}
+            <span className={Math.max(0, dailyTarget - total) > 0 ? "text-red-300" : "text-green-300"}>
+              {Math.max(0, dailyTarget - total) > 0 ? Math.max(0, dailyTarget - total) : "Achieved!"}
             </span>
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -78,11 +64,7 @@ const WeeklyOrdersChart = ({
           </div>
           <div className="flex items-center justify-between gap-4">
             <span>Target Progress:</span>
-            <span
-              className={`font-medium ${
-                total >= dailyTarget ? "text-green-300" : "text-yellow-300"
-              }`}
-            >
+            <span className={`font-medium ${total >= dailyTarget ? "text-green-300" : "text-yellow-300"}`}>
               {targetProgress}%
             </span>
           </div>
@@ -97,9 +79,7 @@ const WeeklyOrdersChart = ({
             </div>
             <div className="text-right">
               <span className="font-medium">{day.drink}</span>
-              <span className="text-gray-300 ml-1">
-                ({drinkPercent.toFixed(1)}%)
-              </span>
+              <span className="text-gray-300 ml-1">({drinkPercent.toFixed(1)}%)</span>
             </div>
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -109,9 +89,7 @@ const WeeklyOrdersChart = ({
             </div>
             <div className="text-right">
               <span className="font-medium">{day.food}</span>
-              <span className="text-gray-300 ml-1">
-                ({foodPercent.toFixed(1)}%)
-              </span>
+              <span className="text-gray-300 ml-1">({foodPercent.toFixed(1)}%)</span>
             </div>
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -121,9 +99,7 @@ const WeeklyOrdersChart = ({
             </div>
             <div className="text-right">
               <span className="font-medium">{day.other}</span>
-              <span className="text-gray-300 ml-1">
-                ({otherPercent.toFixed(1)}%)
-              </span>
+              <span className="text-gray-300 ml-1">({otherPercent.toFixed(1)}%)</span>
             </div>
           </div>
         </div>
@@ -156,10 +132,7 @@ const WeeklyOrdersChart = ({
                 <div
                   className="bg-gray-300 flex-1"
                   style={{
-                    height: `${Math.max(
-                      0,
-                      100 - (total / dailyTarget) * 100
-                    )}%`,
+                    height: `${Math.max(0, 100 - (total / dailyTarget) * 100)}%`,
                   }}
                 ></div>
 
@@ -170,9 +143,7 @@ const WeeklyOrdersChart = ({
                     style={{ height: `${otherPercent}%` }}
                   >
                     {otherPercent > 15 && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        {day.other}
-                      </span>
+                      <span className="absolute inset-0 flex items-center justify-center">{day.other}</span>
                     )}
                   </div>
                 )}
@@ -184,9 +155,7 @@ const WeeklyOrdersChart = ({
                     style={{ height: `${foodPercent}%` }}
                   >
                     {foodPercent > 15 && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        {day.food}
-                      </span>
+                      <span className="absolute inset-0 flex items-center justify-center">{day.food}</span>
                     )}
                   </div>
                 )}
@@ -198,18 +167,14 @@ const WeeklyOrdersChart = ({
                     style={{ height: `${drinkPercent}%` }}
                   >
                     {drinkPercent > 15 && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        {day.drink}
-                      </span>
+                      <span className="absolute inset-0 flex items-center justify-center">{day.drink}</span>
                     )}
                   </div>
                 )}
               </div>
 
               {/* Day label */}
-              <div className="mt-2 text-xs text-gray-500 font-medium truncate w-full text-center">
-                Day {day.day}
-              </div>
+              <div className="mt-2 text-xs text-gray-500 font-medium truncate w-full text-center">Day {day.day}</div>
 
               {/* Progress indicator */}
               <div className="mt-1 text-xs text-gray-400 truncate">
@@ -244,17 +209,11 @@ const WeeklyOrdersChart = ({
         {/* Target info */}
         <div className="text-center">
           <div className="text-xs text-gray-600 font-medium">
-            Daily Target:{" "}
-            <span className="text-blue-600 font-semibold">{dailyTarget}</span>{" "}
-            products
+            Daily Target: <span className="text-blue-600 font-semibold">{dailyTarget}</span> products
           </div>
           <div className="text-xs text-gray-500 mt-1">
-            Weekly Total:{" "}
-            {displayData.reduce(
-              (sum: number, day: any) => sum + day.drink + day.food + day.other,
-              0
-            )}{" "}
-            / {dailyTarget * 7}
+            Weekly Total: {displayData.reduce((sum: number, day: any) => sum + day.drink + day.food + day.other, 0)} /{" "}
+            {dailyTarget * 7}
           </div>
         </div>
       </div>

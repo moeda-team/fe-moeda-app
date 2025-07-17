@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { getStatusConfig } from "@/utils/statusConfig";
 import { formatToIDR } from "@/utils/formatCurrency";
+import Image from "next/image";
 
 interface OrderProduct {
   id: string;
@@ -15,13 +16,7 @@ interface OrderProduct {
   subTotal: number;
 }
 
-const OrderCard = ({
-  product,
-  index,
-}: {
-  product: OrderProduct;
-  index: number;
-}) => {
+const OrderCard = ({ product, index }: { product: OrderProduct; index: number }) => {
   const statusConfig = getStatusConfig(product.status);
 
   return (
@@ -39,14 +34,18 @@ const OrderCard = ({
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <img
-            src={product.menu.img}
+          <Image
+            src={product.menu.img || "/images/placeholder.png"}
             alt={product.menuName}
+            width={80}
+            height={80}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.currentTarget.src =
+              const target = e.target as HTMLImageElement;
+              target.src =
                 "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yNCAzMkM4IDMyIDggNDggMjQgNDhIMjhWNDRIMjRDMTYgNDQgMTYgMzYgMjQgMzZIMjhWMzJIMjRaIiBmaWxsPSIjOTI5QUEyIi8+CjxwYXRoIGQ9Ik01NiAzMkg1MlYzNkg1NkM2NCAzNiA2NCA0NCA1NiA0NEg1MlY0OEg1NkM3MiA0OCA3MiAzMiA1NiAzMloiIGZpbGw9IiM5MjlBQTIiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNCIgZmlsbD0iIzkyOUFBMiIvPgo8L3N2Zz4K";
             }}
+            unoptimized={!product.menu.img.startsWith("/")}
           />
         </motion.div>
 
@@ -66,9 +65,7 @@ const OrderCard = ({
                   stiffness: 300,
                 }}
               >
-                <span className={`${statusConfig.textColor}`}>
-                  {statusConfig.text}
-                </span>
+                <span className={`${statusConfig.textColor}`}>{statusConfig.text}</span>
               </motion.div>
             </div>
             <p className="text-sm text-gray-500">Qty: {product.quantity}</p>
@@ -90,12 +87,8 @@ const OrderCard = ({
 
           {/* Price */}
           <div className="flex items-center w-full text-nowrap">
-            <span className="font-bold text-lg text-gray-900">
-              {formatToIDR(product.subTotal)}
-            </span>
-            <span className="text-sm text-gray-500 ml-2">
-              ({formatToIDR(product.price)} each)
-            </span>
+            <span className="font-bold text-lg text-gray-900">{formatToIDR(product.subTotal)}</span>
+            <span className="text-sm text-gray-500 ml-2">({formatToIDR(product.price)} each)</span>
           </div>
         </div>
       </div>

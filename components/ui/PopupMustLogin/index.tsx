@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const PopupMustLogin = ({ isOpen = false }) => {
@@ -27,20 +27,15 @@ const PopupMustLogin = ({ isOpen = false }) => {
                 <div className="text-center space-y-4">
                   {/* Message */}
                   <div className="space-y-3">
-                    <h3 className="text-lg font-semibold text-primary-800">
-                      To Order Menu
-                    </h3>
+                    <h3 className="text-lg font-semibold text-primary-800">To Order Menu</h3>
                     <p className="text-primary-600 leading-relaxed">
-                      Please scan the QR code located on your table to access
-                      the menu and place your order.
+                      Please scan the QR code located on your table to access the menu and place your order.
                     </p>
                   </div>
 
                   {/* Instructions */}
                   <div className="bg-primary-50 p-4 rounded-xl space-y-2">
-                    <h4 className="font-medium text-primary-800 text-sm">
-                      How to scan:
-                    </h4>
+                    <h4 className="font-medium text-primary-800 text-sm">How to scan:</h4>
                     <div className="text-sm text-primary-700 space-y-1">
                       <p>1. Open your phones camera app</p>
                       <p>2. Point it at the QR code on your table</p>

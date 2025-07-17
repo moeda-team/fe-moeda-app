@@ -1,7 +1,7 @@
 import { getStatusConfig } from "@/utils/statusConfig";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { IoCheckmark, IoTime, IoStop, IoRefresh } from "react-icons/io5";
+import { IoCheckmark, IoTime } from "react-icons/io5";
 
 interface OrderProduct {
   id: string;
@@ -28,11 +28,7 @@ interface OrderCardProps {
   onActionOrder: (order: OrderProduct) => Promise<void>;
 }
 
-const OrderCard: React.FC<OrderCardProps> = ({
-  order,
-  index,
-  onActionOrder,
-}) => {
+const OrderCard: React.FC<OrderCardProps> = ({ order, index, onActionOrder }) => {
   const statusConfig = getStatusConfig(order.status);
 
   const getButtonConfig = (status: string) => {
@@ -102,17 +98,11 @@ const OrderCard: React.FC<OrderCardProps> = ({
               stiffness: 300,
             }}
           >
-            <span className={`${statusConfig.textColor}`}>
-              {statusConfig.text}
-            </span>
+            <span className={`${statusConfig.textColor}`}>{statusConfig.text}</span>
           </motion.div>
-          <span className="font-semibold text-neutral-900">
-            {`${order.quantity}x`}
-          </span>
+          <span className="font-semibold text-neutral-900">{`${order.quantity}x`}</span>
         </div>
-        <h3 className="font-semibold text-neutral-900 mb-3 leading-tight">
-          {order.menuName}
-        </h3>
+        <h3 className="font-semibold text-neutral-900 mb-3 leading-tight">{order.menuName}</h3>
 
         {/* Options */}
         <div className="flex flex-wrap gap-2 mb-6 flex-1">

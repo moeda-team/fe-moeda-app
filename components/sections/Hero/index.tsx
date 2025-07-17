@@ -36,25 +36,27 @@ export default function Hero({ isCustomer = true }: HeroProps) {
     callback: () => setOpenLogout(false),
   });
 
+  const totalCartItems = cartProducts.length;
+
   const isShowLogout = useMemo(() => {
     let isBlockedPath = ["/payment", "/bill-note", "/order-detail"].includes(router.pathname);
     return !isBlockedPath && !isCustomer;
   }, [isCustomer, router.pathname]);
 
-  // Calculate total quantity of items in cart
-  const totalCartItems = cartProducts.length;
   const onLogout = () => {
     localStorage.clear();
     sessionStorage.clear();
 
     const allCookies = parseCookies();
     Object.keys(allCookies).forEach((cookieName) => {
-      destroyCookie(null, cookieName, { path: "/" });
+      if (cookieName === "accessToken") {
+        destroyCookie(null, cookieName, { path: "/" });
+      }
     });
 
     setOpenLogout(false);
 
-    router.push("/");
+    router.push("/login");
   };
 
   useTriggerLS(setCartProducts);

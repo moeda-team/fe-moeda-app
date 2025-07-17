@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoArrowBack } from "react-icons/io5";
 import { FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
 import OrderCard from "@/components/ui/OrderCard";
@@ -27,9 +26,7 @@ interface CartProduct {
 const OrderList: React.FC = () => {
   const router = useRouter();
   const { orderId } = router.query;
-  const [idOrder, setIdOrder] = useState<string | undefined>(
-    orderId?.toString()
-  );
+  const [idOrder, setIdOrder] = useState<string | undefined>(orderId?.toString());
   const { orderDetail } = useDetailOrder(idOrder);
   const [cartItems, setCartItems] = useState<CartProduct[]>([]);
 
@@ -71,7 +68,7 @@ const OrderList: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Order List
+            Order Lists
           </motion.h1>
 
           <motion.div
@@ -95,32 +92,21 @@ const OrderList: React.FC = () => {
       {/* Order Items */}
       <div className="px-4 py-6">
         <AnimatePresence>
-          {Array.isArray(orderDetail?.subTransactions) &&
-          orderDetail?.subTransactions.length === 0 ? (
+          {Array.isArray(orderDetail?.subTransactions) && orderDetail?.subTransactions.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-2xl p-8 text-center"
             >
               <FiShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                No orders found
-              </h3>
-              <p className="text-gray-400">
-                Your order history will appear here
-              </p>
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">No orders found</h3>
+              <p className="text-gray-400">Your order history will appear here</p>
             </motion.div>
           ) : (
             Array.isArray(orderDetail?.subTransactions) &&
             orderDetail?.subTransactions.map((product: any, index: number) => {
               const addOn: string[] = product?.addOn?.split(",") || [];
-              return (
-                <OrderCard
-                  product={{ ...product, addOn }}
-                  index={index}
-                  key={index}
-                />
-              );
+              return <OrderCard product={{ ...product, addOn }} index={index} key={index} />;
             })
           )}
         </AnimatePresence>

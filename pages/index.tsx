@@ -34,7 +34,7 @@ export default function Home() {
   }, [mutate]);
 
   return (
-    <div className="bg-neutral-50 min-h-screen">
+    <div className="bg-neutral-50 min-h-screen pt-[110px]">
       <Hero />
 
       <BestSellerSlider onOpenPopupOrder={() => setOpenPopupOrder(true)} onSetProductDetail={setProductDetail} />

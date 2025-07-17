@@ -63,7 +63,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
 
   return (
     <>
-      <div className="w-full bg-primary-500 py-6 px-4 flex items-center justify-end h-[92px]">
+      <div className="fixed top-0 w-full bg-primary-500 py-4 px-4 flex items-center justify-end h-[92px] z-50">
         <div className="text-white font-semibold text-xl ml-4 md:ml-0 absolute text-center w-full right-0">
           <div className="flex flex-col items-center justify-center">
             <Image
@@ -72,17 +72,18 @@ export default function Hero({ isCustomer = true }: HeroProps) {
               alt="Moeda Coffee Logo"
               width={44}
               height={44}
-              className="object-contain relative z-50"
+              className="object-contain relative z-50 cursor-pointer"
               priority
             />
             <span>MOEDA COFFEE</span>
           </div>
         </div>
+
         {isCustomer && (
           <div className="flex gap-2">
             <motion.div
               whileTap={{ scale: 0.95 }}
-              className="bg-white rounded-full p-3 shadow-lg relative"
+              className="bg-white rounded-full p-3 shadow-lg relative cursor-pointer"
               onClick={() => router.push("/cart")}
             >
               <FiShoppingCart className="w-5 h-5 text-gray-700" />
@@ -94,19 +95,14 @@ export default function Hero({ isCustomer = true }: HeroProps) {
             </motion.div>
           </div>
         )}
+
         {isShowLogout && (
           <div ref={ref} className="flex gap-2 relative" onClick={() => setOpenLogout((prev) => !prev)}>
             <motion.div
               whileTap={{ scale: 0.95 }}
-              className="bg-white rounded-full p-3 shadow-lg relative"
-              onClick={() => router.push("/cart")}
+              className="bg-white rounded-full p-3 shadow-lg relative cursor-pointer"
             >
               <FiMoreVertical className="w-5 h-5 text-gray-700" />
-              {totalCartItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-danger-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalCartItems}
-                </span>
-              )}
             </motion.div>
             {openLogout && (
               <div

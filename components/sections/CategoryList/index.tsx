@@ -22,13 +22,17 @@ export default function CategoryList() {
   return (
     <div className="relative w-full overflow-x-auto no-scrollbar">
       <div className="flex gap-2 py-4 px-4 items-center w-fit">
-        <Category image={"/images/product.png"} title={"All"} category={""} />
+        <Category
+          image={"https://moeda-space.s3.ap-southeast-1.amazonaws.com/icon/default.png"}
+          title={"All"}
+          category={""}
+        />
         {Array.isArray(categories) &&
           categories.map((cat, idx) => {
             const isActive = activeCategory === cat.category;
             return (
               <div key={idx} ref={isActive ? activeRef : null}>
-                <Category image={"/images/product.png"} title={cat.name} category={cat.id} />
+                <Category image={cat.icon} title={cat.name} category={cat.id} />
               </div>
             );
           })}

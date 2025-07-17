@@ -4,10 +4,10 @@ import type { AppProps } from "next/app";
 import { Montserrat } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import { PaymentProvider } from "@/contex/paymentContex";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import nookies from "nookies";
 import { PopupMustLogin } from "@/components/ui";
+import { Analytics } from "@vercel/analytics/react";
 
 const monserrat = Montserrat({ subsets: ["latin"] });
 
@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </div>
       </div>
+      <Analytics />
     </PaymentProvider>
   );
 }

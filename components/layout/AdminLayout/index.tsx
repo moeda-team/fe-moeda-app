@@ -4,7 +4,12 @@ import { Hero } from "@/components/sections";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
-import { HiHome, HiClipboardList, HiCurrencyDollar, HiClock } from "react-icons/hi";
+import {
+  HiHome,
+  HiClipboardList,
+  HiCurrencyDollar,
+  HiClock,
+} from "react-icons/hi";
 import { getAccessToken } from "@/helpers/getAccessToken";
 
 interface TabItem {
@@ -36,7 +41,13 @@ const tabs: TabItem[] = [
   },
 ];
 
-const AdminLayout = ({ children, isHome = false }: { children: React.ReactNode; isHome?: boolean }) => {
+const AdminLayout = ({
+  children,
+  isHome = false,
+}: {
+  children: React.ReactNode;
+  isHome?: boolean;
+}) => {
   const isLoggedIn = getAccessToken();
   const router = useRouter();
   const pathname = usePathname();
@@ -57,7 +68,7 @@ const AdminLayout = ({ children, isHome = false }: { children: React.ReactNode; 
           <Hero isCustomer={false} />
 
           {/* Tab Navigation */}
-          <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
+          <div className="bg-white border-b border-neutral-200 sticky z-40 mt-20 pt-4">
             <div className="px-4 py-4">
               <nav className="flex gap-2 flex-wrap">
                 {tabs.map((tab) => {
@@ -90,7 +101,10 @@ const AdminLayout = ({ children, isHome = false }: { children: React.ReactNode; 
         </div>
 
         {/* Content */}
-        <div className={`px-4 mt-[160px] ${isHome ? "pb-0" : ""}`} style={{ height: "calc(100vh - 160px)" }}>
+        <div
+          className={`px-4 mt-[160px] ${isHome ? "pb-0" : ""}`}
+          style={{ height: "calc(100vh - 160px)" }}
+        >
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 10 }}

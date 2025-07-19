@@ -199,7 +199,7 @@ const AdminCashierMenu = () => {
           className="col-span-6 overflow-y-auto no-scrollbar"
           style={{ height: "calc(100vh - 160px)" }}
         >
-          <div className="text-lg font-semibold space-y-4">
+          <div className="text-lg font-semibold space-y-4 mt-4">
             <h4>Categories</h4>
             <CategoryList />
           </div>

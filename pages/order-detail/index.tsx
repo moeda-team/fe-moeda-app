@@ -43,10 +43,8 @@ const OrderDetail: React.FC = () => {
     setTotal,
     total,
     paymentNumber,
-    tax,
     rounding,
     serviceCharge,
-    setTax,
     setServiceCharge,
     setSubTotal,
     subTotal,
@@ -162,7 +160,6 @@ const OrderDetail: React.FC = () => {
         if (res.data.data) {
           setPaymentMethod(res.data.data.paymentMethod);
           setPaymentNumber(res.data.data.paymentNumber);
-          setTax(res.data.data.tax);
           setServiceCharge(res.data.data.serviceCharge);
           setRounding(res.data.data.rounding);
           setSubTotal(res.data.data.subTotal);
@@ -546,10 +543,6 @@ const OrderDetail: React.FC = () => {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Name:</span>
                   <span className="font-medium">{customer.name}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tax:</span>
-                  <span className="font-medium">{formatToIDR(tax)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Service Charge:</span>

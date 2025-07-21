@@ -187,10 +187,6 @@ const ReceiptPage = () => {
               {/* Fees and charges */}
               <div className="space-y-2 border-t border-gray-200 pt-2 mb-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-700">Tax</span>
-                  <span className="text-gray-700">{formatToIDR(orderDetail.tax)}</span>
-                </div>
-                <div className="flex justify-between">
                   <span className="text-gray-700">Service Charge</span>
                   <span className="text-gray-700">{formatToIDR(orderDetail.serviceCharge)}</span>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoPencil, IoCard } from "react-icons/io5";
+import { IoPencil, IoCard, IoPricetag, IoCheckmarkCircle, IoCloseCircle, IoClose } from "react-icons/io5";
 import { FiArrowLeft, FiInfo } from "react-icons/fi";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { useRouter } from "next/router";
@@ -33,6 +33,15 @@ interface CartItem {
 interface Customer {
   tableNumber: string;
   name: string;
+  voucher_code: string;
+}
+
+interface Voucher {
+  name: string;
+  type: "percent" | "fixed";
+  amount: string;
+  maxAmount: string;
+  discount: number;
 }
 
 const OrderDetail: React.FC = () => {
@@ -58,6 +67,7 @@ const OrderDetail: React.FC = () => {
   const [customer, setCustomer] = useState<Customer>({
     tableNumber: "0",
     name: "",
+    voucher_code: "",
   });
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [tempCustomer, setTempCustomer] = useState<Customer>(customer);
@@ -78,6 +88,7 @@ const OrderDetail: React.FC = () => {
       setCustomer({
         tableNumber: customerTable,
         name: customerName,
+        voucher_code: '',
       });
     }
   }, []);
@@ -136,8 +147,9 @@ const OrderDetail: React.FC = () => {
       tableNumber: Number(customer.tableNumber),
       paymentMethod: paymentMethodSelect,
       customerName: customer.name,
-      discount: 0,
+      discount: voucher?.discount,
       additionalNote: "",
+      voucher: voucher?.name,
       cart: cartItems.map((item: CartItem) => {
         const addOn = [item.addOns, item.spicyLevel, item.sweet, item.iceCube, item.size, item.type]
           .filter(Boolean)
@@ -199,6 +211,75 @@ const OrderDetail: React.FC = () => {
       }));
     }
   }, []);
+
+  // voucher
+  const [voucher, setVoucher] = useState<Voucher | null>(null);
+  const [discount, setDiscount] = useState<number>(0);
+  const [appliedVoucher, setAppliedVoucher] = React.useState<string | null>(null);
+  const [statusVoucher, setStatusVoucher] = React.useState<boolean | false>(false);
+
+  // Apply voucher
+  const handleApplyVoucher = () => {
+    if (!tempCustomer.voucher_code) {
+      toast.error("Masukkan kode voucher terlebih dahulu!", {
+        position: "bottom-center",
+      });
+      return;
+    }
+
+    axios
+    .get(process.env.NEXT_PUBLIC_API + `/vouchers/${tempCustomer.voucher_code}`)
+    .then((res) => {
+      if (res.data.data) {
+        const v = res.data.data;
+        const newVoucher: Voucher = {
+          name: v.name,
+          amount: v.amount,
+          maxAmount: v.maxAmount,
+          type: v.type, // "percent" atau "fixed"
+          discount: parseFloat(v.discount), // kalau percent = angka persen, kalau fixed = nominal
+        };
+
+        if(newVoucher.amount === newVoucher.maxAmount){
+          toast.error("Voucher sudah tidak bisa digunakan", {
+            position: "bottom-center",
+          });
+          return false
+        }
+
+        setVoucher(newVoucher);
+        setStatusVoucher(true);
+
+        if (v.type === "percent") {
+          const d = Math.floor((subtotal * v.discount) / 100);
+          setDiscount(d);
+        } else if (v.type === "fixed") {
+          setDiscount(v.discount);
+        }
+
+        setAppliedVoucher(v.name);
+        setStatusVoucher(true);
+      }
+      setIsLoading(false);
+    })
+    .catch(() => {
+      setIsLoading(false);
+      toast.error("Voucher tidak ditemukan", {
+        position: "bottom-center",
+      });
+    });
+
+  };
+
+  const handleRemoveVoucher = () => {
+    setVoucher(null);
+    setAppliedVoucher(null);
+    setStatusVoucher(false);
+    setDiscount(0);
+    handleInputChange("voucher_code", "");
+  };
+
+  const totalWithDiscount = Math.max(subtotal - discount, 0);
 
   return (
     <motion.div
@@ -311,6 +392,76 @@ const OrderDetail: React.FC = () => {
             </motion.div>
           </div>
         </motion.div>
+        
+        {/* Voucher */}
+        <motion.div
+          className="bg-white rounded-2xl p-4 mb-6 shadow-sm"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <div className="flex items-center space-x-2 mb-4">
+            <IoPricetag className="w-5 h-5 text-primary-500" />
+            <h2 className="font-semibold text-neutral-500">Voucher</h2>
+          </div>
+
+          <div className="space-y-3">
+            <motion.div
+              className="border-t pt-3 gap-2 flex flex-col"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="flex font-semibold text-lg">
+                {/* Input + Button Group */}
+                <div className="flex w-full">
+                  <input
+                    type="text"
+                    value={tempCustomer.voucher_code}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange("voucher_code", e.target.value)
+                    }
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                    placeholder="Masukan Kode Voucher"
+                  />
+                  {tempCustomer.voucher_code && !statusVoucher && (
+                    <button
+                      type="button"
+                      onClick={handleApplyVoucher}
+                      className="px-4 py-2 bg-primary-500 text-white rounded-r-lg hover:bg-primary-600"
+                    >
+                      Pakai
+                    </button>
+                  )}
+
+                  {tempCustomer.voucher_code && statusVoucher && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveVoucher}
+                      className="px-4 py-2 bg-primary-500 text-white rounded-r-lg hover:bg-primary-600"
+                    >
+                      Batal
+                    </button>
+                  )}
+                </div>
+              </div>
+              { appliedVoucher ?
+                <div className="flex gap-1 items-center">
+                  { statusVoucher ? 
+                    <>
+                      <IoCheckmarkCircle className="w-5 h-5" color="green" />
+                      <div className="text-black text-sm">Voucher berhasil digunakan</div>
+                    </> :
+                    <>
+                      <IoCloseCircle className="w-5 h-5" color="red" />
+                      <div className="text-black text-sm">Voucher Expired</div>
+                    </>
+                  }
+                </div> 
+              : ""}
+            </motion.div>
+          </div>
+        </motion.div>
 
         {/* Payment Method */}
         <motion.div
@@ -359,7 +510,6 @@ const OrderDetail: React.FC = () => {
         transition={{ duration: 0.6, delay: 0.6 }}
       >
         {/* Payment Summary */}
-        {/* Payment Summary */}
         <motion.div
           className="bg-white rounded-2xl mb-2 shadow-sm space-y-2"
           initial={{ y: 50, opacity: 0 }}
@@ -377,11 +527,21 @@ const OrderDetail: React.FC = () => {
               <span className="font-medium">{formatToIDR(subtotal)}</span>
             </div>
 
+            {voucher && (
+              <div className="flex justify-between text-green-600">
+                <span>
+                  Discount ({voucher.type === "percent" ? `${voucher.discount}%` : "Fixed"})
+                </span>
+                <span>-{formatToIDR(discount)}</span>
+              </div>
+            )}
+
             <div className="flex justify-between font-semibold text-lg">
               <span>Total</span>
-              <span>{formatToIDR(subtotal)}</span>
+              <span>{formatToIDR(totalWithDiscount)}</span>
             </div>
           </div>
+
         </motion.div>
         <motion.button
           className="w-full bg-primary-500 text-white py-4 rounded-2xl font-semibold flex items-center justify-center space-x-2 disabled:bg-neutral-400"

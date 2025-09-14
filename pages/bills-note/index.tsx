@@ -194,6 +194,14 @@ const ReceiptPage = () => {
                   <span className="text-gray-700">Rounding</span>
                   <span className="text-gray-700">{formatToIDR(orderDetail.rounding)}</span>
                 </div>
+                { orderDetail.discount !== "0" ?
+                  <div className="flex justify-between text-green-600">
+                    <div>
+                      Discount
+                    </div>
+                    <div>-{formatToIDR(orderDetail.discount)}</div>
+                  </div>
+                : ""}
               </div>
 
               {/* Total */}

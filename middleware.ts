@@ -7,31 +7,47 @@ export function middleware(request: NextRequest) {
   const tableNumber = searchParams.get('tableNumber');
   const roleParam = searchParams.get('role');
   const orderId = searchParams.get('orderId');
+  const orderIdsCookie = request.cookies.get('orderIds')?.value;
   const accessToken = request.cookies.get('accessToken')?.value;
 
   // Handle URL parameters for role and table number
   if (roleParam && tableNumber) {
     const response = NextResponse.redirect(new URL(pathname, request.url));
-    
-    // Set cookies
+
     response.cookies.set('role', roleParam);
     response.cookies.set('tableNumber', tableNumber);
-    
+
     role = roleParam;
-    
+
     return response;
   }
 
-  // Handle orderId parameter - set cookie and continue processing
   let response: NextResponse | null = null;
-  
-  if(orderId) {
-    // We'll set the cookie on whatever response we end up returning
+
+  // ✅ Handle orderId parameter - append to orderIds cookie
+  if (orderId) {
     response = NextResponse.next();
-    response.cookies.set('orderId', orderId);
+
+    let orderIds: string[] = [];
+    if (orderIdsCookie) {
+      try {
+        orderIds = JSON.parse(orderIdsCookie);
+      } catch (err) {
+        console.error('Invalid orderIds cookie, resetting...', err);
+        orderIds = [];
+      }
+    }
+
+    // Tambahkan hanya jika belum ada
+    if (!orderIds.includes(orderId)) {
+      orderIds.push(orderId);
+    }
+
+    response.cookies.set('orderIds', JSON.stringify(orderIds));
+    response.cookies.set('orderId', orderId); // terakhir digunakan
   }
 
-  // If user has access token and tries to access login, redirect based on role
+  // ... ⬇️ logic role yang sudah ada tetap sama
   if (accessToken && pathname === '/login') {
     if (role === 'cashier') {
       return NextResponse.redirect(new URL('/admin-cashier-menu', request.url));
@@ -42,13 +58,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // If no role is set
   if (!role) {
-    // Allow access to home page and login page
     if (pathname === '/' || pathname === '/login') {
       return response || NextResponse.next();
     }
-    // Redirect to home page for other routes
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -87,7 +100,6 @@ export function middleware(request: NextRequest) {
     '/order-list',
   ];
 
-  // Customer role checks
   if (isCustomer) {
     if (notAllowedCustomerRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL(customerBaseUrl, request.url));
@@ -95,33 +107,23 @@ export function middleware(request: NextRequest) {
     return response || NextResponse.next();
   }
 
-  // Cashier role checks
   if (isCashier) {
-    // If cashier doesn't have access token, redirect to login
     if (!accessToken && pathname !== '/login') {
       return NextResponse.redirect(new URL('/login', request.url));
     }
-    
-    // If cashier has access token but tries to access restricted routes
     if (accessToken && notAllowedCashierRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL(cashierBaseUrl, request.url));
     }
-    
     return response || NextResponse.next();
   }
 
-  // Barista role checks
   if (isBarista) {
-    // If barista doesn't have access token, redirect to login
     if (!accessToken && pathname !== '/login') {
       return NextResponse.redirect(new URL('/login', request.url));
     }
-    
-    // If barista has access token but tries to access restricted routes
     if (accessToken && notAllowedBaristaRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL(baristaBaseUrl, request.url));
     }
-    
     return response || NextResponse.next();
   }
 
@@ -136,7 +138,7 @@ export const config = {
     '/order',
     '/order-list',
     '/admin-cashier-menu',
-    '/admin-active-order', 
+    '/admin-active-order',
     '/admin-cashflow',
     '/admin-order-history',
     '/admin-barista-dashboard',

@@ -1,46 +1,130 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { RiFileList3Line } from "react-icons/ri";
 import { useRouter } from "next/router";
 import nookies from "nookies";
+import axios from "axios";
+import Slider from "react-slick";
+import OrderProgress from "./OrderProgress";
 
 const FloatingOrder = () => {
   const router = useRouter();
   const { pathname } = router;
-  const [orderId, setOrderId] = React.useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderIds, setOrderIds] = useState<string[]>([]);
+  const [orderList, setOrderList] = useState<any[]>([]);
 
+  // Ambil cookies pertama kali
   useEffect(() => {
-    const storedOrderId = nookies.get(null, "orderId").orderId;
-    if (storedOrderId) {
-      setOrderId(storedOrderId);
+    const cookies = nookies.get(null);
+
+    if (cookies.orderId) {
+      setOrderId(cookies.orderId);
+    }
+
+    if (cookies.orderIds) {
+      try {
+        const arrIds = JSON.parse(cookies.orderIds);
+        if (Array.isArray(arrIds)) {
+          setOrderIds(arrIds);
+        }
+      } catch (err) {
+        console.error("Invalid orderIds cookie:", err);
+      }
     }
   }, []);
 
-  if (
-    "/cart" === pathname ||
-    "/order" === pathname ||
-    "/order-list" === pathname ||
-    "/order-detail" === pathname ||
-    "/admin-active-order" === pathname ||
-    "/admin-cashier-menu" === pathname ||
-    "/admin-cashflow" === pathname ||
-    "/admin-order-history" === pathname
-  ) {
+  // Fetch status order
+  useEffect(() => {
+    if (orderIds.length === 0) return;
+
+    const fetchData = async () => {
+      const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || "";
+      const password = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || "";
+      const basicAuth = `Basic ${btoa(`${username}:${password}`)}`;
+
+      try {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API}/transactions/main/check/status`,
+          { orderIds },
+          {
+            headers: {
+              Authorization: basicAuth,
+            },
+          }
+        );
+        setOrderList(res.data.data || []);
+      } catch (err) {
+        console.error("Error fetching status:", err);
+      }
+    };
+
+    fetchData();
+  }, [orderIds]);
+
+  // Kondisi hidden
+  const hiddenRoutes = [
+    "/cart",
+    "/order",
+    "/order-list",
+    "/order-detail",
+    "/admin-active-order",
+    "/admin-cashier-menu",
+    "/admin-cashflow",
+    "/admin-order-history",
+  ];
+
+  if (hiddenRoutes.includes(pathname) || !orderId) {
     return null;
   }
 
-  if (!orderId) {
-    return null;
-  }
+  // Slick carousel settings
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+  };
 
   return (
-    <div className="fixed right-8 bottom-8 z-50">
+    <div className="fixed bottom-8 z-50 w-full px-8">
       <motion.div
         whileTap={{ scale: 0.95 }}
-        className="bg-white rounded-full p-6 shadow-lg relative flex justify-center items-center"
-        onClick={() => router.push("/order")}
+        className="bg-white rounded-lg p-4 shadow-lg relative flex flex-col justify-center items-center w-full"
       >
-        <RiFileList3Line className="text-gray-700 text-4xl" size={28} />
+        <div className="w-full">
+          {orderList.length > 0 ? (
+            <Slider {...settings}>
+              {orderList.map((order, idx) => (
+                <div
+                  key={idx}
+                  className="px-4 py-2 cursor-pointer"
+                  onClick={() => router.push(`/order?id=${order.id}`)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <RiFileList3Line className="text-gray-700 text-2xl" />
+                    <div className="text-left">
+                      <div className="font-semibold">{order.customerName}</div>
+                      <div className="text-sm text-gray-500">
+                        {order.paymentNumber}
+                      </div>
+                    </div>
+                  </div>
+                  <OrderProgress subTransactions={order.subTransactions} />
+                </div>
+              ))}
+            </Slider>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <RiFileList3Line className="text-gray-700 text-2xl" />
+              <span className="text-gray-600">No active orders</span>
+            </div>
+          )}
+        </div>
       </motion.div>
     </div>
   );

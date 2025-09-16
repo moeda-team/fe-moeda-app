@@ -29,7 +29,9 @@
     "react-dom": "^18",
     "react-hook-form": "^7.56.4",
     "react-icons": "^5.5.0",
+    "react-slick": "^0.31.0",
     "react-toastify": "^11.0.5",
+    "slick-carousel": "^1.8.1",
     "swr": "^2.3.3"
   },
   "devDependencies": {
@@ -39,6 +41,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-slick": "^0.23.13",
     "autoprefixer": "^10",
     "eslint": "^8",
     "eslint-config-next": "14.0.0",

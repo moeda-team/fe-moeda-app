@@ -31,7 +31,7 @@ const OrderProgress: React.FC<ProgressProps> = ({ subTransactions }) => {
       </div>
       {/* Label progress pesanan */}
       <p className="text-xs my-1 text-gray-600">
-        {completedCount}/{total} pesanan selesai
+        {completedCount}/{total} pesanan
       </p>
     </div>
   );

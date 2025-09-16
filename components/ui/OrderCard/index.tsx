@@ -14,11 +14,12 @@ interface OrderProduct {
   status: string;
   menuName: string;
   subTotal: number;
+  total: number;
 }
 
 const OrderCard = ({ product, index }: { product: OrderProduct; index: number }) => {
   const statusConfig = getStatusConfig(product.status);
-
+  console.log(product)
   return (
     <motion.div
       key={`${product.id}-${index}`}

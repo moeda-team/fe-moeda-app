@@ -6,6 +6,7 @@ import nookies from "nookies";
 import axios from "axios";
 import Slider from "react-slick";
 import OrderProgress from "./OrderProgress";
+import Image from "next/image";
 
 const FloatingOrder = () => {
   const router = useRouter();
@@ -64,6 +65,7 @@ const FloatingOrder = () => {
 
   // Kondisi hidden
   const hiddenRoutes = [
+    "/login",
     "/cart",
     "/order",
     "/order-list",
@@ -102,11 +104,22 @@ const FloatingOrder = () => {
               {orderList.map((order, idx) => (
                 <div
                   key={idx}
-                  className="px-4 py-2 cursor-pointer"
+                  className="cursor-pointer"
                   onClick={() => router.push(`/order?id=${order.id}`)}
                 >
-                  <div className="flex items-center space-x-3">
-                    <RiFileList3Line className="text-gray-700 text-2xl" />
+                  <div className="flex space-x-2 items-center">
+                    <div className="relative w-14 h-14">
+                      <Image
+                        className="p-1 rounded-md"
+                        src={order.subTransactions.length > 0 ? order.subTransactions[0]?.menu.img : "/images/product-image.webp"}
+                        alt="Food"
+                        fill
+                        style={{
+                          objectFit: "contain",
+                        }}
+                        priority
+                      />
+                    </div>
                     <div className="text-left">
                       <div className="font-semibold">{order.customerName}</div>
                       <div className="text-sm text-gray-500">

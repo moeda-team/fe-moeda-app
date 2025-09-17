@@ -19,19 +19,19 @@ interface OrderProduct {
 
 const OrderCard = ({ product, index }: { product: OrderProduct; index: number }) => {
   const statusConfig = getStatusConfig(product.status);
-  console.log(product)
+
   return (
     <motion.div
       key={`${product.id}-${index}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-2xl p-4 mb-4 shadow-sm relative"
+      className="p-1 relative"
     >
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center justify-center">
         {/* Product Image */}
         <motion.div
-          className="w-20 h-20 rounded-xl flex-shrink-0 overflow-hidden"
+          className="w-14 h-14 rounded-xl flex-shrink-0 overflow-hidden"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -52,28 +52,15 @@ const OrderCard = ({ product, index }: { product: OrderProduct; index: number })
 
         {/* Product Details */}
         <div className="flex-1">
-          <div className="mb-3">
+          <div className="mb-4">
             <div className="flex justify-between">
               <h3 className="font-semibold text-lg">{product.menuName}</h3>
-              {/* Status Badge */}
-              <motion.div
-                className={`${statusConfig.bgColor} px-3 py-1 rounded-full text-xs flex items-center gap-1`}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{
-                  delay: index * 0.1 + 0.3,
-                  type: "spring",
-                  stiffness: 300,
-                }}
-              >
-                <span className={`${statusConfig.textColor}`}>{statusConfig.text}</span>
-              </motion.div>
             </div>
-            <p className="text-sm text-gray-500">Qty: {product.quantity}</p>
+            <p className="text-sm text-gray-500">Qty : {product.quantity}</p>
           </div>
 
           {/* Options */}
-          <div className="flex flex-wrap gap-2 mb-3">
+          {/* <div className="flex flex-wrap gap-2 mb-3">
             {Array.isArray(product.addOn) &&
               product.addOn.length > 0 &&
               product.addOn.map((addOn, index) => (
@@ -84,14 +71,27 @@ const OrderCard = ({ product, index }: { product: OrderProduct; index: number })
                   {addOn}
                 </div>
               ))}
-          </div>
+          </div> */}
 
           {/* Price */}
-          <div className="flex items-center w-full text-nowrap">
+          {/* <div className="flex items-center w-full text-nowrap">
             <span className="font-bold text-lg text-gray-900">{formatToIDR(product.subTotal)}</span>
             <span className="text-sm text-gray-500 ml-2">({formatToIDR(product.price)} each)</span>
-          </div>
+          </div> */}
         </div>
+        {/* Status Badge */}
+        <motion.div
+          className={`${statusConfig.bgColor} px-3 py-1 rounded-lg text-xs flex items-center gap-1`}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            delay: index * 0.1 + 0.3,
+            type: "spring",
+            stiffness: 300,
+          }}
+        >
+          <span className={`${statusConfig.textColor}`}>{statusConfig.text}</span>
+        </motion.div>
       </div>
     </motion.div>
   );

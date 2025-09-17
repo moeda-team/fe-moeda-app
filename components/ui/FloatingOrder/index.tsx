@@ -105,7 +105,7 @@ const FloatingOrder = () => {
                 <div
                   key={idx}
                   className="cursor-pointer"
-                  onClick={() => router.push(`/order?id=${order.id}`)}
+                  onClick={() => router.push(`/order?orderId=${order.id}`)}
                 >
                   <div className="flex space-x-2 items-center">
                     <div className="relative w-14 h-14">

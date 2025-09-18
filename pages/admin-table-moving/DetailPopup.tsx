@@ -6,7 +6,7 @@ import { FaTimes } from "react-icons/fa";
 import { HiArrowRight } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
 import OrderProgress from "@/components/ui/FloatingOrder/OrderProgress";
-import OrderCard from "@/components/ui/OrderCard";
+import OrderList from "./OrderList";
 
 interface ModalHeaderProps {
   onClose: () => void;
@@ -28,6 +28,7 @@ interface DetailPopUpProps {
   onClose: () => void;
   productDetail: Order;
   isOpen: boolean;
+  handleChangeStatus: (id:string, status:string) => void;
 }
 
 interface Order {
@@ -53,7 +54,9 @@ interface SubTransaction {
   addOn?: string;
   quantity?: number;
   price?: number;
-  menu?: string;
+  menu?: {
+    img:string
+  };
   subTotal?: number;
   total?: number;
 }
@@ -83,7 +86,7 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({ onClose }) => (
 );
 
 // DetailPopUp Component
-const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpen = false }) => {
+const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpen = false, handleChangeStatus }) => {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -168,7 +171,7 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
 
                 const orderProduct: OrderProduct = {
                   id: product.id,
-                  menu: { img: "" }, // bisa diisi URL gambar jika ada
+                  menu: { img: product.menu?.img ?? "" }, // bisa diisi URL gambar jika ada
                   menuName: product.menuName,
                   status: product.status,
                   addOn,
@@ -177,8 +180,13 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
                   subTotal: product.subTotal ?? 0,
                   total: product.total ?? 0,
                 };
-
-                return <OrderCard product={orderProduct} index={index} key={product.id ?? index} />;
+                
+                return <OrderList 
+                  key={product.id ?? index} 
+                  product={orderProduct} 
+                  index={index}  
+                  handleChangeStatus={handleChangeStatus} 
+                />;
               })
             )}
           </AnimatePresence>

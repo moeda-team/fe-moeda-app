@@ -9,6 +9,9 @@ import { debounce } from "lodash";
 import moment from "moment";
 import OrderProgress from "@/components/ui/FloatingOrder/OrderProgress";
 import DetailPopUp from "./DetailPopup";
+import axios from "axios";
+import { fetcher } from "@/swr/fetcher";
+import { getAccessToken } from "@/helpers/getAccessToken";
 
 // Types
 interface Order {
@@ -60,7 +63,7 @@ const History: React.FC<HistoryProps> = ({}) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
   const [productDetail, setProductDetail] = useState<any>({});
-  const { activeOrder } = useActiveOrderTableMoving(
+  const { activeOrder, mutate } = useActiveOrderTableMoving(
     currentPage,
     rowsPerPage,
     searchQuery,
@@ -154,6 +157,31 @@ const History: React.FC<HistoryProps> = ({}) => {
   // Input handler
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
+  };
+
+  const handleChangeStatus = async (id:string, status:string) => {
+    try {
+      
+      const accessToken = getAccessToken();
+      const bearerAuth = `Bearer ${accessToken}`;
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_API}/transactions/main/status/${id}`,
+        {
+          status
+        },
+        {
+          headers: {
+            Authorization: bearerAuth,
+          },
+        }
+      );
+
+      mutate()
+    } catch (error: any) {
+      console.error("Failed to switch table:", error.response?.data || error);
+    } finally {
+      setOpenPopupOrder(false);
+    }
   };
 
   return (
@@ -269,6 +297,7 @@ const History: React.FC<HistoryProps> = ({}) => {
             setProductDetail({});
           }}
           isOpen={openPopupOrder}
+          handleChangeStatus={handleChangeStatus}
         />
       )}
     </AdminLayout>

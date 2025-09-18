@@ -74,6 +74,7 @@ const FloatingOrder = () => {
     "/admin-cashier-menu",
     "/admin-cashflow",
     "/admin-order-history",
+    "/admin-table-moving",
   ];
 
   if (hiddenRoutes.includes(pathname) || !orderId) {

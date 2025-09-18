@@ -9,6 +9,7 @@ import {
   HiClipboardList,
   HiCurrencyDollar,
   HiClock,
+  HiTable
 } from "react-icons/hi";
 import { getAccessToken } from "@/helpers/getAccessToken";
 
@@ -32,6 +33,12 @@ const tabs: TabItem[] = [
     label: "Cashflow",
     icon: HiCurrencyDollar,
     route: "/admin-cashflow",
+  },
+  {
+    id: "table-moving",
+    label: "Table Moving",
+    icon: HiTable,
+    route: "/admin-table-moving",
   },
   {
     id: "history",
@@ -70,7 +77,7 @@ const AdminLayout = ({
           {/* Tab Navigation */}
           <div className="bg-white border-b border-neutral-200 sticky z-40 mt-20 pt-4">
             <div className="px-4 py-4">
-              <nav className="flex gap-2 flex-wrap">
+              <nav className="flex gap-2 overflow-auto">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -82,7 +89,7 @@ const AdminLayout = ({
                         setActiveTab(tab.id);
                         router.push(tab.route);
                       }}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200  min-w-40 ${
                         isActive
                           ? "text-white bg-primary-500 shadow-md"
                           : "text-neutral-500 bg-neutral-100 hover:bg-neutral-200 hover:text-neutral-600"

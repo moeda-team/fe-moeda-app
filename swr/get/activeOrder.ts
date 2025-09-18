@@ -37,3 +37,17 @@ export const useActiveOrder = (page?: number | string, limit?: number | string, 
     mutate,
   };
 };
+
+export const useActiveOrderTableMoving = (page?: number | string, limit?: number | string, search?: string, status?: boolean) => {
+  const { data, error, isLoading, mutate } = useSWR<ActiveOrderResponse>(
+    `${API_URL}/transactions/main/all/active?page=${page}&limit=${limit}&search=${search}`,
+    fetcher
+  );
+
+  return {
+    activeOrder: data?.data ?? {},
+    errorActiveOrder: error,
+    isLoadingActiveOrder: isLoading,
+    mutate,
+  };
+};

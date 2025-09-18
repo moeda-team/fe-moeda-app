@@ -1,63 +1,76 @@
-import React, { useEffect, useMemo, useState } from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
-import { API_URL } from "@/services";
-import { fetcher } from "@/swr/fetcher";
 import { FaTimes } from "react-icons/fa";
 import { HiArrowRight } from "react-icons/hi";
-import OrderProgress from "@/components/ui/FloatingOrder/OrderProgress";
 import { FiShoppingCart } from "react-icons/fi";
+import OrderProgress from "@/components/ui/FloatingOrder/OrderProgress";
 import OrderCard from "@/components/ui/OrderCard";
 
 interface ModalHeaderProps {
   onClose: () => void;
 }
+
+interface OrderProduct {
+  id: string;
+  menu: { img: string };
+  menuName: string;
+  status: "preparation" | "completed";
+  quantity: number;
+  price: number;
+  addOn: string[];
+  subTotal: number;
+  total: number;
+}
+
 interface DetailPopUpProps {
   onClose: () => void;
-  productDetail: any;
+  productDetail: Order;
   isOpen: boolean;
+}
+
+interface Order {
+  id: string;
+  customerName: string;
+  tableNumber: string;
+  totalAmount: number;
+  status: "preparation" | "ready" | "completed" | "failed" | "pending";
+  items: number;
+  orderTime: string;
+  logTableMove?: {
+    id: string;
+    note: string;
+    tableNumber: string;
+  }[];
+  subTransactions?: SubTransaction[];
+}
+
+interface SubTransaction {
+  id: string;
+  menuName: string;
+  status: "preparation" | "completed";
+  addOn?: string;
+  quantity?: number;
+  price?: number;
+  menu?: string;
+  subTotal?: number;
+  total?: number;
 }
 
 // Animation variants
 const modalVariants = {
-  hidden: {
-    y: "100%",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      damping: 25,
-      stiffness: 500,
-      duration: 0.3,
-    },
-  },
-  exit: {
-    y: "100%",
-    opacity: 0,
-    transition: {
-      duration: 0.2,
-    },
-  },
+  hidden: { y: "100%", opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { type: "spring", damping: 25, stiffness: 500, duration: 0.3 } },
+  exit: { y: "100%", opacity: 0, transition: { duration: 0.2 } },
 };
 
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
+const backdropVariants = { hidden: { opacity: 0 }, visible: { opacity: 1 }, exit: { opacity: 0 } };
 
 // Modal Header Component
 const ModalHeader: React.FC<ModalHeaderProps> = ({ onClose }) => (
   <div className="sticky top-0 bg-white rounded-t-2xl border-b px-6 py-4 flex items-center justify-between">
-    <motion.div
-      className="w-12 h-1 bg-gray-300 rounded-full mx-auto"
-      initial={{ width: 0 }}
-      animate={{ width: 48 }}
-      transition={{ delay: 0.2 }}
-    />
+    <motion.div className="w-12 h-1 bg-gray-300 rounded-full mx-auto" initial={{ width: 0 }} animate={{ width: 48 }} transition={{ delay: 0.2 }} />
     <motion.button
       onClick={onClose}
       className="absolute right-4 text-gray-500 hover:text-gray-700 p-2"
@@ -69,25 +82,19 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({ onClose }) => (
   </div>
 );
 
-// Order Form Component
+// DetailPopUp Component
 const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpen = false }) => {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>): void => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) onClose();
   };
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
+
+  const tableMoves = productDetail?.logTableMove ?? [];
+  const subTransactions = productDetail?.subTransactions ?? [];
 
   return (
     <motion.div
@@ -106,54 +113,46 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
         exit="exit"
       >
         <ModalHeader onClose={onClose} />
-        
-        {/* body */}
+
+        {/* Body */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ delay: 0.05 }}
-          className={`transition-colors duration-150 bg-white p-3 rounded-lg cursor-pointer`}
+          className="transition-colors duration-150 bg-white p-3 rounded-lg cursor-pointer"
         >
           <div className="flex gap-2 items-center">
-            <div className="flex justify-center items-center bg-orange-600 text-white p-4 w-14 h-14 rounded-full font-semibold">{productDetail?.tableNumber}</div>
+            <div className="flex justify-center items-center bg-orange-600 text-white p-4 w-14 h-14 rounded-full font-semibold">
+              {productDetail?.tableNumber}
+            </div>
+
             <div className="flex flex-col gap-1">
               <div className="font-semibold">{productDetail?.customerName}</div>
               <div className="flex gap-2 items-center">
-                {
-                  productDetail?.logTableMove?.map((trx:any, i:any) => (
-                    <React.Fragment key={trx.id ?? i}>
-                      <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
-                        Table {trx.tableNumber}
-                      </div>
-
-                      {/* Tampilkan panah kecuali di item terakhir */}
-                      {i < productDetail?.logTableMove.length - 1 && (
-                        <HiArrowRight className="text-gray-600 w-4 h-4" />
-                      )}
-                    </React.Fragment>
-                  ))
-                }
-
-                {
-                  productDetail?.logTableMove && productDetail?.logTableMove.length === 0 ?
-                    <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
-                      Table {productDetail?.tableNumber}
-                    </div>
-                  :""
-                }
+                {tableMoves.length > 0
+                  ? tableMoves.map((trx, i) => (
+                      <React.Fragment key={trx.id ?? i}>
+                        <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
+                          Table {trx.tableNumber}
+                        </div>
+                        {i < tableMoves.length - 1 && <HiArrowRight className="text-gray-600 w-4 h-4" />}
+                      </React.Fragment>
+                    ))
+                  : <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">Table {productDetail?.tableNumber}</div>}
               </div>
             </div>
           </div>
+
           <div className="p-2">
-            <OrderProgress subTransactions={productDetail?.subTransactions} />
+            <OrderProgress subTransactions={subTransactions} />
           </div>
         </motion.div>
-        
+
+        {/* Sub Transactions */}
         <div className="rounded-b-lg p-2 bg-white max-h-96 overflow-auto">
           <AnimatePresence>
-            {Array.isArray(productDetail?.subTransactions) &&
-            productDetail?.subTransactions.length === 0 ? (
+            {subTransactions.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -164,16 +163,22 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
                 <p className="text-gray-400">Your order history will appear here</p>
               </motion.div>
             ) : (
-              Array.isArray(productDetail?.subTransactions) &&
-              productDetail?.subTransactions.map((product: any, index: number) => {
-                const addOn: string[] = product?.addOn?.split(",") || [];
-                return (
-                  <OrderCard
-                    product={{ ...product, addOn }}
-                    index={index}
-                    key={product.id ?? index}
-                  />
-                );
+              subTransactions.map((product, index) => {
+                const addOn: string[] = (product?.addOn ?? "").split(",");
+
+                const orderProduct: OrderProduct = {
+                  id: product.id,
+                  menu: { img: "" }, // bisa diisi URL gambar jika ada
+                  menuName: product.menuName,
+                  status: product.status,
+                  addOn,
+                  quantity: product.quantity ?? 1,
+                  price: product.price ?? 0,
+                  subTotal: product.subTotal ?? 0,
+                  total: product.total ?? 0,
+                };
+
+                return <OrderCard product={orderProduct} index={index} key={product.id ?? index} />;
               })
             )}
           </AnimatePresence>

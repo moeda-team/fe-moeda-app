@@ -8,6 +8,7 @@ import { useActiveOrderTableMoving } from "@/swr/get/activeOrder";
 import { debounce } from "lodash";
 import moment from "moment";
 import OrderProgress from "@/components/ui/FloatingOrder/OrderProgress";
+import DetailPopUp from "./DetailPopup";
 
 // Types
 interface Order {
@@ -57,6 +58,8 @@ const History: React.FC<HistoryProps> = ({}) => {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [openPopupOrder, setOpenPopupOrder] = useState<boolean>(false);
+  const [productDetail, setProductDetail] = useState<any>({});
   const { activeOrder } = useActiveOrderTableMoving(
     currentPage,
     rowsPerPage,
@@ -213,7 +216,8 @@ const History: React.FC<HistoryProps> = ({}) => {
                           : ""
                       }`}
                       onClick={() => {
-                        console.log(order)
+                        setOpenPopupOrder(true)
+                        setProductDetail(order)
                       }}
                     >
                       <div className="flex gap-2 items-center">
@@ -235,7 +239,7 @@ const History: React.FC<HistoryProps> = ({}) => {
                                 </React.Fragment>
                               ))
                             }
-                            
+
                             {
                               order.logTableMove.length === 0 ?
                                 <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
@@ -256,6 +260,17 @@ const History: React.FC<HistoryProps> = ({}) => {
           </AnimatePresence>
         </div>
       </div>
+      
+      {openPopupOrder && (
+        <DetailPopUp
+          productDetail={productDetail}
+          onClose={() => {
+            setOpenPopupOrder(false);
+            setProductDetail({});
+          }}
+          isOpen={openPopupOrder}
+        />
+      )}
     </AdminLayout>
   );
 };

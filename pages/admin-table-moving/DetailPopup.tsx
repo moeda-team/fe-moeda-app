@@ -136,7 +136,7 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
                 }
 
                 {
-                  productDetail?.logTableMove.length === 0 ?
+                  productDetail?.logTableMove && productDetail?.logTableMove.length === 0 ?
                     <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
                       Table {productDetail?.tableNumber}
                     </div>

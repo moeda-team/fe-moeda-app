@@ -116,19 +116,19 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
           className={`transition-colors duration-150 bg-white p-3 rounded-lg cursor-pointer`}
         >
           <div className="flex gap-2 items-center">
-            <div className="flex justify-center items-center bg-orange-600 text-white p-4 w-14 h-14 rounded-full font-semibold">{productDetail.tableNumber}</div>
+            <div className="flex justify-center items-center bg-orange-600 text-white p-4 w-14 h-14 rounded-full font-semibold">{productDetail?.tableNumber}</div>
             <div className="flex flex-col gap-1">
-              <div className="font-semibold">{productDetail.customerName}</div>
+              <div className="font-semibold">{productDetail?.customerName}</div>
               <div className="flex gap-2 items-center">
                 {
-                  productDetail.logTableMove?.map((trx:any, i:any) => (
+                  productDetail?.logTableMove?.map((trx:any, i:any) => (
                     <React.Fragment key={trx.id ?? i}>
                       <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
                         Table {trx.tableNumber}
                       </div>
 
                       {/* Tampilkan panah kecuali di item terakhir */}
-                      {i < productDetail.logTableMove.length - 1 && (
+                      {i < productDetail?.logTableMove.length - 1 && (
                         <HiArrowRight className="text-gray-600 w-4 h-4" />
                       )}
                     </React.Fragment>
@@ -136,9 +136,9 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
                 }
 
                 {
-                  productDetail.logTableMove.length === 0 ?
+                  productDetail?.logTableMove.length === 0 ?
                     <div className="font-semibold bg-neutral-400 py-0.5 rounded-lg text-xs text-center w-20">
-                      Table {productDetail.tableNumber}
+                      Table {productDetail?.tableNumber}
                     </div>
                   :""
                 }
@@ -146,7 +146,7 @@ const DetailPopUp: React.FC<DetailPopUpProps> = ({ onClose, productDetail, isOpe
             </div>
           </div>
           <div className="p-2">
-            <OrderProgress subTransactions={productDetail.subTransactions} />
+            <OrderProgress subTransactions={productDetail?.subTransactions} />
           </div>
         </motion.div>
         

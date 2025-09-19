@@ -80,7 +80,7 @@ const OrderList = ({ product, index, handleChangeStatus }: { product: OrderProdu
         </div>
         {/* Status Badge */}
         <motion.div
-          className={`${statusConfig.bgColor} px-3 py-1 rounded-lg text-xs flex items-center gap-1`}
+          className={`${statusConfig.bgColor} px-3 py-1 rounded-lg text-xs flex items-center gap-1 cursor-pointer`}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{

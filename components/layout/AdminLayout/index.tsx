@@ -71,7 +71,7 @@ const AdminLayout = ({
   return (
     <>
       <div className="bg-neutral-50 overflow-auto">
-        <div className="absolute h-[160px] z-20 w-full top-0 left-0">
+        <div className="absolute z-20 w-full top-0 left-0">
           <Hero isCustomer={false} />
 
           {/* Tab Navigation */}

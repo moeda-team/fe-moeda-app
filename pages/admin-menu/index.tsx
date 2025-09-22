@@ -9,8 +9,10 @@ import { FaClock, FaPercentage } from "react-icons/fa";
 import { useMenu } from "@/swr/get/products";
 import Card from "./ProductCard";
 import { RiDiscountPercentFill } from "react-icons/ri";
+import { useRouter } from "next/router";
 
 const AdminMenu: React.FC = () => {
+  const router = useRouter();
   const [customerName, setCustomerName] = useState<string>("");
 
   useEffect(() => {
@@ -27,27 +29,32 @@ const AdminMenu: React.FC = () => {
     {
       id : 1,
       name : "Add Menu",
-      icon : <BiPlusCircle size={30}/>
+      icon : <BiPlusCircle size={30}/>,
+      link : '#'
     },
     {
       id : 2,
       name : "Stock",
-      icon : <BiMenu size={30}/>
+      icon : <BiMenu size={30}/>,
+      link : '#'
     },
     {
       id : 3,
       name : "Finance",
-      icon : <HiChartPie size={30}/>
+      icon : <HiChartPie size={30}/>,
+      link : '#'
     },
     {
       id : 4,
       name : "History",
-      icon : <FaClock size={30}/>
+      icon : <FaClock size={30}/>,
+      link : '#'
     },
     {
       id : 5,
       name : "Voucher",
-      icon : <RiDiscountPercentFill size={30}/>
+      icon : <RiDiscountPercentFill size={30}/>,
+      link : '/admin-menu/voucher'
     }
   ]
   return (
@@ -125,6 +132,7 @@ const AdminMenu: React.FC = () => {
             <div
               key={menu.id}
               className="flex flex-col items-center justify-center lg:text-sm text-xs font-semibold gap-1 cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => router.push(`${menu.link}`)}
             >
               <div className="flex justify-center p-5 bg-neutral-100 rounded-xl">
                 {menu.icon}

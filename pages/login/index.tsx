@@ -60,7 +60,17 @@ const LoginPage = () => {
 
       // Set access token and expiration to cookies using nookies
       if (data.data) {
-        // Calculate expiration date from expires_on timestamp
+        const { role } = nookies.get();
+
+        if (role === "admin") {
+          const hasValidRole = ["OWNER", "ADMIN"].some(r => data.data.role?.includes(r));
+          if (!hasValidRole) {
+            toast.error("Unauthorized: Admin must have OWNER or ADMIN role");
+            return false;
+          }
+        }
+
+        // ✅ Kalau lolos validasi di atas, lanjut set cookie
         const expirationDate = new Date(parseInt(data.expires_on) * 1000);
 
         setCookie(null, "accessToken", data.data.access_token, {
@@ -78,6 +88,7 @@ const LoginPage = () => {
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
+
     } catch (error) {
       console.error("Login failed:", error);
       // You might want to show error message to user

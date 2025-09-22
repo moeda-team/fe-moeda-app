@@ -65,7 +65,7 @@ const LoginPage = () => {
         if (role === "admin") {
           const hasValidRole = ["OWNER", "ADMIN"].some(r => data.data.role?.includes(r));
           if (!hasValidRole) {
-            toast.error("Unauthorized: Admin must have OWNER or ADMIN role");
+            toast.error("Unauthorized: Admin must have owner role");
             return false;
           }
         }

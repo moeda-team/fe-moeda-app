@@ -5,9 +5,10 @@ import { BiSolidBell, BiDollar, BiTrendingUp, BiPlusCircle, BiMenu } from "react
 import { HiChartPie, HiSparkles } from "react-icons/hi";
 import nookies from "nookies";
 import { AdminLayout } from "@/components/layout";
-import { FaClock } from "react-icons/fa";
+import { FaClock, FaPercentage } from "react-icons/fa";
 import { useMenu } from "@/swr/get/products";
 import Card from "./ProductCard";
+import { RiDiscountPercentFill } from "react-icons/ri";
 
 const AdminMenu: React.FC = () => {
   const [customerName, setCustomerName] = useState<string>("");
@@ -42,6 +43,11 @@ const AdminMenu: React.FC = () => {
       id : 4,
       name : "History",
       icon : <FaClock size={30}/>
+    },
+    {
+      id : 5,
+      name : "Voucher",
+      icon : <RiDiscountPercentFill size={30}/>
     }
   ]
   return (
@@ -102,8 +108,8 @@ const AdminMenu: React.FC = () => {
           {/* Growth */}
           <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col lg:gap-2 gap-1">
             <div className="flex justify-between">
-              <div className="bg-blue-200 p-2 rounded-full">
-                <BiTrendingUp size={25} className="text-white bg-blue-500 p-1 rounded-full"/>
+              <div className="bg-blue-200 p-1 rounded-full">
+                <BiTrendingUp size={30} className="text-white p-1 rounded-full" color="blue"/>
               </div>
               <div className="text-neutral-300 lg:text-xl text-sm">Growth</div>
             </div>
@@ -114,11 +120,11 @@ const AdminMenu: React.FC = () => {
 
         {/* Menu Lain nya */}
         <div className="text-sm font-semibold">Menu Lainnya</div>
-        <div className="grid grid-cols-4 py-4 px-2 bg-white rounded-xl shadow-md gap-4">
+        <div className="grid grid-cols-4 lg:flex sm:flex items-center justify-center py-4 px-2 bg-white rounded-xl shadow-md gap-4">
           {listMenu.map((menu) => (
             <div
               key={menu.id}
-              className="flex flex-col items-center justify-center text-sm font-semibold gap-1 cursor-pointer hover:scale-105 transition-transform"
+              className="flex flex-col items-center justify-center lg:text-sm text-xs font-semibold gap-1 cursor-pointer hover:scale-105 transition-transform"
             >
               <div className="flex justify-center p-5 bg-neutral-100 rounded-xl">
                 {menu.icon}

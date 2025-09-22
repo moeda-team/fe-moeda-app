@@ -10,6 +10,8 @@ import { useMenu } from "@/swr/get/products";
 import Card from "./ProductCard";
 import { RiDiscountPercentFill } from "react-icons/ri";
 import { useRouter } from "next/router";
+import { useSummaryDashboard } from "@/swr/get/dashboardAdmin";
+import { formatToIDR } from "@/utils/formatCurrency";
 
 const AdminMenu: React.FC = () => {
   const router = useRouter();
@@ -24,6 +26,8 @@ const AdminMenu: React.FC = () => {
   const { menu } = useMenu({
     category: category as string
   });
+
+  const { summaryDashboard } = useSummaryDashboard();
 
   const listMenu = [
     {
@@ -84,7 +88,7 @@ const AdminMenu: React.FC = () => {
               </div>
               <div className="text-neutral-300 lg:text-xl text-sm">Today</div>
             </div>
-            <div className="font-bold lg:text-xl text-sm">Rp. 100.000</div>
+            <div className="font-bold lg:text-xl text-sm">{formatToIDR(summaryDashboard?.revenue??0)}</div>
             <div className="text-neutral-300 text-base">Revenue</div>
           </div>
 
@@ -96,8 +100,10 @@ const AdminMenu: React.FC = () => {
               </div>
               <div className="text-neutral-300 lg:text-xl text-sm">Top Item</div>
             </div>
-            <div className="font-bold lg:text-xl text-sm">Caramel Latte</div>
-            <div className="text-neutral-300 text-base">95 Sold</div>
+            <div className="font-bold lg:text-xl text-sm">
+              {summaryDashboard && summaryDashboard.topItems.length > 0 ? summaryDashboard.topItems[0].menuName : '-'}
+            </div>
+            <div className="text-neutral-300 text-base">{summaryDashboard && summaryDashboard.topItems.length > 0 ? summaryDashboard.topItems[0]._sum.quantity : '-'} Sold</div>
           </div>
 
           {/* Avg Order */}
@@ -106,10 +112,24 @@ const AdminMenu: React.FC = () => {
               <div className="bg-blue-200 p-2 rounded-full">
                 <HiSparkles size={25} className="text-white bg-blue-500 p-1 rounded-full"/>
               </div>
-              <div className="text-neutral-300 lg:text-xl text-sm">Top Item</div>
+              <div className="text-neutral-300 lg:text-xl text-sm">Avg Order</div>
             </div>
-            <div className="font-bold lg:text-xl text-sm">Rp. 174.000</div>
-            <div className="text-green-500 text-base font-bold">+3%</div>
+            <div className="font-bold lg:text-xl text-sm">
+              {formatToIDR(summaryDashboard?.todayAvg ?? 0)}
+            </div>
+            {summaryDashboard?.yesterdayAvg ? (
+              (() => {
+                const avgGrowth = ((summaryDashboard.todayAvg - summaryDashboard.yesterdayAvg) / summaryDashboard.yesterdayAvg) * 100;
+                const color = avgGrowth >= 0 ? "text-green-500" : "text-red-500";
+                return (
+                  <div className={`${color} text-base font-bold`}>
+                    {avgGrowth.toFixed(2)}%
+                  </div>
+                );
+              })()
+            ) : (
+              <div className="text-neutral-300 text-base">-</div>
+            )}
           </div>
 
           {/* Growth */}
@@ -120,9 +140,10 @@ const AdminMenu: React.FC = () => {
               </div>
               <div className="text-neutral-300 lg:text-xl text-sm">Growth</div>
             </div>
-            <div className="font-bold lg:text-xl text-sm">+30%</div>
+            <div className="font-bold lg:text-xl text-sm">{summaryDashboard?.growth??0}%</div>
             <div className="text-neutral-300 text-base">vs yesterday</div>
           </div>
+
         </div>
 
         {/* Menu Lain nya */}

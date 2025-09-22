@@ -49,7 +49,9 @@ export function middleware(request: NextRequest) {
 
   // ... ⬇️ logic role yang sudah ada tetap sama
   if (accessToken && pathname === '/login') {
-    if (role === 'cashier') {
+    if (role === 'admin') {
+      return NextResponse.redirect(new URL('/admin-menu', request.url));
+    } else if (role === 'cashier') {
       return NextResponse.redirect(new URL('/admin-cashier-menu', request.url));
     } else if (role === 'barista') {
       return NextResponse.redirect(new URL('/order-list', request.url));
@@ -68,10 +70,12 @@ export function middleware(request: NextRequest) {
   const isCustomer = role === 'customer';
   const isCashier = role === 'cashier';
   const isBarista = role === 'barista';
+  const isAdmin = role === 'admin';
 
   const customerBaseUrl = '/';
   const cashierBaseUrl = '/admin-cashier-menu';
   const baristaBaseUrl = '/order-list';
+  const adminBaseUrl = '/admin-menu';
 
   const notAllowedCustomerRoutes = [
     '/login',
@@ -95,6 +99,12 @@ export function middleware(request: NextRequest) {
   ];
 
   const notAllowedCashierRoutes = [
+    '/',
+    '/cart',
+    '/order-list',
+  ];
+
+  const notAllowedAdminRoutes = [
     '/',
     '/cart',
     '/order-list',
@@ -127,6 +137,16 @@ export function middleware(request: NextRequest) {
     return response || NextResponse.next();
   }
 
+  if (isAdmin) {
+    if (!accessToken && pathname !== '/login') {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    if (accessToken && notAllowedAdminRoutes.includes(pathname)) {
+      return NextResponse.redirect(new URL(adminBaseUrl, request.url));
+    }
+    return response || NextResponse.next();
+  }
+
   return response || NextResponse.next();
 }
 
@@ -141,6 +161,7 @@ export const config = {
     '/admin-active-order',
     '/admin-cashflow',
     '/admin-order-history',
+    '/admin-table-moving',
     '/admin-barista-dashboard',
     '/bills-note'
   ],

@@ -4,6 +4,7 @@ import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 import { setCookie } from "nookies";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import nookies from "nookies";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -69,6 +70,8 @@ const LoginPage = () => {
           secure: true,
           sameSite: "strict",
         });
+
+        nookies.set(null, "customerName", data.data.name);
 
         toast.success("Login successful!");
         router.push("/");

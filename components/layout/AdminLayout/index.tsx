@@ -75,6 +75,7 @@ const AdminLayout = ({
           <Hero isCustomer={false} />
 
           {/* Tab Navigation */}
+          {isHome ??
           <div className="bg-white border-b border-neutral-200 sticky z-40 mt-20 pt-4">
             <div className="px-4 py-4">
               <nav className="flex gap-2 overflow-auto">
@@ -104,12 +105,12 @@ const AdminLayout = ({
                 })}
               </nav>
             </div>
-          </div>
+          </div>}
         </div>
 
         {/* Content */}
         <div
-          className={`px-4 mt-[160px] ${isHome ? "pb-0" : ""}`}
+          className={`px-4 ${isHome ? "mt-[160px] pb-0" : "mt-[100px]"}`}
           style={{ height: "calc(100vh - 160px)" }}
         >
           <motion.div

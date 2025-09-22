@@ -228,7 +228,7 @@ const OrderDetail: React.FC = () => {
     }
 
     axios
-    .get(process.env.NEXT_PUBLIC_API + `/vouchers/${tempCustomer.voucher_code}`)
+    .get(process.env.NEXT_PUBLIC_API + `/vouchers/${tempCustomer.voucher_code}/detail`)
     .then((res) => {
       if (res.data.data) {
         const v = res.data.data;

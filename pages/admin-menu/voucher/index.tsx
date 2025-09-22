@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { IoPricetag } from "react-icons/io5";
 import VoucherUsed from "./VoucherUsed";
 import { BiCopy, BiEdit } from "react-icons/bi";
-import { useVoucher } from "@/swr/get/voucher";
+import { useVoucher, useVoucherToday } from "@/swr/get/voucher";
 import { formatToIDR } from "@/utils/formatCurrency";
 import { SearchBar } from "@/components/sections";
 import axios from "axios";
@@ -29,6 +29,8 @@ const Voucher: React.FC = () => {
   const { vouchers, mutate } = useVoucher({
     search: search as string,
   });
+
+  const { vouchersUsed } = useVoucherToday();
 
   const handleSearch = (search: string) => {
     router.push({
@@ -155,7 +157,7 @@ const Voucher: React.FC = () => {
                 </div>
                 <div className="text-neutral-300 lg:text-xl text-sm font-semibold">Today</div>
               </div>
-              <VoucherUsed total={10} used={5} />
+              <VoucherUsed total={vouchersUsed.total ?? 0} used={vouchersUsed.used??0} />
             </div>
 
             {/* form create / edit */}

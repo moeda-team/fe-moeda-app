@@ -45,3 +45,20 @@ export const useVoucher = ({ search }: UseVoucherProps = {}) => {
     mutate,
   };
 };
+
+export const useVoucherToday = () => {
+  const { data, error, isLoading, mutate } = useSWR<VoucherResponse>(
+    `${API_URL}/vouchers/today/used`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    vouchersUsed: data?.data ?? {},
+    errorVoucher: error,
+    isLoadingVoucher: isLoading,
+    mutate,
+  };
+};

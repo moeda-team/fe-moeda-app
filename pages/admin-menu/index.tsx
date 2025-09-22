@@ -101,10 +101,17 @@ const AdminMenu: React.FC = () => {
               <div className="text-neutral-300 lg:text-xl text-sm">Top Item</div>
             </div>
             <div className="font-bold lg:text-xl text-sm">
-              {summaryDashboard && summaryDashboard.topItems.length > 0 ? summaryDashboard.topItems[0].menuName : '-'}
+              {summaryDashboard?.topItems?.length > 0
+                ? summaryDashboard.topItems[0].menuName
+                : "-"}
             </div>
-            <div className="text-neutral-300 text-base">{summaryDashboard && summaryDashboard.topItems.length > 0 ? summaryDashboard.topItems[0]._sum.quantity : '-'} Sold</div>
+            <div className="text-neutral-300 text-base">
+              {summaryDashboard?.topItems?.length > 0
+                ? summaryDashboard.topItems[0]._sum?.quantity
+                : "-"} Sold
+            </div>
           </div>
+
 
           {/* Avg Order */}
           <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col lg:gap-2 gap-1">

@@ -40,7 +40,7 @@ const AdminMenu: React.FC = () => {
       id : 2,
       name : "Stock",
       icon : <BiMenu size={30}/>,
-      link : '#'
+      link : '/admin-menu/stock'
     },
     {
       id : 3,

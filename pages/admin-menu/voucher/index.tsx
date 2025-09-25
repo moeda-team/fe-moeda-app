@@ -12,6 +12,7 @@ import { formatToIDR } from "@/utils/formatCurrency";
 import { SearchBar } from "@/components/sections";
 import axios from "axios";
 import { getAccessToken } from "@/helpers/getAccessToken";
+import { toast } from "react-toastify";
 
 interface VoucherItem {
   id?: string;
@@ -115,6 +116,7 @@ const Voucher: React.FC = () => {
       });
       setEditingVoucher(null);
       setErrors({});
+      toast.success("Voucher Created.");
       mutate();
     } catch (err) {
       console.error("Failed to submit voucher", err);

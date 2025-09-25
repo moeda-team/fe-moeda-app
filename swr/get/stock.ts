@@ -80,3 +80,19 @@ export const useNeedToBuy = () => {
   };
 };
 
+export const useIngridients = () => {
+  const { data, error, isLoading, mutate } = useSWR<Response>(
+    `${API_URL}/stocks/main`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    ingridientsList: data?.data ?? {},
+    errorVoucher: error,
+    isLoadingVoucher: isLoading,
+    mutateIngridients : mutate,
+  };
+};

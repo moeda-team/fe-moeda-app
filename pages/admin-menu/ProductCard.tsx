@@ -1,14 +1,17 @@
 import { formatToIDR } from "@/utils/formatCurrency";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 export default function Card({
+  id,
   image,
   title,
   description,
   price,
   quantity,
 }: {
+  id: string;
   image: string;
   title: string;
   description: string;
@@ -16,6 +19,7 @@ export default function Card({
   quantity?: number;
 }) {
   const [img, setImage] = useState(image);
+  const router = useRouter();
 
   const isSoldOut = quantity === 0;
 
@@ -38,7 +42,10 @@ export default function Card({
 
         {/* Overlay Sold Out */}
         {isSoldOut && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div 
+            className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer"
+            onClick={() => router.push(`/admin-menu/menu/${id}`)}
+          >
             <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
               Sold Out
             </span>

@@ -34,7 +34,7 @@ const AdminMenu: React.FC = () => {
       id : 1,
       name : "Add Menu",
       icon : <BiPlusCircle size={30}/>,
-      link : '#'
+      link : '/admin-menu/menu'
     },
     {
       id : 2,
@@ -181,6 +181,7 @@ const AdminMenu: React.FC = () => {
             menu.map((product, index) => (
               <Card
                 key={index}
+                id={product.id}
                 title={product.name}
                 description={product.desc}
                 image={product.img}

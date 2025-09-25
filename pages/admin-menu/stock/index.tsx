@@ -187,7 +187,7 @@ const Stock: React.FC = () => {
     <AdminLayout>
       <div className="flex flex-col gap-4 p-1" style={{ height: "calc(100vh - 180px)" }}>
         <div className="flex justify-center">
-          <div className="max-w-lg min-w-96 flex flex-col gap-4 p-1">
+          <div className="w-96 flex flex-col gap-4 p-1">
             {/* Header */}
             <div className="border-neutral-200 sticky top-0 z-10">
               <div className="flex justify-start gap-4 items-center">
@@ -260,12 +260,12 @@ const Stock: React.FC = () => {
                     <div className="space-y-3 p-2 rounded-lg">
                       <div className="flex gap-2">
                         <div className="flex flex-col gap-1 w-full">
-                          <div className="text-xs font-semibold">Name</div>
+                          <div className="text-sm font-semibold">Name</div>
                           <input
                             type="text"
                             value={stockForm.name}
                             onChange={(e) => handleInputChange("name", e.target.value)}
-                            className="px-2 py-1 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="px-2 py-2 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
                             placeholder="Name"
                           />
                           {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
@@ -273,34 +273,34 @@ const Stock: React.FC = () => {
                       </div>
                       <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-1">
-                          <div className="text-xs font-semibold">Uom</div>
+                          <div className="text-sm font-semibold">Uom</div>
                           <input
                             type="text"
                             value={stockForm.uom}
                             onChange={(e) => handleInputChange("uom", e.target.value)}
-                            className="px-2 py-1 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="px-2 py-2 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
                             placeholder="ex : pcs, kg, g, ml, l"
                           />
                           {errors.uom && <span className="text-xs text-red-500">{errors.uom}</span>}
                         </div>
                         <div className="flex flex-col gap-1">
-                          <div className="text-xs font-semibold">Min. qty</div>
+                          <div className="text-sm font-semibold">Min. qty</div>
                           <input
                             type="number"
                             value={stockForm.minQty ??""}
                             onChange={(e) => handleInputChange("minQty", e.target.value)}
-                            className="px-2 py-1 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="px-2 py-2 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
                             placeholder="0"
                           />
                           {errors.minQty && <span className="text-xs text-red-500">{errors.minQty}</span>}
                         </div>
                         <div className="flex flex-col gap-1">
-                          <div className="text-xs font-semibold">Last qty</div>
+                          <div className="text-sm font-semibold">Last qty</div>
                           <input
                             type="number"
                             value={stockForm.qty ??""}
                             onChange={(e) => handleInputChange("qty", e.target.value)}
-                            className="px-2 py-1 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="px-2 py-2 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
                             placeholder="0"
                           />
                           {errors.qty && <span className="text-xs text-red-500">{errors.qty}</span>}
@@ -308,7 +308,7 @@ const Stock: React.FC = () => {
                       </div>
                       <div className="flex justify-center mt-2 gap-2">
                         <button
-                          className="p-1 text-sm rounded-lg w-full transition-colors duration-200 bg-neutral-600 text-white px-5"
+                          className="p-2 text-sm rounded-lg w-full transition-colors duration-200 bg-neutral-600 text-white px-5"
                           type="button"
                           onClick={handleSubmit}
                         >
@@ -321,7 +321,7 @@ const Stock: React.FC = () => {
                   {activeTab === "stock" && (
                     <div className="space-y-3 p-2 rounded-lg">
                       <div className="flex flex-col gap-1">
-                        <div className="text-xs font-semibold">Select Ingredient</div>
+                        <div className="text-sm font-semibold">Select Ingredient</div>
                         <select
                           value={stockLogForm.stockId ?? ""}
                           onChange={(e) => {
@@ -333,7 +333,7 @@ const Stock: React.FC = () => {
                               handleInputChangeLog("uom", selectedStock.uom)
                             }
                           }}
-                          className="px-2 py-1 border text-sm rounded-lg focus:outline-none focus:ring-1 bg-white"
+                          className="px-2 py-2 border text-sm rounded-lg focus:outline-none focus:ring-1 bg-white"
                         >
                           <option value="" disabled>
                             Choose ingredient
@@ -348,12 +348,12 @@ const Stock: React.FC = () => {
                         {logErrors.stockId && <span className="text-xs text-red-500">{logErrors.stockId}</span>}
                       </div>
                       <div className="flex flex-col gap-1">
-                        <div className="text-xs font-semibold">Add stock</div>
+                        <div className="text-sm font-semibold">Add stock</div>
                         <input
                           type="number"
                           value={stockLogForm.qty ??""}
                           onChange={(e) => handleInputChangeLog("qty", e.target.value)}
-                          className="px-2 py-1 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="px-2 py-2 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
                           placeholder="0"
                         />
                         {logErrors.qty && <span className="text-xs text-red-500">{logErrors.qty}</span>}
@@ -363,7 +363,7 @@ const Stock: React.FC = () => {
                           <textarea
                             value={stockLogForm.note}
                             onChange={(e) => handleInputChangeLog("note", e.target.value)}
-                            className="px-2 py-1 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="px-2 py-2 w-full border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
                             placeholder="Note"
                           />
                           {logErrors.note && <span className="text-xs text-red-500">{logErrors.note}</span>}
@@ -371,7 +371,7 @@ const Stock: React.FC = () => {
                       </div>
                       <div className="flex justify-center mt-2 gap-2">
                         <button
-                          className="p-1 text-sm rounded-lg w-full transition-colors duration-200 bg-neutral-600 text-white px-5"
+                          className="p-2 text-sm rounded-lg w-full transition-colors duration-200 bg-neutral-600 text-white px-5"
                           type="button"
                           onClick={handleSubmitLog}
                         >
@@ -399,7 +399,7 @@ const Stock: React.FC = () => {
                       <span className="text-xs text-neutral-400">Add {item.qty} {item.uom} of espresso beans</span>
                       {/* Edit button */}
                       <div
-                        className="absolute top-2 right-2 text-neutral-300 text-xs px-2 py-1 rounded-lg"
+                        className="absolute top-2 right-2 text-neutral-300 text-xs px-2 py-2 rounded-lg"
                       >
                         {moment(item.updatedAt).fromNow()}
                       </div>

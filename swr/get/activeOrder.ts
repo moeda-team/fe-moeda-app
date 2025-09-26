@@ -23,10 +23,10 @@ interface ActiveOrderResponse {
   data: any;
 }
 
-export const useActiveOrder = (page?: number | string, limit?: number | string, search?: string, status?: boolean) => {
+export const useActiveOrder = (page?: number | string, limit?: number | string, search?: string, status?: boolean, month?: string, year?:string) => {
   const active = status ? "&active=true" : "";
   const { data, error, isLoading, mutate } = useSWR<ActiveOrderResponse>(
-    `${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}${active}`,
+    `${API_URL}/transactions/main?page=${page}&limit=${limit}&search=${search}${active}&month=${month}&year=${year}`,
     fetcher
   );
 

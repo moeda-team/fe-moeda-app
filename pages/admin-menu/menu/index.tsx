@@ -134,8 +134,8 @@ const Stock: React.FC = () => {
         }
       );
 
-      const fileUrl = res.data.url;
-
+      const fileUrl = res.data.data.fileUrl;
+      
       setSelectedFile(file);
       setStockForm((prev) => ({
         ...prev,
@@ -174,7 +174,6 @@ const Stock: React.FC = () => {
                   <div className="flex flex-col gap-1 w-full">
                     <div className="text-sm font-semibold">Photo</div>
                     {errors.img && <span className="text-xs text-red-500">{errors.img}</span>}
-
                     {stockForm.img ? (
                       // preview image kalau sudah ada img
                       <div className="relative w-36">

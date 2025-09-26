@@ -215,7 +215,7 @@ const Stock: React.FC = () => {
         },
       });
 
-      const fileUrl = res.data.url;
+      const fileUrl = res.data.data.fileUrl;
       setStockForm((prev) => ({ ...prev, img: fileUrl }));
       setErrors((prev) => ({ ...prev, img: "" }));
       toast.success("File uploaded successfully");

@@ -46,7 +46,7 @@ const AdminMenu: React.FC = () => {
       id : 3,
       name : "Finance",
       icon : <HiChartPie size={30}/>,
-      link : '#'
+      link : '/admin-menu/finance'
     },
     {
       id : 4,

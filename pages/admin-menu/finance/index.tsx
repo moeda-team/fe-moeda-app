@@ -43,7 +43,7 @@ const History: React.FC = () => {
   const [selectedMonthN, setSelectedMonthN] = useState<string>("");
   const [selectedYearN, setSelectedYearN] = useState<string>("");
 
-  const { summaryRevenue } = useSummaryRevenue(selectedMonthN,selectedYearN);
+  const { summaryRevenue } = useSummaryRevenue(selectedYearN, selectedMonthN);
 
   const { activeOrder } = useActiveOrder(
     currentPage,

@@ -52,7 +52,7 @@ const AdminMenu: React.FC = () => {
       id : 4,
       name : "History",
       icon : <FaClock size={30}/>,
-      link : '#'
+      link : '/admin-menu/history'
     },
     {
       id : 5,

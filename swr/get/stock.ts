@@ -82,7 +82,7 @@ export const useNeedToBuy = () => {
 
 export const useIngridients = () => {
   const { data, error, isLoading, mutate } = useSWR<Response>(
-    `${API_URL}/stocks/main`,
+    `${API_URL}/ingredients`,
     fetcher,
     {
       revalidateOnFocus: false,

@@ -8,11 +8,11 @@ import axios from "axios";
 import { getAccessToken } from "@/helpers/getAccessToken";
 import { toast } from "react-toastify";
 import { useCategories } from "@/swr/get/categories";
-import { BiPlus, BiSolidPlusCircle } from "react-icons/bi";
+import { BiMinusCircle, BiPlus, BiSolidPlusCircle } from "react-icons/bi";
 import Image from "next/image";
 import { OUTLET_ID } from "@/services";
 import IngridientPopUp from "./IngridientPopUp";
-import { useStockList } from "@/swr/get/stock";
+import { useIngridients, useStockList } from "@/swr/get/stock";
 
 interface MenuItem {
   id?: string;
@@ -31,6 +31,9 @@ interface IngridientItem {
   stockId: string;
   value: number | null;
   uom: string;
+  stock?:{
+    name:string
+  }
 }
 
 const Stock: React.FC = () => {
@@ -58,47 +61,53 @@ const Stock: React.FC = () => {
     uom: "",
   });
 
+  const [ingridientData, setIngridientData] = useState<IngridientItem[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState<Partial<Record<keyof MenuItem, string>>>({});
 
   // ✅ fetch detail menu berdasarkan id
+  const fetchMenuDetail = async () => {
+    try {
+      const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || "";
+      const password = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || "";
+      const basicAuth = `Basic ${btoa(`${username}:${password}`)}`;
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/menus/main/${OUTLET_ID}/${id}`, {
+        headers: {
+          Authorization: basicAuth,
+        },
+      });
+
+      const menu = res.data.data;
+
+      setIngridientForm({
+        ...ingridientForm, menuId : res.data.data.id
+      })
+
+      setIngridientData(
+        res.data.data.ingredient
+      )
+
+      setStockForm({
+        id: menu.id,
+        categoryId: menu.categoryId,
+        name: menu.name,
+        desc: menu.desc,
+        img: menu.img,
+        pdf: menu.pdf,
+        options: menu.options ?? [],
+        price: menu.price,
+      });
+      setLoading(false);
+    } catch (err) {
+      toast.error("Failed to fetch menu detail.");
+      console.error("Fetch menu detail error:", err);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
-
-    const fetchMenuDetail = async () => {
-      try {
-        const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || "";
-        const password = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || "";
-        const basicAuth = `Basic ${btoa(`${username}:${password}`)}`;
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/menus/main/${OUTLET_ID}/${id}`, {
-          headers: {
-            Authorization: basicAuth,
-          },
-        });
-
-        const menu = res.data.data;
-
-        setIngridientForm({
-          ...ingridientForm, menuId : res.data.data.id
-        })
-
-        setStockForm({
-          id: menu.id,
-          categoryId: menu.categoryId,
-          name: menu.name,
-          desc: menu.desc,
-          img: menu.img,
-          pdf: menu.pdf,
-          options: menu.options ?? [],
-          price: menu.price,
-        });
-        setLoading(false);
-      } catch (err) {
-        toast.error("Failed to fetch menu detail.");
-        console.error("Fetch menu detail error:", err);
-        setLoading(false);
-      }
-    };
 
     fetchMenuDetail();
   }, [id]);
@@ -143,12 +152,35 @@ const Stock: React.FC = () => {
 
       if (resp.data.status === "success") {
         toast.success("Menu updated.");
-        setTimeout(() => {
-          router.push(`/admin-menu/menu/${id}`);
-        }, 2000);
       }
     } catch (err) {
       toast.error("Update menu error.");
+      console.error("Failed to update menu", err);
+    }
+  };
+
+  const onDelete = async (id:string) => {
+    if (!validateForm() || !id) return;
+    const accessToken = getAccessToken();
+    const bearerAuth = `Bearer ${accessToken}`;
+
+    try {
+      const resp = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API}/ingredients/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: bearerAuth,
+          },
+        }
+      );
+
+      if (resp.data.status === "success") {
+        toast.success("Menu deleted.");
+        fetchMenuDetail()
+      }
+    } catch (err) {
+      toast.error("Delete menu error.");
       console.error("Failed to update menu", err);
     }
   };
@@ -320,15 +352,57 @@ const Stock: React.FC = () => {
 
               {/* Ingredient */}
               <div className="w-full flex flex-col">
-                <div className="flex justify-between my-4 items-center">
+                <div className="flex justify-between mt-4 items-center">
                   <div className="text-sm font-bold">Ingredient</div>
                   <div 
-                    className="text-xs font-medium flex gap-1 items-center"
+                    className="text-xs font-medium flex gap-1 items-center text-blue-500"
                     onClick={() => {
                       setOpenPopupOrder(true)
                       mutateStockList()
                     }}
                   ><BiPlus /> Add New</div>
+                </div>
+                <div className="grid max-h-96 overflow-auto py-2 gap-2">
+                  {
+                    Array.isArray(ingridientData) && ingridientData.length === 0 && 
+                    <div className="flex justify-center text-sm">Ingridient not found.</div>
+                  }
+                  {Array.isArray(ingridientData) &&
+                    ingridientData.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between gap-1 items-center"
+                      >
+                        <div className="flex gap-1 items-center">
+                          <div 
+                            className="font-semibold"
+                            onClick={() => {
+                              onDelete(item.id??"")
+                            }}
+                          >
+                            <BiMinusCircle color="red" size={18}/>
+                          </div>
+                          <div 
+                            className="font-semibold text-sm underline"
+                            onClick={() => {
+                              setOpenPopupOrder(true)
+                              mutateStockList()
+                              setIngridientForm(item)
+                            }}
+                          >
+                            {item.stock?.name}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                          <div className="bg-white p-1 min-w-20 rounded-xl text-sm text-center">
+                            {item.value}
+                          </div>
+                          <div className="min-w-6 rounded-xl text-sm">
+                            {item.uom}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </div>
 
@@ -352,6 +426,7 @@ const Stock: React.FC = () => {
           ingridientItem={ingridientForm}
           onClose={() => {
             setOpenPopupOrder(false);
+            fetchMenuDetail()
           }}
           stockList={stockList}
           isOpen={openPopupOrder}

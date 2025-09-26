@@ -39,3 +39,20 @@ export const useSummaryDashboard = () => {
     mutate,
   };
 };
+
+export const useSummaryRevenue = (year?:string, month?:string) => {
+  const { data, error, isLoading, mutate } = useSWR<SummaryResponse>(
+    `${API_URL}/transactions/sales/revenue/summary?year=${year}&month=${month}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    summaryRevenue: data?.data ?? {},
+    errorSummaryRevenue: error,
+    isLoadingSummaryRevenue: isLoading,
+    mutate,
+  };
+};

@@ -112,7 +112,6 @@ const AdminMenu: React.FC = () => {
             </div>
           </div>
 
-
           {/* Avg Order */}
           <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col lg:gap-2 gap-1">
             <div className="flex justify-between">

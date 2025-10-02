@@ -24,9 +24,14 @@ export default function Card({
   const isSoldOut = quantity === 0;
 
   return (
-    <div className="w-full rounded-2xl overflow-hidden shadow-md bg-white flex flex-col h-full relative">
+    <div 
+        className="w-full rounded-2xl overflow-hidden shadow-md bg-white flex flex-col h-full relative cursor-pointer"
+        onClick={() => router.push(`/admin-menu/menu/${id}`)}
+    >
       {/* Image Section */}
-      <div className="h-[140px] w-full relative flex-shrink-0">
+      <div 
+        className="h-[140px] w-full relative flex-shrink-0 "
+      >
         <Image
           className="p-2 rounded-t-[100px_20px] rounded-b-[100px_20px]"
           src={img}
@@ -43,8 +48,7 @@ export default function Card({
         {/* Overlay Sold Out */}
         {isSoldOut && (
           <div 
-            className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer"
-            onClick={() => router.push(`/admin-menu/menu/${id}`)}
+            className="absolute inset-0 bg-black/40 flex items-center justify-center"
           >
             <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
               Sold Out

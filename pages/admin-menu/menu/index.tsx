@@ -172,7 +172,7 @@ const Stock: React.FC = () => {
               <div className="space-y-2 rounded-lg">
                 <div className="flex gap-2">
                   <div className="flex flex-col gap-1 w-full">
-                    <div className="text-sm font-semibold">Photo</div>
+                    <div className="text-sm font-semibold">Photo <span className="text-red-500">*</span></div>
                     {errors.img && <span className="text-xs text-red-500">{errors.img}</span>}
                     {stockForm.img ? (
                       // preview image kalau sudah ada img
@@ -226,7 +226,7 @@ const Stock: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <div className="flex flex-col gap-1 w-full">
-                    <div className="text-sm font-semibold">Menu Name</div>
+                    <div className="text-sm font-semibold">Menu Name <span className="text-red-500">*</span></div>
                     <input
                       type="text"
                       value={stockForm.name}
@@ -238,7 +238,7 @@ const Stock: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <div className="flex flex-col gap-1 w-full">
-                    <div className="text-sm font-semibold">Description</div>
+                    <div className="text-sm font-semibold">Description <span className="text-red-500">*</span></div>
                     <textarea
                       value={stockForm.desc}
                       onChange={(e) => handleInputChange("desc", e.target.value)}
@@ -248,7 +248,7 @@ const Stock: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <div className="text-sm font-semibold">Select Categories</div>
+                  <div className="text-sm font-semibold">Category <span className="text-red-500">*</span></div>
                   <select
                     value={stockForm.categoryId ?? ""}
                     onChange={(e) => {
@@ -270,7 +270,7 @@ const Stock: React.FC = () => {
                   {errors.categoryId && <span className="text-xs text-red-500">{errors.categoryId}</span>}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <div className="text-sm font-semibold">Price</div>
+                  <div className="text-sm font-semibold">Price <span className="text-red-500">*</span></div>
                   <input
                     type="number"
                     value={stockForm.price ??""}

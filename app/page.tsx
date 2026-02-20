@@ -1,65 +1,185 @@
-import Image from "next/image";
+"use client"
+
+import { PublicLayout } from "@/components/public/public-layout"
+import Hero from "@/components/public/component/hero/page"
+import { useCategoriesQuery, useMenuQuery } from "@/components/public/hooks/use"
+import { useEffect, useState } from "react"
+import { InputGroup } from "@/components/ui/input-group"
+import { InputGroupInput } from "@/components/ui/input-group"
+import { InputGroupAddon } from "@/components/ui/input-group"
+import { SearchIcon } from "lucide-react"
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
+import { CardMenu } from "@/components/public/component/menu/page"
+import { CardBest } from "@/components/public/component/best/page"
+import { XIcon } from "lucide-react"
+import { StickyBottomCart } from "@/components/public/component/StickyCart"
 
 export default function Home() {
+  const [showSticky, setShowSticky] = useState(false)
+  const [searchInput, setSearchInput] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('All')
+
+  // categories
+  const { data : categoriesData, isLoading : isLoadingCategories } = useCategoriesQuery()
+  const { data : bestData, isLoading : isLoadingBest } = useMenuQuery({ best : true })
+  const { data : menuData, isLoading : isLoadingMenu } = useMenuQuery({ search : debouncedSearch, category : selectedCategory === 'All' ? "" : selectedCategory ? selectedCategory : undefined })
+
+  // scroll set sticky 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowSticky(window.scrollY > 200)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchInput)
+    }, 500) // 500ms delay
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [searchInput])
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <PublicLayout>
+      <div className="space-y-4 bg-primary/10 min-h-screen">
+        {/* STICKY WRAPPER */}
+        <div className={cn("sticky top-0 z-50 bg-white pb-3 pt-3 space-y-3 hidden px-2", showSticky && "block")}>
+          
+          {/* SEARCH */}
+          <div className="w-full">
+            <InputGroup className="w-full">
+              <InputGroupInput placeholder="Cari kopi favoritmu..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+              <InputGroupAddon>
+                <SearchIcon className="text-primary" size={18} />
+              </InputGroupAddon>
+              {searchInput && (
+                <InputGroupAddon onClick={() => setSearchInput("")} className="cursor-pointer end-4 absolute">
+                  <XIcon className="text-primary" size={18} />
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+          </div>
+
+          {/* CATEGORY */}
+          <div>
+            {isLoadingCategories ? (
+              <div className="flex gap-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    className="h-8 w-24 rounded-full bg-primary/30"
+                  />
+                ))}
+              </div>
+            ) : (
+              <Carousel opts={{ align: "start" }} className="w-full">
+                <CarouselContent className="gap-2">
+                  <CarouselItem
+                    className="basis-auto cursor-pointer"
+                    onClick={() => setSelectedCategory("All")}
+                  >
+                    <div
+                      className={`px-4 py-1 rounded-full text-xs whitespace-nowrap transition ${
+                        selectedCategory === "All"
+                          ? "bg-primary text-white"
+                          : "bg-primary/10"
+                      }`}
+                    >
+                      All
+                    </div>
+                  </CarouselItem>
+
+                  {categoriesData?.data?.map((item) => (
+                    <CarouselItem
+                      key={item.id}
+                      className="basis-auto cursor-pointer"
+                      onClick={() => setSelectedCategory(item.id)}
+                    >
+                      <div
+                        className={`px-2 py-1 rounded-full text-xs whitespace-nowrap transition ${
+                          selectedCategory === item.id
+                            ? "bg-primary text-white"
+                            : "bg-primary/10"
+                        }`}
+                      >
+                        {item.name}
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
+            )}
+          </div>
+
+        </div>
+        {/* STICKY WRAPPER */}
+        
+        {/* HERO */}
+        <Hero 
+          categoriesData={categoriesData?.data ?? []}
+          isLoading={isLoadingCategories}
+          selectedCategory={selectedCategory} 
+          setSelectedCategory={setSelectedCategory} 
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        {/* HERO */}
+        
+        {/* BEST */}
+        <div className="space-y-3 px-4">
+          <h2 className="text-lg font-semibold">
+            Best Seller
+          </h2>
+          {
+            isLoadingBest ? 
+              <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="h-40 rounded-2xl bg-primary/30"
+                />
+              ))}
+              </div> : 
+            <CardBest data={bestData?.data ?? []} />
+          }
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        {/* BEST */}
+
+        {/* MENU */}
+        <div className="space-y-3 px-4">
+          <h2 className="text-lg font-semibold">
+            Menu
+          </h2>
+          {
+            isLoadingMenu ? 
+              <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="h-40 rounded-2xl bg-primary/30"
+                />
+              ))}
+              </div> : 
+            <CardMenu data={menuData?.data ?? []} />
+          }
+
+          {menuData?.data?.length === 0 && (
+            <p className="text-center text-sm text-muted-foreground">
+              No menu found
+            </p>
+          )}
         </div>
-      </main>
-    </div>
-  );
+        {/* MENU */}
+        <StickyBottomCart />
+      </div>
+    </PublicLayout>
+  )
 }

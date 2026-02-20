@@ -62,15 +62,30 @@ export function AddMenuDrawer({ menu }: Props) {
   const extraPrice = React.useMemo(() => {
     if (!menu.options?.length) return 0
 
-    return menu.options.reduce((total, option) => {
-      const selected = selectedOptions[option.id] ?? []
+    let total = 0
 
-      const optionExtra = option.choices
-        .filter((choice) => selected.includes(choice.value))
-        .reduce((sum, choice) => sum + (choice.extraPrice ?? 0), 0)
+    const walk = (options: typeof menu.options) => {
+      options?.forEach((option) => {
+        const selectedValue = selectedOptions[option.id]?.[0]
+        if (!selectedValue) return
 
-      return total + optionExtra
-    }, 0)
+        const selectedChoice = option.choices.find(
+          (c) => c.value === selectedValue
+        )
+
+        if (!selectedChoice) return
+
+        total += selectedChoice.extraPrice ?? 0
+
+        if (selectedChoice.subOptions?.length) {
+          walk(selectedChoice.subOptions)
+        }
+      })
+    }
+
+    walk(menu.options)
+
+    return total
   }, [menu.options, selectedOptions])
 
   /**

@@ -2,9 +2,10 @@
 
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Minus, Plus, ArrowLeft, ShoppingCart, Trash2, TicketPercent } from "lucide-react"
+import { Minus, Plus, ShoppingCart, Trash2, TicketPercent } from "lucide-react"
 import { useCartStore } from "@/store/cart.store"
 import { EditCartItemDrawer } from "./EditCartItemDrawer"
+import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 
 export default function CartPage() {
   const router = useRouter()
@@ -14,29 +15,10 @@ export default function CartPage() {
   const totalFinal = useCartStore((s) => s.totalFinal)
 
   return (
-    <div className="min-h-screen bg-gray-100 max-w-[600px] mx-auto">
+    <div className="min-h-screen bg-gray-100 max-w-lg mx-auto">
 
       {/* HEADER */}
-      <div 
-        className="text-white px-4 py-5 relative"
-        style={{
-          backgroundImage: "url('/images/header.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "top center",
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-20 z-0"></div>
-        <button
-          onClick={() => router.back()}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20"
-        >
-          <ArrowLeft />
-        </button>
-
-        <h1 className="text-center font-semibold text-xl text-white z-20">
-          Cart
-        </h1>
-      </div>
+      <HeaderWithBackground title="Cart" />
 
       {/* CONTENT */}
       <div className="px-4 py-4 space-y-4 pb-20">
@@ -149,12 +131,12 @@ export default function CartPage() {
 
       {/* STICKY CHECKOUT */}
       {items.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-[600px] mx-auto bg-white px-4 py-4 shadow-[0_-8px_20px_rgba(0,0,0,0.05)]">
+        <div className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white px-4 py-4 shadow-[0_-8px_20px_rgba(0,0,0,0.05)]">
           <button
             onClick={() => router.push("/checkout")}
             className="w-full bg-[#B87333] text-white py-2 rounded-lg font-semibold"
           >
-            Payment · Rp{" "}
+            Checkout · Rp{" "}
             {totalFinal().toLocaleString("id-ID")}
           </button>
         </div>

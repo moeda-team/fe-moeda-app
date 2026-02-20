@@ -33,7 +33,7 @@ export function EditCartItemDrawer({ item }: Props) {
       </button>
 
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent className="px-4 pb-6 max-h-[90vh] overflow-y-auto">
+        <DrawerContent className="px-4 pb-6 max-w-lg mx-auto">
           <DrawerHeader>
             <DrawerTitle>Edit Variant {item.name}</DrawerTitle>
           </DrawerHeader>

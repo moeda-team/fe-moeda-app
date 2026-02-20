@@ -8,7 +8,6 @@ import { EditCartItemDrawer } from "./EditCartItemDrawer"
 
 export default function CartPage() {
   const router = useRouter()
-
   const items = useCartStore((s) => s.items)
   const updateQty = useCartStore((s) => s.updateQty)
   const removeItem = useCartStore((s) => s.removeItem)

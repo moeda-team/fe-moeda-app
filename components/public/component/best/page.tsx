@@ -9,16 +9,12 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
-import { AddMenuDrawer } from "../drawer/AddMenu"
-import React from "react"
 
 interface CardBestProps {
   data: Menuitem[]
 }
 
 export function CardBest({ data }: CardBestProps) {
-  const [open, setOpen] = React.useState(false)
-
   return (
     <Carousel opts={{ align: "start" }}>
       <CarouselContent>
@@ -26,9 +22,6 @@ export function CardBest({ data }: CardBestProps) {
           <CarouselItem
             key={item.id}
             className="basis-auto cursor-pointer"
-            onClick={() => {
-              setOpen(true)
-            }}
           >
             <div className="bg-primary/10 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2 w-[150px]">
               <div className="relative h-28">
@@ -46,12 +39,11 @@ export function CardBest({ data }: CardBestProps) {
                   {item.name}
                 </p>
               </div>
-              <AddMenuDrawer menu={item} open={open} setOpen={setOpen} />
+
             </div>
           </CarouselItem>
         ))}
       </CarouselContent>
     </Carousel>
-
   )
 }

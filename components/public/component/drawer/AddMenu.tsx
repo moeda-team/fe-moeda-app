@@ -19,11 +19,10 @@ import { useCartStore } from "@/store/cart.store"
 
 type Props = {
   menu: Menuitem
-  open: boolean
-  setOpen: (open: boolean) => void
 }
 
-export function AddMenuDrawer({ menu, open, setOpen }: Props) {
+export function AddMenuDrawer({ menu }: Props) {
+  const [open, setOpen] = React.useState(false)
   const [qty, setQty] = React.useState<number>(1)
   const [note, setNote] = React.useState<string>("")
   const [selectedOptions, setSelectedOptions] = React.useState<

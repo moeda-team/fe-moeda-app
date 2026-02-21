@@ -108,13 +108,15 @@ export async function getCategories(
 
 export type TransactionStatus =
   | "pending"
+  | "completed"
   | "paid"
   | "cancelled"
+  | "expired"
 
 export type CreateTransactionInput = {
   outletId : string,
   transactionType : string,
-  tableNumber : string,
+  tableNumber : number,
   paymentMethod : string,
   customerName : string,
   discount : number,
@@ -139,6 +141,7 @@ export type Transaction = {
   transactionType: string
   tableNumber: string
   paymentMethod: string
+  paymentNumber: string
   customerName: string
   discount: number
   tax: number
@@ -148,6 +151,17 @@ export type Transaction = {
   qrUrl?: string
   createdAt: string
   updatedAt: string
+  expiredAt : string
+  actions? : {
+    url : string,
+    type : string
+  }[],
+  details : {
+    id : string,
+    customerName : string,
+    total : number,
+    createdAt : string,
+  }
 }
 
 export type TransactionsQueryParams = {
@@ -162,9 +176,13 @@ export type TransactionsListResponse = {
   page: number
   limit: number
 }
+
+export type TransactionResponse = {
+  data: Transaction
+}
 export async function createTransaction(
   input: CreateTransactionInput
-): Promise<Transaction> {
+): Promise<TransactionResponse> {
   const res = await axiosClient.post("/transactions/main", input)
 
   if (!res) {
@@ -204,8 +222,38 @@ export async function getTransactions(
  */
 export async function getTransactionById(
   id: string
-): Promise<Transaction> {
-  const res = await axiosClient.get<Transaction>(`/transactions/main/${id}`)
+): Promise<TransactionResponse> {
+  const res = await axiosClient.get<TransactionResponse>(`/transactions/payments/${id}`)
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
+  }
+
+  return res.data
+}
+
+export async function checkTransactionStatus(
+  id: string
+): Promise<TransactionResponse> {
+  const res = await axiosClient.get<TransactionResponse>(`/transactions/payments/status/${id}`)
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
+  }
+
+  return res.data
+}
+
+export async function getTransactionByPaymentNumber(
+  id: string,
+  type: string
+): Promise<TransactionResponse> {
+  const res = await axiosClient.post<TransactionResponse>(`/transactions/payments`, {
+    transactionDetails: {
+      orderId : id,
+    },
+    paymentType: type
+  })
 
   if (!res) {
     throw new Error("Failed to fetch transaction")
@@ -222,8 +270,8 @@ export async function getTransactionById(
 export async function updateTransactionStatus(
   id: string,
   status: TransactionStatus
-): Promise<Transaction> {
-  const res = await axiosClient.patch<Transaction>(`/transactions/main/${id}/status`, {
+): Promise<TransactionResponse> {
+  const res = await axiosClient.patch<TransactionResponse>(`/transactions/main/${id}/status`, {
     status,
   })
 

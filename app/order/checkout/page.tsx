@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useCartStore } from "@/store/cart.store"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 import { EditCustomerDrawer } from "./EditCustomerDrawer"
@@ -9,10 +9,10 @@ import { ChevronDown, CircleDollarSign, List, TicketPercent } from "lucide-react
 import { useVoucher } from "./hooks/useVoucher"
 import { PaymentMethodSelector } from "./PaymentMethodSelector"
 import { useCreateTransaction } from "./hooks/useTransactions"
-import router from "next/router"
 import { CreateTransactionInput } from "@/lib/api/customer/req-api"
 import { toast } from "sonner"
 import axios from "axios"
+import { TransactionQrDrawer } from "./TransactionQrDrawer"
 
 export default function CheckoutPage() {
 
@@ -41,6 +41,8 @@ export default function CheckoutPage() {
    */
   const [paymentMethod, setPaymentMethod] = useState("qris")
   const [showAll, setShowAll] = useState(false)
+  const [qrOpen, setQrOpen] = useState(false)
+  const [transactionId, setTransactionId] = useState<string | null>(null)
 
   /**
    * =========================
@@ -92,14 +94,14 @@ export default function CheckoutPage() {
     const payload : CreateTransactionInput = {
       outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',
       transactionType : "dine-in",
-      tableNumber : table,
+      tableNumber : parseInt(table),
       paymentMethod : paymentMethod,
       customerName : name,
       discount : discountAmount,
       additionalNote : "",
       voucher : code,
       cart : items.map((item) => ({
-          menuId : item.id,
+          menuId : item.menuId,
           menuName : item.name,
           quantity : item.qty,
           price : item.finalPrice,
@@ -111,8 +113,12 @@ export default function CheckoutPage() {
 
     mutate(payload, {
       onSuccess: (data) => {
-        // router.push(`/payment/qr?trx=${data.id}`)
-        console.log(data)
+        if(data){
+          setQrOpen(true)
+          setTransactionId(data.data.paymentNumber)
+          setPaymentMethod(data.data.paymentMethod)
+          localStorage.setItem("active-transaction-id", data.data.id)
+        }
       },
       onError: (error) => {
         if(axios.isAxiosError(error)){
@@ -121,7 +127,7 @@ export default function CheckoutPage() {
       }
     })
   }
-
+  
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
 
@@ -307,6 +313,14 @@ export default function CheckoutPage() {
           {isPending ? "Loading..." : "Payment Rp " + grandTotal.toLocaleString("id-ID")}
         </button>
       </div>
+
+      <TransactionQrDrawer
+        transactionId={transactionId}
+        paymentMethod={paymentMethod}
+        open={qrOpen}
+        removeVoucher={removeVoucher}
+        onClose={() => setQrOpen(false)}
+      />
     </div>
   )
 }

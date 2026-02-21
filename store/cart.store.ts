@@ -26,19 +26,12 @@ export type CartItem = {
 
 type CartState = {
   items: CartItem[]
+  hasHydrated: boolean
 
   addItem: (item: Omit<CartItem, "id">) => void
   removeItem: (id: string) => void
   updateQty: (id: string, qty: number) => void
-
-  /**
-   * 🔥 FULL EDIT SUPPORT
-   */
-  updateItem: (
-    id: string,
-    updated: Partial<CartItem>
-  ) => void
-
+  updateItem: (id: string, updated: Partial<CartItem>) => void
   updateOption: (
     id: string,
     optionKey: string,
@@ -56,6 +49,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      hasHydrated: false,
 
       /**
        * =========================
@@ -72,7 +66,7 @@ export const useCartStore = create<CartState>()(
 
       /**
        * =========================
-       * REMOVE
+       * REMOVE ITEM
        * =========================
        */
       removeItem: (id) =>
@@ -112,7 +106,7 @@ export const useCartStore = create<CartState>()(
 
       /**
        * =========================
-       * 🔥 FULL UPDATE ITEM
+       * FULL UPDATE ITEM
        * =========================
        */
       updateItem: (id, updated) =>
@@ -126,7 +120,7 @@ export const useCartStore = create<CartState>()(
 
       /**
        * =========================
-       * UPDATE OPTION (SMART RECALC)
+       * UPDATE OPTION (RECALCULATE SAFE)
        * =========================
        */
       updateOption: (id, optionKey, newValue) =>
@@ -229,7 +223,6 @@ export const useCartStore = create<CartState>()(
               (basePrice + newExtra) * item.qty
 
             let newDiscount = 0
-
             const voucher =
               item.menuItem.vouchers?.[0]?.voucher
 
@@ -291,6 +284,15 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "pos-cart-storage",
+
+      /**
+       * 🔥 HYDRATION FIX
+       */
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.hasHydrated = true
+        }
+      },
     }
   )
 )

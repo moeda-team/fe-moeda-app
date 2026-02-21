@@ -93,10 +93,9 @@ export type CategoryListResponse = {
 }
 
 export async function getCategories(
-  outletId: string,
   params?: CategoryQueryParams
 ): Promise<CategoryListResponse> {
-  const res = await axiosClient.get<CategoryListResponse>(`/menus/categories/${outletId}`, { params })
+  const res = await axiosClient.get<CategoryListResponse>(`/menus/categories`, { params })
   return res.data
 }
 

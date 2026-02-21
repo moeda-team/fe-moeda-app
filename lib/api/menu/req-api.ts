@@ -38,9 +38,8 @@ export type MenuListResponse = {
 }
 
 export async function getMenus(
-  outletId: string,
   params?: MenuQueryParams
 ): Promise<MenuListResponse> {
-  const res = await axiosClient.get<MenuListResponse>(`/menus/main/${outletId}`, { params })
+  const res = await axiosClient.get<MenuListResponse>(`/menus/main`, { params })
   return res.data
 }

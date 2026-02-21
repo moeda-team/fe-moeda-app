@@ -14,6 +14,7 @@ type RetryConfig = AxiosRequestConfig & {
  */
 const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || ""
 const password = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || ""
+const outletId = process.env.NEXT_PUBLIC_OUTLET_ID || ""
 
 const basicAuth =
   typeof window !== "undefined"
@@ -27,6 +28,7 @@ export const axiosClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   headers: {
     "Content-Type": "application/json",
+    "outletId": outletId
   },
   withCredentials: false,
 })

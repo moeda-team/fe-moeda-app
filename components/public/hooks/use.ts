@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query"
-import { OUTLET_ID } from "@/services"
 import {
   CategoryListResponse,
   CategoryQueryParams,
@@ -17,10 +16,10 @@ import {
 ========================= */
 
 const categoriesKey = (params?: CategoryQueryParams) =>
-  ["categories", OUTLET_ID, params ?? {}] as const
+  ["categories", params ?? {}] as const
 
 const menuKey = (params?: MenuQueryParams) =>
-  ["menus", OUTLET_ID, params ?? {}] as const
+  ["menus", params ?? {}] as const
 
 /* =========================
    HOOKS
@@ -29,13 +28,13 @@ const menuKey = (params?: MenuQueryParams) =>
 export function useCategoriesQuery(params?: CategoryQueryParams) {
   return useQuery<CategoryListResponse>({
     queryKey: categoriesKey(params),
-    queryFn: () => getCategories(OUTLET_ID, params),
+    queryFn: () => getCategories(params),
   })
 }
 
 export function useMenuQuery(params?: MenuQueryParams) {
   return useQuery<MenuListResponse>({
     queryKey: menuKey(params),
-    queryFn: () => getMenus(OUTLET_ID, params),
+    queryFn: () => getMenus(params),
   })
 }

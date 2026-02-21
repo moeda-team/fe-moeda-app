@@ -2,12 +2,14 @@ import Image from "next/image"
 import { Menuitem } from "@/lib/api/menu/req-api"
 import { AddMenuDrawer } from "../drawer/AddMenu"
 import { TicketPercent } from "lucide-react"
+import React from "react"
 
 interface CardMenuProps {
   data: Menuitem[]
 }
 
 export function CardMenu({ data }: CardMenuProps) {
+  const [open, setOpen] = React.useState(false)
 
   data = data.map((item) => {
     return {
@@ -21,7 +23,12 @@ export function CardMenu({ data }: CardMenuProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
       {data.map((item) => (
-        <div key={item.id} className="bg-card rounded-xl shadow-soft overflow-hidden p-3 flex flex-col space-y-1">
+        <div 
+          key={item.id} 
+          className="bg-card rounded-xl shadow-soft overflow-hidden p-3 flex flex-col space-y-1"
+          onClick={() => {
+            setOpen(true)
+          }}>
           <div className="relative h-28">
             <Image
               src={item.img}
@@ -84,56 +91,60 @@ export function CardMenu({ data }: CardMenuProps) {
             )}
           </div>
           
-          <AddMenuDrawer menu={{
+          <AddMenuDrawer 
+            menu={{
             ...item,
-            options: [
-              {
-                id: "1",
-                label: "Type",
-                type: "single",
-                required: true,
-                choices: [
-                  { label: "Hot", value: "hot" },
-                  {
-                    label: "Ice",
-                    value: "ice",
-                    subOptions: [
-                      {
-                        id: "ice_level",
-                        label: "Ice Level",
-                        type: "single",
-                        choices: [
-                          { label: "Less", value: "less",subOptions: [
-                            {
-                              id: "ice_level_sub",
-                              label: "Ice Level Sub",
-                              type: "single",
-                              choices: [
-                                { label: "Less", value: "less" },
-                                { label: "Normal", value: "normal" },
-                                { label: "More", value: "more" },
-                              ],
-                            }
-                          ] },
-                          { label: "Normal", value: "normal", subOptions: [] },
-                          { label: "More", extraPrice: 5000, value: "more", subOptions: [] },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                id: "2",
-                label: "Rasa",
-                type: "single",
-                required: true,
-                choices: [
-                  { label: "Pedas", value: "spicy" },
-                ],
-              },
-            ],
-          }} />
+              options: [
+                {
+                  id: "1",
+                  label: "Type",
+                  type: "single",
+                  required: true,
+                  choices: [
+                    { label: "Hot", value: "hot" },
+                    {
+                      label: "Ice",
+                      value: "ice",
+                      subOptions: [
+                        {
+                          id: "ice_level",
+                          label: "Ice Level",
+                          type: "single",
+                          choices: [
+                            { label: "Less", value: "less",subOptions: [
+                              {
+                                id: "ice_level_sub",
+                                label: "Ice Level Sub",
+                                type: "single",
+                                choices: [
+                                  { label: "Less", value: "less" },
+                                  { label: "Normal", value: "normal" },
+                                  { label: "More", value: "more" },
+                                ],
+                              }
+                            ] },
+                            { label: "Normal", value: "normal", subOptions: [] },
+                            { label: "More", extraPrice: 5000, value: "more", subOptions: [] },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  id: "2",
+                  label: "Rasa",
+                  type: "single",
+                  required: true,
+                  choices: [
+                    { label: "Pedas", value: "spicy" },
+                  ],
+                },
+              ],
+            }} 
+            open={open}
+            setOpen={setOpen}
+          />
         </div>
       ))}
     </div>

@@ -16,7 +16,6 @@ import {
 } from "@/lib/api/customer/req-api"
 import { toast } from "sonner"
 import { useOrderStore } from "@/store/order.store"
-import Image from "next/image"
 
 type Props = {
   transactionId: string | null
@@ -144,7 +143,7 @@ export function TransactionQrDrawer({
         <div className="flex flex-col items-center gap-4 py-4">
 
           {qrData?.data.actions?.[0]?.url && (
-            <Image src={qrData.data.actions[0].url} alt="QR Code" width={250} height={250} className="rounded-lg" />
+            <img src={qrData.data.actions[0].url} alt="QR Code" width={250} height={250} className="rounded-lg" />
           )}
 
           {statusData?.data.status === "pending" && (

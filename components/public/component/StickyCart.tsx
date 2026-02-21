@@ -17,10 +17,32 @@ export function StickyBottomCart() {
 
   // order store
   const completedOrders = useOrderStore((s) => s.completedOrders)
-  console.log(completedOrders)
+  // array order id
+  const orderId = Object.keys(completedOrders)
+  console.log(orderId)
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="max-w-lg mx-auto">
+        {
+          orderId.length > 0 &&(
+            <div
+              className="
+                bg-white
+                shadow-[0_-8px_30px_rgba(0,0,0,0.08)]
+                px-4
+                pt-4
+                pb-[calc(1rem+env(safe-area-inset-bottom))]
+                flex
+                items-center
+                justify-between
+                text-sm
+              "
+            >
+              <p>{orderId.length} items in progress</p>
+            </div>
+          )  
+        }
         {items.length > 0 && (
           <div
             className="

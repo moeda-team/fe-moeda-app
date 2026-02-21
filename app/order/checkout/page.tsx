@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useCartStore } from "@/store/cart.store"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 import { EditCustomerDrawer } from "./EditCustomerDrawer"
 import { useCustomerStore } from "@/store/customer.store"
-import { ChevronDown, CircleDollarSign, List, TicketPercent } from "lucide-react"
+import { ChevronDown, List, TicketPercent } from "lucide-react"
 import { useVoucher } from "./hooks/useVoucher"
 import { PaymentMethodSelector } from "./PaymentMethodSelector"
 import { useCreateTransaction } from "./hooks/useTransactions"

@@ -64,7 +64,7 @@ export function useCreateTransaction() {
       await qc.invalidateQueries({ queryKey: ["transactions"] })
 
       // optional: set detail cache directly
-      qc.setQueryData(transactionDetailKey(data.id), data)
+      qc.setQueryData(transactionDetailKey(data.data.id), data.data)
     },
   })
 }

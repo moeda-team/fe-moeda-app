@@ -19,9 +19,17 @@ export type Menuitem = {
   isActive: boolean,
   createdAt: string,
   updatedAt: string
-  disc: number,
-  discType: string
-  promoName: string
+  vouchers: Voucher[]
+}
+
+export type Voucher = {
+  voucherId: string,
+  voucher: {
+      name: string,
+      discount: string,
+      type: string,
+      maxUsage: string
+  }
 }
 
 export type MenuQueryParams = {

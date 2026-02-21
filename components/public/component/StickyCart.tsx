@@ -43,7 +43,7 @@ export function StickyBottomCart() {
                 transition
                 active:scale-95
               "
-              onClick={() => router.push("/cart")}
+              onClick={() => router.push("/order/cart")}
             >
               <ShoppingCart className="text-white" size={20} />
             </div>
@@ -74,7 +74,7 @@ export function StickyBottomCart() {
 
             {/* RIGHT - PAYMENT BUTTON */}
             <button
-              onClick={() => router.push("/checkout")}
+              onClick={() => router.push("/order/checkout")}
               className="
                 bg-[#B87333]
                 hover:bg-[#a5662d]

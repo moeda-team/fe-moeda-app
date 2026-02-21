@@ -1,12 +1,11 @@
-import { Menuitem } from "@/lib/api/customer/req-api"
+import { Menuitem } from "@/lib/api/menu/req-api"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
 /**
- * Kita turunkan type dari Menuitem supaya tidak pakai any
+ * Turunkan type supaya tidak pakai any
  */
 type MenuOption = NonNullable<Menuitem["options"]>[number]
-type MenuChoice = MenuOption["choices"][number]
 
 export type CartItem = {
   id: string
@@ -27,18 +26,30 @@ export type CartItem = {
 
 type CartState = {
   items: CartItem[]
+
   addItem: (item: Omit<CartItem, "id">) => void
   removeItem: (id: string) => void
   updateQty: (id: string, qty: number) => void
-  clearCart: () => void
-  subtotal: () => number
-  totalDiscount: () => number
-  totalFinal: () => number
+
+  /**
+   * 🔥 FULL EDIT SUPPORT
+   */
+  updateItem: (
+    id: string,
+    updated: Partial<CartItem>
+  ) => void
+
   updateOption: (
     id: string,
     optionKey: string,
     newValue: string
   ) => void
+
+  clearCart: () => void
+
+  subtotal: () => number
+  totalDiscount: () => number
+  totalFinal: () => number
 }
 
 export const useCartStore = create<CartState>()(
@@ -46,6 +57,11 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
 
+      /**
+       * =========================
+       * ADD ITEM
+       * =========================
+       */
       addItem: (newItem) =>
         set((state) => ({
           items: [
@@ -54,11 +70,21 @@ export const useCartStore = create<CartState>()(
           ],
         })),
 
+      /**
+       * =========================
+       * REMOVE
+       * =========================
+       */
       removeItem: (id) =>
         set((state) => ({
           items: state.items.filter((item) => item.id !== id),
         })),
 
+      /**
+       * =========================
+       * UPDATE QTY
+       * =========================
+       */
       updateQty: (id, qty) =>
         set((state) => ({
           items: state.items.map((item) => {
@@ -84,30 +110,24 @@ export const useCartStore = create<CartState>()(
           }),
         })),
 
-      clearCart: () => set({ items: [] }),
-
-      subtotal: () =>
-        get().items.reduce(
-          (total, item) => total + item.subtotal,
-          0
-        ),
-
-      totalDiscount: () =>
-        get().items.reduce(
-          (total, item) => total + item.discountAmount,
-          0
-        ),
-
-      totalFinal: () =>
-        get().items.reduce(
-          (total, item) => total + item.finalPrice,
-          0
-        ),
+      /**
+       * =========================
+       * 🔥 FULL UPDATE ITEM
+       * =========================
+       */
+      updateItem: (id, updated) =>
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id
+              ? { ...item, ...updated }
+              : item
+          ),
+        })),
 
       /**
-       * =====================================================
-       * 🔥 TYPE-SAFE updateOption (NO ANY)
-       * =====================================================
+       * =========================
+       * UPDATE OPTION (SMART RECALC)
+       * =========================
        */
       updateOption: (id, optionKey, newValue) =>
         set((state) => ({
@@ -120,7 +140,7 @@ export const useCartStore = create<CartState>()(
             }
 
             /**
-             * 1️⃣ CLEANUP CHILD OPTION (TYPE SAFE)
+             * 1️⃣ CLEANUP CHILD OPTION
              */
             const cleanupRecursive = (
               options: MenuOption[]
@@ -135,7 +155,6 @@ export const useCartStore = create<CartState>()(
                     (c) => c.value === selectedVal
                   )
 
-                // hapus subOptions dari choice lain
                 opt.choices.forEach((choice) => {
                   if (choice.value !== selectedVal) {
                     choice.subOptions?.forEach(
@@ -147,8 +166,7 @@ export const useCartStore = create<CartState>()(
                 })
 
                 if (
-                  selectedChoice?.subOptions &&
-                  selectedChoice.subOptions.length
+                  selectedChoice?.subOptions?.length
                 ) {
                   cleanupRecursive(
                     selectedChoice.subOptions
@@ -162,7 +180,7 @@ export const useCartStore = create<CartState>()(
             }
 
             /**
-             * 2️⃣ RECALCULATE EXTRA PRICE (TYPE SAFE)
+             * 2️⃣ RECALCULATE EXTRA PRICE
              */
             let newExtra = 0
 
@@ -185,8 +203,7 @@ export const useCartStore = create<CartState>()(
                   selectedChoice.extraPrice ?? 0
 
                 if (
-                  selectedChoice.subOptions &&
-                  selectedChoice.subOptions.length
+                  selectedChoice.subOptions?.length
                 ) {
                   calculateRecursive(
                     selectedChoice.subOptions
@@ -213,21 +230,17 @@ export const useCartStore = create<CartState>()(
 
             let newDiscount = 0
 
-            if (
-              item.menuItem.discType ===
-              "persentase"
-            ) {
+            const voucher =
+              item.menuItem.vouchers?.[0]?.voucher
+
+            if (voucher?.type === "percent") {
               newDiscount =
                 newSubtotal *
-                (Number(item.menuItem.disc) / 100)
+                (Number(voucher.discount) / 100)
             }
 
-            if (
-              item.menuItem.discType === "nominal"
-            ) {
-              newDiscount = Number(
-                item.menuItem.disc
-              )
+            if (voucher?.type === "nominal") {
+              newDiscount = Number(voucher.discount)
             }
 
             const newFinal = Math.max(
@@ -245,6 +258,36 @@ export const useCartStore = create<CartState>()(
             }
           }),
         })),
+
+      /**
+       * =========================
+       * CLEAR
+       * =========================
+       */
+      clearCart: () => set({ items: [] }),
+
+      /**
+       * =========================
+       * TOTALS
+       * =========================
+       */
+      subtotal: () =>
+        get().items.reduce(
+          (total, item) => total + item.subtotal,
+          0
+        ),
+
+      totalDiscount: () =>
+        get().items.reduce(
+          (total, item) => total + item.discountAmount,
+          0
+        ),
+
+      totalFinal: () =>
+        get().items.reduce(
+          (total, item) => total + item.finalPrice,
+          0
+        ),
     }),
     {
       name: "pos-cart-storage",

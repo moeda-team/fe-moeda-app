@@ -4,8 +4,8 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Minus, Plus, ShoppingCart, Trash2, TicketPercent } from "lucide-react"
 import { useCartStore } from "@/store/cart.store"
-import { EditCartItemDrawer } from "./EditCartItemDrawer"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
+import { EditCartItemDrawer } from "./EditCartItemDrawer"
 
 export default function CartPage() {
   const router = useRouter()
@@ -25,7 +25,7 @@ export default function CartPage() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-lg shadow-sm p-2"
+            className="bg-white rounded-lg shadow-sm p-2 relative"
           >
             <div className="flex gap-4">
               {/* IMAGE */}
@@ -39,47 +39,62 @@ export default function CartPage() {
               </div>
 
               {/* INFO */}
-              <div className="flex-1">
-                <p className="text-sm font-bold">
-                  {item.name}
-                </p>
-                
-                {/* OPTIONS */}
-                <EditCartItemDrawer item={item} />
+              <div className="flex flex-col justify-between">
+                <div className="flex flex-col">
+                  <div className="text-lg font-bold">
+                    {item.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {item?.options
+                      ? Object.values(item.options).flat().join(", ")
+                      : ""}
+                  </div>
+                </div>
 
-                {/* PRICE */}
-                <div className="mt-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    {item.discountAmount > 0 && (
-                      <p className="text-sm line-through text-gray-400">
-                        Rp {item.subtotal.toLocaleString("id-ID")}
+                <div className="flex flex-col">
+                  {/* NOTE */}
+                  <div className="text-xs text-muted-foreground">
+                    {item.note}
+                  </div>
+
+                  {/* PRICE */}
+                  <div className="text-sm">
+                    <div className="flex items-center gap-2">
+                      {item.discountAmount > 0 && (
+                        <p className="text-sm line-through text-gray-400">
+                          Rp {item.subtotal.toLocaleString("id-ID")}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-between">
+                        {item.menuItem.vouchers.length > 0 && (
+                          <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.menuItem.vouchers[0].voucher.name}</div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">
+                        Rp {item.finalPrice.toLocaleString("id-ID")}
                       </p>
-                    )}
-                    <div className="flex items-center justify-between">
-                      {item.menuItem.promoName && (
-                        <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.menuItem.promoName}</div>
+
+                      {item.discountAmount > 0 && (
+                        <div className="left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
+                          <TicketPercent size={15}/>
+                          {item.menuItem.vouchers[0].voucher.type === "nominal" ? (
+                            <div className="text-[10px] ml-1">Rp.{item.menuItem.vouchers[0].voucher.discount.toLocaleString()}</div>
+                          ) : (
+                            <div className="text-[10px] ml-1">{item.menuItem.vouchers[0].voucher.discount}%</div>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold">
-                      Rp {item.finalPrice.toLocaleString("id-ID")}
-                    </p>
-
-                    {item.discountAmount > 0 && (
-                      <div className="left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
-                        <TicketPercent size={15}/>
-                        {item.menuItem.discType === "nominal" ? (
-                          <div className="text-[10px] ml-1">Rp.{item.menuItem.disc?.toLocaleString()}</div>
-                        ) : (
-                          <div className="text-[10px] ml-1">{item.menuItem.disc}%</div>
-                        )}
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
+              
+              {/* edit */}
+              {/* <Button onClick={() => router.push(`/menu/${item.id}`)} className="absolute top-2 right-2 rounded-full bg-[#F3A93B] text-white" size="icon"><Edit2 /></Button> */}
+              <EditCartItemDrawer item={item} />
             </div>
 
             {/* BOTTOM ACTION */}
@@ -93,7 +108,7 @@ export default function CartPage() {
                       removeItem(item.id)
                     }
                   }}
-                  className="h-6 w-6 rounded-full bg-primary/20 text-black flex items-center justify-center"
+                  className="h-6 w-6 rounded-full bg-primary text-white flex items-center justify-center"
                 >
                   <Minus size={14} />
                 </button>
@@ -104,7 +119,7 @@ export default function CartPage() {
                   onClick={() =>
                     updateQty(item.id, item.qty + 1)
                   }
-                  className="h-6 w-6 rounded-full bg-primary/20 text-black flex items-center justify-center"
+                  className="h-6 w-6 rounded-full bg-primary text-white flex items-center justify-center"
                 >
                   <Plus size={14} />
                 </button>
@@ -113,7 +128,7 @@ export default function CartPage() {
               {/* REMOVE */}
               <button
                 onClick={() => removeItem(item.id)}
-                className="bg-red-500 text-white px-3 py-3 rounded-lg text-lg"
+                className="bg-[#E35336] text-white px-3 py-3 rounded-lg text-lg"
               >
                 <Trash2 size={16} />
               </button>
@@ -133,7 +148,7 @@ export default function CartPage() {
       {items.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white px-4 py-4 shadow-[0_-8px_20px_rgba(0,0,0,0.05)]">
           <button
-            onClick={() => router.push("/checkout")}
+            onClick={() => router.push("/order/checkout")}
             className="w-full bg-[#B87333] text-white py-2 rounded-lg font-semibold"
           >
             Checkout · Rp{" "}

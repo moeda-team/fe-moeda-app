@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Menuitem } from "@/lib/api/customer/req-api"
 import { OptionRenderer } from "./OptionRender"
 import { useCartStore } from "@/store/cart.store"
+import { Menuitem } from "@/lib/api/menu/req-api"
+import { MenuOption } from "@/lib/api/customer/req-api"
 
 type Props = {
   menu: Menuitem
@@ -37,20 +38,51 @@ export function AddMenuDrawer({ menu }: Props) {
     type: "single" | "multiple"
   ) => {
     setSelectedOptions((prev) => {
-      const current = prev[optionId] ?? []
+      const newState = { ...prev }
 
       if (type === "single") {
-        return { ...prev, [optionId]: [value] }
-      }
+        newState[optionId] = [value]
+      } else {
+        const current = newState[optionId] ?? []
 
-      if (current.includes(value)) {
-        return {
-          ...prev,
-          [optionId]: current.filter((v) => v !== value),
+        if (current.includes(value)) {
+          newState[optionId] = current.filter((v) => v !== value)
+        } else {
+          newState[optionId] = [...current, value]
         }
       }
 
-      return { ...prev, [optionId]: [...current, value] }
+      /**
+       * 🔥 CLEANUP CHILD OPTIONS
+       */
+      const cleanupChildren = (options: MenuOption[]) => {
+        options.forEach((opt) => {
+          const selectedVal = newState[opt.id]?.[0]
+          if (!selectedVal) return
+
+          const selectedChoice = opt.choices.find(
+            (c) => c.value === selectedVal
+          )
+
+          opt.choices.forEach((choice) => {
+            if (choice.value !== selectedVal) {
+              choice.subOptions?.forEach((sub) => {
+                delete newState[sub.id]
+              })
+            }
+          })
+
+          if (selectedChoice?.subOptions?.length) {
+            cleanupChildren(selectedChoice.subOptions)
+          }
+        })
+      }
+
+      if (menu.options) {
+        cleanupChildren(menu.options)
+      }
+
+      return newState
     })
   }
 
@@ -98,18 +130,18 @@ export function AddMenuDrawer({ menu }: Props) {
   const subtotal = basePrice * qty
 
   const discountAmount = React.useMemo(() => {
-    if (!menu.disc || menu.disc <= 0) return 0
+    if (!menu.vouchers.length || Number(menu.vouchers[0].voucher.discount) <= 0) return 0
 
-    if (menu.discType === "persentase") {
-      return subtotal * (Number(menu.disc) / 100)
+    if (menu.vouchers[0].voucher.type === "percent") {
+      return subtotal * (Number(menu.vouchers[0].voucher.discount) / 100)
     }
 
-    if (menu.discType === "nominal") {
-      return Number(menu.disc)
+    if (menu.vouchers[0].voucher.type === "nominal") {
+      return Number(menu.vouchers[0].voucher.discount)
     }
 
     return 0
-  }, [menu.disc, menu.discType, subtotal])
+  }, [menu.vouchers, subtotal])
 
   const totalPrice = Math.max(subtotal - discountAmount, 0)
 
@@ -120,12 +152,13 @@ export function AddMenuDrawer({ menu }: Props) {
    */
 
   const originalPrice = Number(menu.price)
-  const hasDiscount = Number(menu.disc) > 0
+  const hasDiscount = menu.vouchers.length > 0 && Number(menu.vouchers[0].voucher.discount) > 0
 
-  const discountedPrice =
-    menu.discType === "persentase"
-      ? originalPrice - (originalPrice * Number(menu.disc)) / 100
-      : originalPrice - Number(menu.disc)
+  const discountedPrice = hasDiscount ?
+    menu.vouchers[0].voucher.type === "percent"
+      ? originalPrice - (originalPrice * Number(menu.vouchers[0].voucher.discount)) / 100
+      : originalPrice - Number(menu.vouchers[0].voucher.discount)
+    : originalPrice
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -146,7 +179,7 @@ export function AddMenuDrawer({ menu }: Props) {
           {/* ========================= */}
 
           <div className="flex gap-4 py-2 mb-2">
-            <div className="relative w-20 h-20 rounded-lg overflow-hidden">
+            <div className="relative w-24 h-24 rounded-lg overflow-hidden">
               <Image
                 src={menu.img}
                 alt={menu.name}
@@ -156,7 +189,7 @@ export function AddMenuDrawer({ menu }: Props) {
             </div>
 
             <div className="flex-1">
-              <p className="text-lg font-medium line-clamp-1">
+              <p className="text-sm font-medium line-clamp-1">
                 {menu.name}
               </p>
 

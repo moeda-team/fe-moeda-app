@@ -1,6 +1,6 @@
 // lib/option-utils.ts
 
-import { Choice, MenuOption } from "./api/customer/req-api"
+import { Choice, MenuOption } from "./api/order/req-api"
 
 export function findOptionById(
   options: MenuOption[],

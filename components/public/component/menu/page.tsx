@@ -9,34 +9,26 @@ interface CardMenuProps {
 
 export function CardMenu({ data }: CardMenuProps) {
 
-  data = data.map((item) => {
-    return {
-      ...item,
-      disc: 10000,
-      discType: "nominal",
-      promoName: "Promo Spesial"
-    }
-  });
-
   return (
     <div className="grid grid-cols-2 gap-4">
       {data.map((item) => (
-        <div key={item.id} className="bg-card rounded-xl shadow-soft overflow-hidden p-3 flex flex-col space-y-1">
-          <div className="relative h-28">
+        <div key={item.id} className="bg-card rounded-xl shadow-soft overflow-hidden p-3 flex flex-col space-y-1 justify-between relative">
+          <div className="relative">
             <Image
               src={item.img}
               alt={item.name}
-              fill
+              width={160}
+              height={160}
               className="object-cover rounded-sm"
             />
             
-            {item.disc > 0 && (
+            {item.vouchers.length > 0 && (
               <div className="absolute top-1 left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
                 <TicketPercent size={15}/>
-                {item.discType === "nominal" ? (
-                  <div className="text-[10px] ml-1">Rp.{item.disc?.toLocaleString()}</div>
+                {item.vouchers[0].voucher.type === "nominal" ? (
+                  <div className="text-[10px] ml-1">Rp.{item.vouchers[0].voucher.discount.toLocaleString()}</div>
                 ) : (
-                  <div className="text-[10px] ml-1">{item.disc}%</div>
+                  <div className="text-[10px] ml-1">{item.vouchers[0].voucher.discount}%</div>
                 )}
               </div>
             )}
@@ -44,96 +36,54 @@ export function CardMenu({ data }: CardMenuProps) {
           
           {/* label promo */}
           <div className="flex items-center justify-between">
-            {item.promoName && (
-              <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.promoName}</div>
+            {item.vouchers.length > 0 && (
+              <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.vouchers[0].voucher.name}</div>
             )}
           </div>
           
           {/* price */}
           <div className="">
-            <p className="text-base font-medium line-clamp-1">
+            <p className="text-lg font-medium line-clamp-1">
               {item.name}
             </p>
 
-            {item.discType === "nominal" && (
+            {item.vouchers.length > 0 && item.vouchers[0].voucher.type === "nominal" && (
               <div className="flex items-start justify-between gap-2">
-                <p className={item.disc > 0 ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                <p className={item.vouchers[0].voucher.type === "nominal" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
                   Rp {item.price.toLocaleString()}
                 </p>
                 
-                {item.disc > 0 && (
+                {item.vouchers[0].voucher.type === "nominal" && (
                   <p className="text-xs font-semibold ">
-                    Rp. {(Number(item.price) - Number(item.disc)).toLocaleString()}
+                    Rp. {(Number(item.price) - Number(item.vouchers[0].voucher.discount)).toLocaleString()}
                   </p>
                 )}
               </div>
             )}
 
-            {item.discType === "persentase" && (
+            {item.vouchers.length > 0 && item.vouchers[0].voucher.type === "percent" && (
               <div className="flex items-start justify-between gap-2">
-                <p className={item.disc > 0 ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                <p className={item.vouchers[0].voucher.type === "percent" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
                   Rp {item.price.toLocaleString()}
                 </p>
                 
-                {item.disc > 0 && (
+                {item.vouchers[0].voucher.type === "percent" && (
                   <p className="text-xs font-semibold ">
-                    Rp. {(Number(item.price) - (Number(item.price) * Number(item.disc) / 100)).toLocaleString()}
+                    Rp. {(Number(item.price) - (Number(item.price) * Number(item.vouchers[0].voucher.discount) / 100)).toLocaleString()}
                   </p>
                 )}
               </div>
             )}
+            {
+              item.vouchers.length === 0 && (
+                <p className="text-xs font-semibold text-[#E35336]">
+                  Rp. {item.price.toLocaleString()}
+                </p>
+              )
+            }
           </div>
           
-          <AddMenuDrawer menu={{
-            ...item,
-            options: [
-              {
-                id: "1",
-                label: "Type",
-                type: "single",
-                required: true,
-                choices: [
-                  { label: "Hot", value: "hot" },
-                  {
-                    label: "Ice",
-                    value: "ice",
-                    subOptions: [
-                      {
-                        id: "ice_level",
-                        label: "Ice Level",
-                        type: "single",
-                        choices: [
-                          { label: "Less", value: "less",subOptions: [
-                            {
-                              id: "ice_level_sub",
-                              label: "Ice Level Sub",
-                              type: "single",
-                              choices: [
-                                { label: "Less", value: "less" },
-                                { label: "Normal", value: "normal" },
-                                { label: "More", value: "more" },
-                              ],
-                            }
-                          ] },
-                          { label: "Normal", value: "normal", subOptions: [] },
-                          { label: "More", extraPrice: 5000, value: "more", subOptions: [] },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                id: "2",
-                label: "Rasa",
-                type: "single",
-                required: true,
-                choices: [
-                  { label: "Pedas", value: "spicy" },
-                ],
-              },
-            ],
-          }} />
+          <AddMenuDrawer menu={item} />
         </div>
       ))}
     </div>

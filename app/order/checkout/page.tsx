@@ -5,7 +5,14 @@ import { useCartStore } from "@/store/cart.store"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 import { EditCustomerDrawer } from "./EditCustomerDrawer"
 import { useCustomerStore } from "@/store/customer.store"
-import { ChevronDown, List, ListOrdered } from "lucide-react"
+import { ChevronDown, CircleDollarSign, List, TicketPercent } from "lucide-react"
+import { useVoucher } from "./hooks/useVoucher"
+import { PaymentMethodSelector } from "./PaymentMethodSelector"
+import { useCreateTransaction } from "./hooks/useTransactions"
+import router from "next/router"
+import { CreateTransactionInput } from "@/lib/api/customer/req-api"
+import { toast } from "sonner"
+import axios from "axios"
 
 export default function CheckoutPage() {
 
@@ -15,24 +22,49 @@ export default function CheckoutPage() {
    * =========================
    */
   const items = useCartStore((s) => s.items)
-  const subtotal = useCartStore((s) => s.subtotal)
-  const totalDiscount = useCartStore((s) => s.totalDiscount)
+  const subtotalFn = useCartStore((s) => s.subtotal)
+  const totalDiscountFn = useCartStore((s) => s.totalDiscount)
 
   /**
    * =========================
-   * CUSTOMER (LOCAL STORAGE)
+   * CUSTOMER STORE
    * =========================
    */
-  const { name, table, hasHydrated } = useCustomerStore()
+  const name = useCustomerStore((s) => s.name)
+  const table = useCustomerStore((s) => s.table)
+  const hasHydrated = useCustomerStore((s) => s.hasHydrated)
 
   /**
    * =========================
    * LOCAL STATE
    * =========================
    */
-  const [voucherCode, setVoucherCode] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("qris")
   const [showAll, setShowAll] = useState(false)
+
+  /**
+   * =========================
+   * PRICING BASE
+   * =========================
+   */
+  const sub = subtotalFn()
+  const cartDiscount = totalDiscountFn()
+  const { mutate, isPending } = useCreateTransaction()
+
+  /**
+   * =========================
+   * VOUCHER
+   * =========================
+   */
+  const {
+    code,
+    setCode,
+    voucher,
+    loading,
+    applyVoucher,
+    removeVoucher,
+    discountAmount,
+  } = useVoucher(sub)
 
   /**
    * =========================
@@ -43,19 +75,52 @@ export default function CheckoutPage() {
 
   /**
    * =========================
-   * PRICING
+   * TAX & SERVICE
    * =========================
    */
-  const sub = subtotal()
-  const discount = totalDiscount()
+  const taxable = sub - cartDiscount - discountAmount
 
-  const tax = sub * 11 / 100
-  const service = sub * 2 / 100
+  const tax = taxable * 11 / 100
+  const service = taxable * 2 / 100
 
   const grandTotal = Math.max(
-    sub - discount + tax + service,
+    taxable + tax + service,
     0
   )
+
+  const handlePayment = () => {
+    const payload : CreateTransactionInput = {
+      outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',
+      transactionType : "dine-in",
+      tableNumber : table,
+      paymentMethod : paymentMethod,
+      customerName : name,
+      discount : discountAmount,
+      additionalNote : "",
+      voucher : code,
+      cart : items.map((item) => ({
+          menuId : item.id,
+          menuName : item.name,
+          quantity : item.qty,
+          price : item.finalPrice,
+          subTotal : item.subtotal,
+          addOn : item?.options ? Object.values(item.options).flat().join(", ") : "",
+          note : item.note ?? ""
+      })) ?? []
+    }
+
+    mutate(payload, {
+      onSuccess: (data) => {
+        // router.push(`/payment/qr?trx=${data.id}`)
+        console.log(data)
+      },
+      onError: (error) => {
+        if(axios.isAxiosError(error)){
+          toast.error(error?.response?.data?.message)
+        }
+      }
+    })
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
@@ -64,9 +129,7 @@ export default function CheckoutPage() {
 
       <div className="px-4 py-4 space-y-4">
 
-        {/* ========================= */}
         {/* CUSTOMER INFO */}
-        {/* ========================= */}
         <div className="bg-white rounded-sm p-3 shadow-sm relative">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -78,21 +141,21 @@ export default function CheckoutPage() {
                 <p className="text-sm">Customer</p>
                 <p className="font-semibold text-base">
                   {name}{" "}
-                  <label className="text-xs font-normal">
+                  <span className="text-xs font-normal">
                     (Table {table})
-                  </label>
+                  </span>
                 </p>
               </div>
             </div>
 
             <EditCustomerDrawer />
           </div>
+        </div>
 
-          <hr className="my-3 border-gray-300" />
-
+        <div className="bg-white rounded-sm p-3 shadow-sm flex flex-col gap-2">
           {/* PAYMENT DETAILS */}
           <div>
-            <div className="flex items-center gap-2 text-base">
+            <div className="flex items-center gap-2 text-base font-semibold">
               <List className="w-6 h-6 text-white bg-primary rounded-sm p-1" />
               Payment Details
             </div>
@@ -105,7 +168,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* SHOW ALL BUTTON */}
+          {/* SHOW ALL */}
           <div
             onClick={() => setShowAll((prev) => !prev)}
             className="flex items-center text-xs my-2 cursor-pointer text-primary font-bold select-none"
@@ -118,12 +181,8 @@ export default function CheckoutPage() {
             />
           </div>
 
-          {/* COLLAPSIBLE ITEM LIST */}
-          <div
-            className={`transition-all duration-300 overflow-hidden ${
-              showAll ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
+          {/* COLLAPSIBLE LIST */}
+          {showAll && (
             <div className="space-y-2 text-sm">
               {items.map((item) => (
                 <div
@@ -142,71 +201,64 @@ export default function CheckoutPage() {
                             .join(", ")
                         : ""}
                     </div>
+                    <div className="text-xs text-muted-foreground">
+                      {item.note}
+                    </div>
                   </div>
 
                   <div className="font-semibold">
-                    Rp{" "}
-                    {item.finalPrice.toLocaleString("id-ID")}
+                    Rp {item.finalPrice.toLocaleString("id-ID")}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
 
-        {/* ========================= */}
         {/* VOUCHER */}
-        {/* ========================= */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
-          <p className="font-semibold mb-3">Voucher</p>
+        <div className="bg-white rounded-sm p-3 shadow-sm flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-base font-semibold">
+            <TicketPercent className="w-6 h-6 text-white bg-primary rounded-sm p-1" />
+            Voucher
+          </div>
 
-          <div className="flex gap-2">
+          <hr className="my-1 border-gray-300 border-dashed" />
+
+          <div className="flex">
             <input
-              value={voucherCode}
-              onChange={(e) =>
-                setVoucherCode(e.target.value)
-              }
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               placeholder="Masukkan Kode Voucher"
-              className="flex-1 border rounded-lg px-3 py-2 text-sm"
+              className="flex-1 border rounded-l-lg px-3 py-2 text-sm bg-primary/10"
             />
-            <button className="bg-primary text-white px-4 rounded-lg text-sm">
-              Pakai
-            </button>
+
+            {voucher ? (
+              <button
+                className="bg-primary text-white px-4 rounded-r-lg text-base font-semibold"
+                onClick={removeVoucher}
+                disabled={loading}
+              >
+                Batal
+              </button>
+            ) : (
+              <button
+                className="bg-primary text-white px-4 rounded-r-lg text-base font-semibold"
+                onClick={applyVoucher}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Pakai"}
+              </button>
+            )}
           </div>
         </div>
-
-        {/* ========================= */}
+        
         {/* PAYMENT METHOD */}
-        {/* ========================= */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
-          <p className="font-semibold mb-3">
-            Select Payment Method
-          </p>
-
-          {["qris", "gopay", "ovo"].map((method) => (
-            <div
-              key={method}
-              onClick={() => setPaymentMethod(method)}
-              className="flex justify-between items-center py-2 cursor-pointer"
-            >
-              <span className="capitalize">
-                {method}
-              </span>
-
-              <div
-                className={`w-4 h-4 rounded-full border ${
-                  paymentMethod === method
-                    ? "bg-primary border-primary"
-                    : "border-gray-400"
-                }`}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* ========================= */}
+        <PaymentMethodSelector
+          value={paymentMethod}
+          onChange={setPaymentMethod}
+        />
+        
         {/* SUMMARY */}
-        {/* ========================= */}
         <div className="bg-white rounded-xl p-4 shadow-sm space-y-2 text-sm">
 
           <div className="flex justify-between">
@@ -214,46 +266,45 @@ export default function CheckoutPage() {
             <span>Rp {sub.toLocaleString("id-ID")}</span>
           </div>
 
-          <div className="flex justify-between text-red-500">
-            <span>Discount</span>
-            <span>
-              - Rp {discount.toLocaleString("id-ID")}
-            </span>
+          {cartDiscount > 0 && (
+            <div className="flex justify-between text-primary">
+              <span>Menu Discount</span>
+              <span>- Rp {cartDiscount.toLocaleString("id-ID")}</span>
+            </div>
+          )}
+
+          {voucher && (
+            <div className="flex justify-between text-primary">
+              <span>{voucher.name}</span>
+              <span>- Rp {discountAmount.toLocaleString("id-ID")}</span>
+            </div>
+          )}
+
+          <div className="flex justify-between">
+            <span>Tax 11%</span>
+            <span>Rp {tax.toLocaleString("id-ID")}</span>
           </div>
 
           <div className="flex justify-between">
-            <span>Tax 10%</span>
-            <span>
-              Rp {tax.toLocaleString("id-ID")}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Service Fee 2%</span>
-            <span>
-              Rp {service.toLocaleString("id-ID")}
-            </span>
+            <span>Service 2%</span>
+            <span>Rp {service.toLocaleString("id-ID")}</span>
           </div>
 
           <div className="border-t pt-2 flex justify-between font-semibold text-base">
             <span>Total to Pay</span>
-            <span>
-              Rp {grandTotal.toLocaleString("id-ID")}
-            </span>
+            <span>Rp {grandTotal.toLocaleString("id-ID")}</span>
           </div>
         </div>
       </div>
 
-      {/* ========================= */}
-      {/* STICKY PAYMENT BUTTON */}
-      {/* ========================= */}
+      {/* STICKY BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white px-4 py-4 shadow-[0_-8px_20px_rgba(0,0,0,0.05)]">
-        <button
-          onClick={() => alert("Proceed Payment")}
+        <button 
           className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold"
+          onClick={handlePayment}
+          disabled={isPending}
         >
-          Payment Rp{" "}
-          {grandTotal.toLocaleString("id-ID")}
+          {isPending ? "Loading..." : "Payment Rp " + grandTotal.toLocaleString("id-ID")}
         </button>
       </div>
     </div>

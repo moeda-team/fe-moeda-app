@@ -232,7 +232,7 @@ export const useCartStore = create<CartState>()(
                 (Number(voucher.discount) / 100)
             }
 
-            if (voucher?.type === "nominal") {
+            if (voucher?.type === "fixed") {
               newDiscount = Number(voucher.discount)
             }
 

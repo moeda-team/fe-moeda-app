@@ -59,28 +59,6 @@ export type UpdateUserInput = {
   isVerified?: boolean
 }
 
-export async function getUsers(
-  params?: UsersQueryParams
-): Promise<UsersListResponse> {
-  const res = await axiosClient.get<UsersListResponse>("/v1/users", { params })
-  return res.data
-}
-
-export async function createUser(input: CreateUserInput) {
-  const res = await axiosClient.post("/v1/users", input)
-  return res.data
-}
-
-export async function updateUser(id: string, input: UpdateUserInput) {
-  const res = await axiosClient.patch(`/v1/users/${id}`, input)
-  return res.data
-}
-
-export async function deleteUser(id: string) {
-  const res = await axiosClient.delete(`/v1/users/${id}`)
-  return res.data
-}
-
 // category
 export type CategoryQueryParams = {
   search?: string
@@ -92,14 +70,6 @@ export type CategoryListResponse = {
   data: CategoryItem[]
   paginate: Paginate
 }
-
-export async function getCategories(
-  params?: CategoryQueryParams
-): Promise<CategoryListResponse> {
-  const res = await axiosClient.get<CategoryListResponse>(`/menus/categories`, { params })
-  return res.data
-}
-
 
 export type MenuQueryParams = {
   search?: string
@@ -127,4 +97,139 @@ export type MenuOption = {
   type: "single" | "multiple"
   required?: boolean
   choices: Choice[]
+}
+
+export async function getCategories(
+  params?: CategoryQueryParams
+): Promise<CategoryListResponse> {
+  const res = await axiosClient.get<CategoryListResponse>(`/menus/categories`, { params })
+  return res.data
+}
+
+export type TransactionStatus =
+  | "pending"
+  | "paid"
+  | "cancelled"
+
+export type CreateTransactionInput = {
+  outletId : string,
+  transactionType : string,
+  tableNumber : string,
+  paymentMethod : string,
+  customerName : string,
+  discount : number,
+  additionalNote : string,
+  voucher : string,
+  cart : TransactionItem[]
+}
+
+export type TransactionItem = {
+  menuId : string ,
+  menuName : string,
+  quantity : number,
+  price : number,
+  subTotal : number,
+  addOn : string,
+  note : string
+}
+
+export type Transaction = {
+  id: string
+  outletId: string
+  transactionType: string
+  tableNumber: string
+  paymentMethod: string
+  customerName: string
+  discount: number
+  tax: number
+  service: number
+  total: number
+  status: TransactionStatus
+  qrUrl?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type TransactionsQueryParams = {
+  page?: number
+  limit?: number
+  status?: TransactionStatus
+}
+
+export type TransactionsListResponse = {
+  data: Transaction[]
+  total: number
+  page: number
+  limit: number
+}
+export async function createTransaction(
+  input: CreateTransactionInput
+): Promise<Transaction> {
+  const res = await axiosClient.post("/transactions/main", input)
+
+  if (!res) {
+    throw new Error("Failed to create transaction")
+  }
+
+  return res.data
+}
+
+/**
+ * =========================
+ * GET LIST
+ * =========================
+ */
+export async function getTransactions(
+  params?: TransactionsQueryParams
+): Promise<TransactionsListResponse> {
+  const query = new URLSearchParams()
+
+  if (params?.page) query.append("page", String(params.page))
+  if (params?.limit) query.append("limit", String(params.limit))
+  if (params?.status) query.append("status", params.status)
+
+  const res = await axiosClient.get<TransactionsListResponse>(`/transactions/main?${query.toString()}`)
+
+  if (!res) {
+    throw new Error("Failed to fetch transactions")
+  }
+
+  return res.data
+}
+
+/**
+ * =========================
+ * GET DETAIL
+ * =========================
+ */
+export async function getTransactionById(
+  id: string
+): Promise<Transaction> {
+  const res = await axiosClient.get<Transaction>(`/transactions/main/${id}`)
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
+  }
+
+  return res.data
+}
+
+/**
+ * =========================
+ * UPDATE STATUS
+ * =========================
+ */
+export async function updateTransactionStatus(
+  id: string,
+  status: TransactionStatus
+): Promise<Transaction> {
+  const res = await axiosClient.patch<Transaction>(`/transactions/main/${id}/status`, {
+    status,
+  })
+
+  if (!res) {
+    throw new Error("Failed to update status")
+  }
+
+  return res.data
 }

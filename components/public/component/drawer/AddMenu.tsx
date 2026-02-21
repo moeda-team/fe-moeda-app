@@ -136,7 +136,7 @@ export function AddMenuDrawer({ menu }: Props) {
       return subtotal * (Number(menu.vouchers[0].voucher.discount) / 100)
     }
 
-    if (menu.vouchers[0].voucher.type === "nominal") {
+    if (menu.vouchers[0].voucher.type === "fixed") {
       return Number(menu.vouchers[0].voucher.discount)
     }
 

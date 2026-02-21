@@ -25,7 +25,7 @@ export function CardMenu({ data }: CardMenuProps) {
             {item.vouchers.length > 0 && (
               <div className="absolute top-1 left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
                 <TicketPercent size={15}/>
-                {item.vouchers[0].voucher.type === "nominal" ? (
+                {item.vouchers[0].voucher.type === "fixed" ? (
                   <div className="text-[10px] ml-1">Rp.{item.vouchers[0].voucher.discount.toLocaleString()}</div>
                 ) : (
                   <div className="text-[10px] ml-1">{item.vouchers[0].voucher.discount}%</div>
@@ -47,13 +47,13 @@ export function CardMenu({ data }: CardMenuProps) {
               {item.name}
             </p>
 
-            {item.vouchers.length > 0 && item.vouchers[0].voucher.type === "nominal" && (
+            {item.vouchers.length > 0 && item.vouchers[0].voucher.type === "fixed" && (
               <div className="flex items-start justify-between gap-2">
-                <p className={item.vouchers[0].voucher.type === "nominal" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                <p className={item.vouchers[0].voucher.type === "fixed" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
                   Rp {item.price.toLocaleString()}
                 </p>
                 
-                {item.vouchers[0].voucher.type === "nominal" && (
+                {item.vouchers[0].voucher.type === "fixed" && (
                   <p className="text-xs font-semibold ">
                     Rp. {(Number(item.price) - Number(item.vouchers[0].voucher.discount)).toLocaleString()}
                   </p>

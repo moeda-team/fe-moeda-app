@@ -80,7 +80,7 @@ export default function CartPage() {
                       {item.discountAmount > 0 && (
                         <div className="left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
                           <TicketPercent size={15}/>
-                          {item.menuItem.vouchers[0].voucher.type === "nominal" ? (
+                          {item.menuItem.vouchers[0].voucher.type === "fixed" ? (
                             <div className="text-[10px] ml-1">Rp.{item.menuItem.vouchers[0].voucher.discount.toLocaleString()}</div>
                           ) : (
                             <div className="text-[10px] ml-1">{item.menuItem.vouchers[0].voucher.discount}%</div>

@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"   // lebih aman (no mismatch)
+          defaultTheme="light"   // lebih aman (no mismatch)
           enableSystem
           disableTransitionOnChange
         >

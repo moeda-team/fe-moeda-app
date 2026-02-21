@@ -17,13 +17,13 @@ interface CardBestProps {
 export function CardBest({ data }: CardBestProps) {
   return (
     <Carousel opts={{ align: "start" }}>
-      <CarouselContent className="flex gap-2">
+      <CarouselContent>
         {data.map((item, index) => (
           <CarouselItem
             key={item.id}
-            className="flex-1"
+            className="basis-auto cursor-pointer"
           >
-            <div className="bg-primary/20 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2">
+            <div className="bg-primary/10 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2 w-[150px]">
               <div className="relative h-28">
                 <Image
                   src={item.img}

@@ -98,7 +98,7 @@ export function TransactionQrDrawer({
     enabled: !!activeTransactionId && !!restored?.qrUrl,
     refetchInterval: (query) => {
       const data = query.state.data
-      return data?.data?.status === "pending" ? 10000 : false
+      return data?.data?.status === "pending" ? 7000 : false
     },
     refetchOnWindowFocus: false,
   })

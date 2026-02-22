@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useCartStore } from "@/store/cart.store"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 import { EditCustomerDrawer } from "./EditCustomerDrawer"
@@ -55,7 +55,22 @@ export default function CheckoutPage() {
   const nSub = nSubtotal()
   const cartDiscount = totalDiscountFn()
   const { mutate, isPending } = useCreateTransaction()
+  const [isBlocking, setIsBlocking] = useState(true)
+  
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!isBlocking) return
 
+      e.preventDefault()
+      e.returnValue = ""
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [isBlocking])
   /**
    * =========================
    * VOUCHER

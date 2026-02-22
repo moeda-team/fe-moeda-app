@@ -273,14 +273,14 @@ export default function CheckoutPage() {
           </div>
 
           {cartDiscount > 0 && (
-            <div className="flex justify-between text-primary">
+            <div className="flex justify-between text-[#E35336]">
               <span>Menu Discount</span>
               <span>- Rp {cartDiscount.toLocaleString("id-ID")}</span>
             </div>
           )}
 
           {voucher && (
-            <div className="flex justify-between text-primary">
+            <div className="flex justify-between text-[#E35336]">
               <span>{voucher.name}</span>
               <span>- Rp {discountAmount.toLocaleString("id-ID")}</span>
             </div>

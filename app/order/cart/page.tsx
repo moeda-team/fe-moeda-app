@@ -61,7 +61,7 @@ export default function CartPage() {
                   <div className="text-sm">
                     <div className="flex items-center gap-2">
                       {item.discountAmount > 0 && (
-                        <p className="text-sm line-through text-gray-400">
+                        <p className="text-sm line-through text-[#E35336]">
                           Rp {item.subtotal.toLocaleString("id-ID")}
                         </p>
                       )}

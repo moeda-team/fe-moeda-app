@@ -269,6 +269,7 @@ export type TransactionCalculateResponse = {
     rounding : number
   }
 }
+
 export async function getTransactionCalculate(
   paymentMethod: string,
   total: number,
@@ -302,6 +303,110 @@ export async function updateTransactionStatus(
 
   if (!res) {
     throw new Error("Failed to update status")
+  }
+
+  return res.data
+}
+
+// order
+export interface Menu {
+  id: string
+  outletId: string
+  name: string
+  desc: string
+  img: string
+  price: string
+  pdf: string
+  categoryId: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * =========================
+ * SUB TRANSACTION
+ * =========================
+ */
+
+export interface SubTransaction {
+  id: string
+  transactionId: string
+  menuId: string
+  menuName: string
+  quantity: number
+  price: string
+  subTotal: string
+  addOn: string
+  note: string
+  status: "preparation" | "completed" | "cancelled"
+  createdAt: string
+  updatedAt: string
+  menu: Menu
+}
+
+/**
+ * =========================
+ * LOG TABLE MOVE
+ * =========================
+ */
+
+export interface LogTableMove {
+  id: string
+  outletId: string
+  transactionId: string
+  tableNumber: number
+  prevTableId: string | null
+  nextTableId: string | null
+  note: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * =========================
+ * TRANSACTION
+ * =========================
+ */
+
+export interface TransactionOrder {
+  id: string
+  userId: string | null
+  outletId: string
+  number: string
+  transactionType: string
+  tableNumber: number
+  paymentNumber: string
+  paymentMethod: string
+  customerName: string
+  totalSubTransaction: number
+  subTotal: string
+  discount: string
+  tax: string
+  serviceCharge: string
+  rounding: string
+  total: string
+  additionalNote: string
+  voucherId: string | null
+  status: "pending" | "completed" | "cancelled"
+  fraudStatus: string
+  createdAt: string
+  updatedAt: string
+  subTransactions: SubTransaction[]
+  logTableMove: LogTableMove[]
+}
+
+export type OrderListResponse = {
+  data: TransactionOrder[]
+}
+
+export async function getOrderList(
+  orderId : string[]
+): Promise<OrderListResponse> {
+  const res = await axiosClient.post<OrderListResponse>(`/transactions/main/check/status`, {orderIds:orderId})
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
   }
 
   return res.data

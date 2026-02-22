@@ -4,6 +4,9 @@ import { useCartStore } from "@/store/cart.store"
 import { useRouter } from "next/navigation"
 import { ShoppingCart } from "lucide-react"
 import { useOrderStore } from "@/store/order.store"
+import { useQuery } from "@tanstack/react-query"
+import { getOrderList } from "@/lib/api/customer/req-api"
+import { OrderMenuCarousel } from "./OrderMenuCard"
 
 export function StickyBottomCart() {
   const router = useRouter()
@@ -17,9 +20,17 @@ export function StickyBottomCart() {
 
   // order store
   const completedOrders = useOrderStore((s) => s.completedOrders)
+  
   // array order id
   const orderId = Object.keys(completedOrders)
-  console.log(orderId)
+  const { data: orderList } = useQuery({
+    queryKey: ["transaction-order", orderId],
+    queryFn: () =>
+      getOrderList(
+        orderId
+      ),
+    enabled: !!orderId,
+  })
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
@@ -27,21 +38,9 @@ export function StickyBottomCart() {
         {/* order progress */}
         {
           orderId.length > 0 &&(
-            <div
-              className="
-                bg-white
-                shadow-[0_-8px_30px_rgba(0,0,0,0.08)]
-                px-4
-                pt-4
-                pb-[calc(1rem+env(safe-area-inset-bottom))]
-                flex
-                items-center
-                justify-between
-                text-sm
-              "
-            >
-              <p>{orderId.length} items in progress</p>
-            </div>
+            orderList && orderList?.data?.length > 0 ? (
+              <OrderMenuCarousel data={orderList?.data} onClick={(item) => router.push(`/order/detail/${item.id}`)}/>
+            ) : ""
           )  
         }
         

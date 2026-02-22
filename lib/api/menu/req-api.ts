@@ -19,7 +19,8 @@ export type Menuitem = {
   isActive: boolean,
   createdAt: string,
   updatedAt: string
-  vouchers: Voucher[]
+  vouchers: Voucher[],
+  discountMenus: DiscountMenu[]
 }
 
 export type Voucher = {
@@ -31,6 +32,18 @@ export type Voucher = {
       maxUsage: string
   }
 }
+
+export type DiscountMenu = 
+  {
+    discountId: string,
+    discount: {
+        name: string,
+        discount: string,
+        type: string,
+        maxUsage: string
+    }
+  }
+
 
 export type MenuQueryParams = {
   search?: string

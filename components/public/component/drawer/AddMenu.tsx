@@ -130,18 +130,18 @@ export function AddMenuDrawer({ menu }: Props) {
   const subtotal = basePrice * qty
 
   const discountAmount = React.useMemo(() => {
-    if (!menu.vouchers.length || Number(menu.vouchers[0].voucher.discount) <= 0) return 0
+    if (!menu.discountMenus.length || Number(menu.discountMenus[0].discount.discount) <= 0) return 0
 
-    if (menu.vouchers[0].voucher.type === "percent") {
-      return subtotal * (Number(menu.vouchers[0].voucher.discount) / 100)
+    if (menu.discountMenus[0].discount.type === "percent") {
+      return subtotal * (Number(menu.discountMenus[0].discount.discount) / 100)
     }
 
-    if (menu.vouchers[0].voucher.type === "fixed") {
-      return Number(menu.vouchers[0].voucher.discount)
+    if (menu.discountMenus[0].discount.type === "fixed") {
+      return Number(menu.discountMenus[0].discount.discount)
     }
 
     return 0
-  }, [menu.vouchers, subtotal])
+  }, [menu.discountMenus, subtotal])
 
   const totalPrice = Math.max(subtotal - discountAmount, 0)
 
@@ -152,12 +152,12 @@ export function AddMenuDrawer({ menu }: Props) {
    */
 
   const originalPrice = Number(menu.price)
-  const hasDiscount = menu.vouchers.length > 0 && Number(menu.vouchers[0].voucher.discount) > 0
+  const hasDiscount = menu.discountMenus.length > 0 && Number(menu.discountMenus[0].discount.discount) > 0
 
   const discountedPrice = hasDiscount ?
-    menu.vouchers[0].voucher.type === "percent"
-      ? originalPrice - (originalPrice * Number(menu.vouchers[0].voucher.discount)) / 100
-      : originalPrice - Number(menu.vouchers[0].voucher.discount)
+    menu.discountMenus[0].discount.type === "percent"
+      ? originalPrice - (originalPrice * Number(menu.discountMenus[0].discount.discount)) / 100
+      : originalPrice - Number(menu.discountMenus[0].discount.discount)
     : originalPrice
 
   return (

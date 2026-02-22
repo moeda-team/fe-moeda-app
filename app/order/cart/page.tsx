@@ -66,8 +66,8 @@ export default function CartPage() {
                         </p>
                       )}
                       <div className="flex items-center justify-between">
-                        {item.menuItem.vouchers.length > 0 && (
-                          <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.menuItem.vouchers[0].voucher.name}</div>
+                        {item.menuItem.discountMenus.length > 0 && (
+                          <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.menuItem.discountMenus[0].discount.name}</div>
                         )}
                       </div>
                     </div>
@@ -80,10 +80,10 @@ export default function CartPage() {
                       {item.discountAmount > 0 && (
                         <div className="left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
                           <TicketPercent size={15}/>
-                          {item.menuItem.vouchers[0].voucher.type === "fixed" ? (
-                            <div className="text-[10px] ml-1">Rp.{item.menuItem.vouchers[0].voucher.discount.toLocaleString()}</div>
+                          {item.menuItem.discountMenus[0].discount.type === "fixed" ? (
+                            <div className="text-[10px] ml-1">Rp.{item.menuItem.discountMenus[0].discount.discount.toLocaleString()}</div>
                           ) : (
-                            <div className="text-[10px] ml-1">{item.menuItem.vouchers[0].voucher.discount}%</div>
+                            <div className="text-[10px] ml-1">{item.menuItem.discountMenus[0].discount.discount}%</div>
                           )}
                         </div>
                       )}

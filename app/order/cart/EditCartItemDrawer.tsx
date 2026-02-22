@@ -145,12 +145,12 @@ export function EditCartItemDrawer({ item }: Props) {
   }
 
   const originalPrice = Number(item.menuItem.price)
-  const hasDiscount = item.menuItem.vouchers.length > 0 && Number(item.menuItem.vouchers[0].voucher.discount) > 0
+  const hasDiscount = item.menuItem.discountMenus.length > 0 && Number(item.menuItem.discountMenus[0].discount.discount) > 0
 
   const discountedPrice = hasDiscount ?
-    item.menuItem.vouchers[0].voucher.type === "percent"
-      ? originalPrice - (originalPrice * Number(item.menuItem.vouchers[0].voucher.discount)) / 100
-      : originalPrice - Number(item.menuItem.vouchers[0].voucher.discount)
+    item.menuItem.discountMenus[0].discount.type === "percent"
+      ? originalPrice - (originalPrice * Number(item.menuItem.discountMenus[0].discount.discount)) / 100
+      : originalPrice - Number(item.menuItem.discountMenus[0].discount.discount)
     : originalPrice
 
   return (

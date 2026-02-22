@@ -21,24 +21,24 @@ export function CardMenu({ data }: CardMenuProps) {
               className="object-cover object-top rounded-sm"
             />
             
-            {item.vouchers.length > 0 && (
+            {item.discountMenus.length > 0 && (
               <div className="absolute top-1 left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
                 <TicketPercent size={15}/>
-                {item.vouchers[0].voucher.type === "fixed" ? (
-                  <div className="text-[10px] ml-1">Rp.{item.vouchers[0].voucher.discount.toLocaleString()}</div>
+                {item.discountMenus[0].discount.type === "fixed" ? (
+                  <div className="text-[10px] ml-1">Rp.{item.discountMenus[0].discount.discount.toLocaleString()}</div>
                 ) : (
-                  <div className="text-[10px] ml-1">{item.vouchers[0].voucher.discount}%</div>
+                  <div className="text-[10px] ml-1">{item.discountMenus[0].discount.discount}%</div>
                 )}
               </div>
             )}
           </div>
           
           {/* price */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-">
             <div className="flex flex-col">
               <div className="flex items-center justify-between">
-                {item.vouchers.length > 0 && (
-                  <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.vouchers[0].voucher.name}</div>
+                {item.discountMenus.length > 0 && (
+                  <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.discountMenus[0].discount.name}</div>
                 )}
               </div>
 
@@ -46,35 +46,35 @@ export function CardMenu({ data }: CardMenuProps) {
                 {item.name}
               </p>
 
-              {item.vouchers.length > 0 && item.vouchers[0].voucher.type === "fixed" && (
+              {item.discountMenus.length > 0 && item.discountMenus[0].discount.type === "fixed" && (
                 <div className="flex items-start justify-between gap-2">
-                  <p className={item.vouchers[0].voucher.type === "fixed" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                  <p className={item.discountMenus[0].discount.type === "fixed" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
                     Rp {item.price.toLocaleString()}
                   </p>
                   
-                  {item.vouchers[0].voucher.type === "fixed" && (
+                  {item.discountMenus[0].discount.type === "fixed" && (
                     <p className="text-xs font-semibold ">
-                      Rp. {(Number(item.price) - Number(item.vouchers[0].voucher.discount)).toLocaleString()}
+                      Rp. {(Number(item.price) - Number(item.discountMenus[0].discount.discount)).toLocaleString()}
                     </p>
                   )}
                 </div>
               )}
 
-              {item.vouchers.length > 0 && item.vouchers[0].voucher.type === "percent" && (
+              {item.discountMenus.length > 0 && item.discountMenus[0].discount.type === "percent" && (
                 <div className="flex items-start justify-between gap-2">
-                  <p className={item.vouchers[0].voucher.type === "percent" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                  <p className={item.discountMenus[0].discount.type === "percent" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
                     Rp {item.price.toLocaleString()}
                   </p>
                   
-                  {item.vouchers[0].voucher.type === "percent" && (
+                  {item.discountMenus[0].discount.type === "percent" && (
                     <p className="text-sm font-semibold ">
-                      Rp. {(Number(item.price) - (Number(item.price) * Number(item.vouchers[0].voucher.discount) / 100)).toLocaleString()}
+                      Rp. {(Number(item.price) - (Number(item.price) * Number(item.discountMenus[0].discount.discount) / 100)).toLocaleString()}
                     </p>
                   )}
                 </div>
               )}
               {
-                item.vouchers.length === 0 && (
+                item.discountMenus.length === 0 && (
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm font-semibold">
                       Rp. {item.price.toLocaleString()}

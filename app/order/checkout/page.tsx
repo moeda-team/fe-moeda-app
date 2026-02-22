@@ -83,7 +83,7 @@ export default function CheckoutPage() {
   const taxable = sub - cartDiscount - discountAmount
 
   const tax = taxable * 11 / 100
-  const service = taxable * 0.007 + 500
+  const service = Math.ceil(taxable * 0.007 + 500)
 
   const grandTotal = Math.ceil(
     taxable + tax + service

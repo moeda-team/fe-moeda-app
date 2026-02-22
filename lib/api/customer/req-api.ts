@@ -1,3 +1,4 @@
+import { CompletedOrderDetails } from "@/store/order.store"
 import { axiosClient } from "../axios-client"
 import { Menuitem } from "../menu/req-api"
 
@@ -156,12 +157,7 @@ export type Transaction = {
     url : string,
     type : string
   }[],
-  details : {
-    id : string,
-    customerName : string,
-    total : number,
-    createdAt : string,
-  }
+  details : CompletedOrderDetails
 }
 
 export type TransactionsQueryParams = {

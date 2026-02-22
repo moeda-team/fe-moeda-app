@@ -139,8 +139,8 @@ export default function CheckoutPage() {
         <div className="bg-white rounded-sm p-3 shadow-sm relative">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-[#F3A93B] text-xl text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">
-                {table}
+              <div className="rounded-full bg-[#F3A93B] text-lg text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">
+                {table ? table : "N/A"}
               </div>
 
               <div>
@@ -148,7 +148,7 @@ export default function CheckoutPage() {
                 <p className="font-semibold text-base">
                   {name}{" "}
                   <span className="text-xs font-normal">
-                    (Table {table})
+                    (Table {table ? table : "Not Selected"})
                   </span>
                 </p>
               </div>
@@ -306,9 +306,9 @@ export default function CheckoutPage() {
       {/* STICKY BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white px-4 py-4 shadow-[0_-8px_20px_rgba(0,0,0,0.05)]">
         <button 
-          className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold"
+          className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handlePayment}
-          disabled={isPending}
+          disabled={isPending || table === "-"}
         >
           {isPending ? "Loading..." : "Payment Rp " + grandTotal.toLocaleString("id-ID")}
         </button>

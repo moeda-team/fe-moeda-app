@@ -9,6 +9,7 @@ type Props = {
   backgroundImage?: string
   showBackButton?: boolean
   rightElement?: React.ReactNode
+  url?: string
 }
 
 export function HeaderWithBackground({
@@ -16,6 +17,7 @@ export function HeaderWithBackground({
   backgroundImage = "/images/header.png",
   showBackButton = true,
   rightElement,
+  url,
 }: Props) {
   const router = useRouter()
 
@@ -34,7 +36,7 @@ export function HeaderWithBackground({
       {/* Back Button */}
       {showBackButton && (
         <button
-          onClick={() => router.back()}
+          onClick={() => url ? router.push(url) : router.back()}
           className="absolute left-4 top-1/2 -translate-y-1/2 z-50 cursor-pointer"
         >
           <ArrowLeft />

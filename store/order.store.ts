@@ -3,12 +3,53 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-export type CompletedOrder = {
-  id: string
-  paidAt: number
-  total: number
-  customerName: string
-}
+  export type CompletedOrder = {
+    id: string
+    paidAt: number
+    total: number
+    customerName: string
+    details: CompletedOrderDetails
+  }
+  
+  export type CompletedOrderDetails = {
+    id: string,
+    userId: string,
+    outletId: string,
+    number: string,
+    transactionType: string,
+    tableNumber : number,
+    paymentNumber : string,
+    paymentMethod : string,
+    customerName : string,
+    totalSubTransaction : number,
+    subTotal : string,
+    discount : string,
+    serviceCharge : string,
+    rounding : string,
+    total : string,
+    additionalNote : string,
+    voucherId : null,
+    status : string,
+    fraudStatus : string,
+    createdAt : string,
+    updatedAt : string,
+    subTransactions : CompletedOrderSubTransaction[]
+  }
+
+  export type CompletedOrderSubTransaction = {
+    id : string,
+    transactionId : string,
+    menuId : string,
+    menuName : string,
+    quantity : number,
+    price : string,
+    subTotal : string,
+    addOn : string,
+    note : string,
+    status : string,
+    createdAt : string,
+    updatedAt : string
+  }
 
 type OrderState = {
   completedOrders: Record<string, CompletedOrder>

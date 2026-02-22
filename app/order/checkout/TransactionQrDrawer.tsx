@@ -59,7 +59,6 @@ export function TransactionQrDrawer({
 
   const activeTransactionId =
     transactionId || restored?.transactionId || null
-  console.log(!!activeTransactionId && !restored?.qrUrl)
   /**
    * 🔥 FETCH QR
    */
@@ -127,10 +126,11 @@ export function TransactionQrDrawer({
     addCompletedOrder({
       id: trx.details.id,
       paidAt: Date.now(),
-      total: trx.details.total,
+      total: Number(trx.details.total),
       customerName: trx.details.customerName,
+      details: trx.details,
     })
-
+    
     clearCart()
 
     localStorage.removeItem("transactionId")
@@ -140,7 +140,7 @@ export function TransactionQrDrawer({
     toast.success("Payment successful")
 
     setTimeout(() => {
-      router.replace("/")
+      router.replace(`/order/checkout/${trx.details.id}`)
     }, 3000)
   }, [statusData, addCompletedOrder, clearCart, router])
 
@@ -180,7 +180,7 @@ export function TransactionQrDrawer({
       localStorage.removeItem("qrGenerated")
       localStorage.removeItem("paymentExpiredAt")
 
-      toast.error("Payment expired")
+      // toast.error("Payment expired")
 
       setTimeout(() => {
         onClose()

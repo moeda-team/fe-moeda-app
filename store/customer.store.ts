@@ -14,8 +14,8 @@ type CustomerState = {
 export const useCustomerStore = create<CustomerState>()(
   persist(
     (set) => ({
-      name: "Guest",
-      table: "-",
+      name: "",
+      table: "",
       hasHydrated: false,
 
       setCustomer: (data) =>

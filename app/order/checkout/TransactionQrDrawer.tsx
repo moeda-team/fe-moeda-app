@@ -18,7 +18,6 @@ import { toast } from "sonner"
 import { useOrderStore } from "@/store/order.store"
 
 type Props = {
-  transactionId: string | null
   paymentMethod: string | null
   open: boolean
   setOpen: (open: boolean) => void
@@ -26,7 +25,6 @@ type Props = {
 }
 
 export function TransactionQrDrawer({
-  transactionId,
   paymentMethod,
   open,
   setOpen,
@@ -43,13 +41,11 @@ export function TransactionQrDrawer({
     if (typeof window === "undefined") return null
 
     const storedQr = localStorage.getItem("qrGenerated")
-    const storedId = localStorage.getItem("transactionId")
     const storedExpire = localStorage.getItem("paymentExpiredAt")
 
-    if (storedQr && storedId && storedExpire) {
+    if (storedQr && storedExpire) {
       return {
         qrUrl: storedQr,
-        transactionId: storedId,
         expiredAt: Number(storedExpire),
       }
     }
@@ -57,7 +53,7 @@ export function TransactionQrDrawer({
     return null
   })
 
-  const activeTransactionId = transactionId || restored?.transactionId || null
+  const activeTransactionId = localStorage.getItem("transactionId")
   /**
    * 🔥 FETCH QR
    */
@@ -86,14 +82,7 @@ export function TransactionQrDrawer({
     if (!qrUrl || qrSavedRef.current) return
 
     qrSavedRef.current = true
-
-    const FIVE_MINUTES = 1 * 60 * 1000
-    const expireTimestamp = Date.now() + FIVE_MINUTES
-
     localStorage.setItem("qrGenerated", qrUrl)
-    localStorage.setItem("transactionId", activeTransactionId!)
-    localStorage.setItem("paymentExpiredAt", expireTimestamp.toString())
-
     toast.success("QR Code generated")
 
     // aman karena tidak sync render loop
@@ -155,9 +144,7 @@ export function TransactionQrDrawer({
     return () => clearInterval(interval)
   }, [])
 
-  const expiredAt =
-    restored?.expiredAt ||
-    Number(localStorage.getItem("paymentExpiredAt"))
+  const expiredAt = Number(localStorage.getItem("paymentExpiredAt"))
 
   const remainingSeconds = useMemo(() => {
     if (!expiredAt) return 0
@@ -171,15 +158,12 @@ export function TransactionQrDrawer({
    * 🔥 HANDLE EXPIRED
    */
   useEffect(() => {
-    if (
-      remainingSeconds === 0 &&
-      statusData?.data?.status === "pending"
-    ) {
+    if (remainingSeconds === 0 && statusData?.data?.status === "pending") {
       localStorage.removeItem("transactionId")
       localStorage.removeItem("qrGenerated")
       localStorage.removeItem("paymentExpiredAt")
 
-      // toast.error("Payment expired")
+      toast.error("Payment expired")
 
       setTimeout(() => {
         onClose()

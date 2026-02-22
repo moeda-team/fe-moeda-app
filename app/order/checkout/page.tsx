@@ -45,7 +45,6 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("qris")
   const [showAll, setShowAll] = useState(false)
   const [qrOpen, setQrOpen] = useState(false)
-  const [transactionId, setTransactionId] = useState<string | null>(null)
 
   /**
    * =========================
@@ -97,13 +96,14 @@ export default function CheckoutPage() {
    */
 
   const handlePayment = () => {
-    setTransactionId(null)
     setQrOpen(true)
     setPaymentMethod('qris')
+    const FIVE_MINUTES = 5 * 60 * 1000
+    const expireTimestamp = Date.now() + FIVE_MINUTES
+    localStorage.setItem("paymentExpiredAt", expireTimestamp.toString())
     localStorage.removeItem("transactionId")
     localStorage.removeItem("qrGenerated")
     localStorage.removeItem("expireTimestamp")
-    localStorage.removeItem("paymentExpiredAt")
 
     const payload : CreateTransactionInput = {
       outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',
@@ -129,8 +129,8 @@ export default function CheckoutPage() {
       onSuccess: (data) => {
         if(data){
           setQrOpen(true)
-          setTransactionId(data.data.paymentNumber)
           setPaymentMethod(data.data.paymentMethod)
+          localStorage.setItem("transactionId", data.data.paymentNumber)
         }
       },
       onError: (error) => {
@@ -344,7 +344,6 @@ export default function CheckoutPage() {
       </div>
       
       <TransactionQrDrawer
-        transactionId={transactionId}
         paymentMethod={paymentMethod}
         open={qrOpen}
         setOpen={setQrOpen}

@@ -176,6 +176,7 @@ export type TransactionsListResponse = {
 export type TransactionResponse = {
   data: Transaction
 }
+
 export async function createTransaction(
   input: CreateTransactionInput
 ): Promise<TransactionResponse> {
@@ -249,6 +250,34 @@ export async function getTransactionByPaymentNumber(
       orderId : id,
     },
     paymentType: type
+  })
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
+  }
+
+  return res.data
+}
+
+export type TransactionCalculateResponse = {
+  data: {
+    subTotal : number,
+    discount : number,
+    tax : number,
+    serviceCharge : number,
+    total : number
+    rounding : number
+  }
+}
+export async function getTransactionCalculate(
+  paymentMethod: string,
+  total: number,
+  discount: number
+): Promise<TransactionCalculateResponse> {
+  const res = await axiosClient.post<TransactionCalculateResponse>(`/transactions/main/calculate`, {
+    paymentMethod,
+    total,
+    discount
   })
 
   if (!res) {

@@ -57,8 +57,7 @@ export function TransactionQrDrawer({
     return null
   })
 
-  const activeTransactionId =
-    transactionId || restored?.transactionId || null
+  const activeTransactionId = transactionId || restored?.transactionId || null
   /**
    * 🔥 FETCH QR
    */
@@ -107,7 +106,7 @@ export function TransactionQrDrawer({
   const { data: statusData } = useQuery({
     queryKey: ["transaction-status", activeTransactionId],
     queryFn: () => checkTransactionStatus(activeTransactionId!),
-    enabled: !!activeTransactionId,
+    enabled: !!activeTransactionId && !!restored?.qrUrl,
     refetchInterval: (query) => {
       const data = query.state.data
       return data?.data?.status === "pending" ? 10000 : false

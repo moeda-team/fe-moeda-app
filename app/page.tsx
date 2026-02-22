@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <PublicLayout>
-      <div className="space-y-4 bg-primary/10 min-h-screen pb-15">
+      <div className="space-y-4 bg-primary/10 min-h-screen pb-30">
         {/* STICKY WRAPPER */}
         <div className={cn("sticky top-0 z-50 bg-white pb-3 pt-3 space-y-3 hidden px-2", showSticky && "block")}>
           

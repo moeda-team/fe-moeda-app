@@ -9,11 +9,12 @@ import { ChevronDown, List, TicketPercent } from "lucide-react"
 import { useVoucher } from "./hooks/useVoucher"
 import { PaymentMethodSelector } from "./PaymentMethodSelector"
 import { useCreateTransaction } from "./hooks/useTransactions"
-import { CreateTransactionInput } from "@/lib/api/customer/req-api"
+import { CreateTransactionInput, getTransactionCalculate } from "@/lib/api/customer/req-api"
 import { toast } from "sonner"
 import axios from "axios"
 import { TransactionQrDrawer } from "./TransactionQrDrawer"
 import LoadingScreen from "@/components/loading"
+import { useQuery } from "@tanstack/react-query"
 
 export default function CheckoutPage() {
 
@@ -23,9 +24,9 @@ export default function CheckoutPage() {
    * =========================
    */
   const items = useCartStore((s) => s.items)
-  const subtotalFn = useCartStore((s) => s.subtotal)
+  const subtotalFn = useCartStore((s) => s.totalFinal)
   const totalDiscountFn = useCartStore((s) => s.totalDiscount)
-
+  
   /**
    * =========================
    * CUSTOMER STORE
@@ -69,6 +70,17 @@ export default function CheckoutPage() {
     discountAmount,
   } = useVoucher(sub)
 
+  const { data: transactionData } = useQuery({
+    queryKey: ["transaction-calculate", transactionId],
+    queryFn: () =>
+      getTransactionCalculate(
+        paymentMethod!,
+        sub,
+        discountAmount + cartDiscount
+      ),
+    enabled: !!paymentMethod,
+  })
+
   /**
    * =========================
    * HYDRATION GUARD
@@ -78,23 +90,14 @@ export default function CheckoutPage() {
 
   /**
    * =========================
-   * TAX & SERVICE
+   * PAYMENT
    * =========================
    */
-  const taxable = sub - cartDiscount - discountAmount
-
-  const tax = taxable * 11 / 100
-  const service = Math.ceil(taxable * 0.007 + 500)
-
-  const grandTotal = Math.ceil(
-    taxable + tax + service
-  )
 
   const handlePayment = () => {
     setTransactionId(null)
     setQrOpen(true)
     setPaymentMethod('qris')
-    localStorage.removeItem("active-transaction-id")
     localStorage.removeItem("transactionId")
     localStorage.removeItem("qrGenerated")
     localStorage.removeItem("expireTimestamp")
@@ -106,7 +109,7 @@ export default function CheckoutPage() {
       tableNumber : parseInt(table),
       paymentMethod : paymentMethod,
       customerName : name,
-      discount : cartDiscount,
+      discount : transactionData?.data.discount ?? 0,
       additionalNote : "",
       voucher : code,
       cart : items.map((item) => ({
@@ -126,7 +129,6 @@ export default function CheckoutPage() {
           setQrOpen(true)
           setTransactionId(data.data.paymentNumber)
           setPaymentMethod(data.data.paymentMethod)
-          localStorage.setItem("active-transaction-id", data.data.id)
         }
       },
       onError: (error) => {
@@ -136,7 +138,7 @@ export default function CheckoutPage() {
       }
     })
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
 
@@ -220,9 +222,16 @@ export default function CheckoutPage() {
                       {item.note}
                     </div>
                   </div>
-
-                  <div className="font-semibold">
-                    Rp {item.finalPrice.toLocaleString("id-ID")}
+                  
+                  <div className="flex gap-2">
+                    {item.discountAmount > 0 && (
+                      <div className="text-xs text-[#E35336] line-through ">
+                        {item.subtotal > 0 ? `(${item.subtotal.toLocaleString("id-ID")})` : ""}
+                      </div>
+                    )}
+                    <div className="font-semibold">
+                      Rp {item.finalPrice.toLocaleString("id-ID")}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -274,19 +283,19 @@ export default function CheckoutPage() {
         />
         
         {/* SUMMARY */}
-        <div className="bg-white rounded-xl p-4 shadow-sm space-y-2 text-sm">
+        <div className="bg-white rounded-xl p-4 shadow-sm space-y-1 text-sm">
 
           <div className="flex justify-between">
             <span>Sub Total</span>
             <span>Rp {sub.toLocaleString("id-ID")}</span>
           </div>
 
-          {cartDiscount > 0 && (
+          {transactionData?.data.discount ? (
             <div className="flex justify-between text-[#E35336]">
               <span>Menu Discount</span>
-              <span>- Rp {cartDiscount.toLocaleString("id-ID")}</span>
+              <span>- Rp {transactionData?.data.discount.toLocaleString("id-ID")}</span>
             </div>
-          )}
+          ) : null}
 
           {voucher && (
             <div className="flex justify-between text-[#E35336]">
@@ -295,19 +304,30 @@ export default function CheckoutPage() {
             </div>
           )}
 
-          <div className="flex justify-between">
-            <span>Tax</span>
-            <span>Rp {tax.toLocaleString("id-ID")}</span>
-          </div>
+          {transactionData?.data.tax && (
+            <div className="flex justify-between">
+              <span>Tax</span>
+              <span>Rp {transactionData?.data.tax.toLocaleString("id-ID")}</span>
+            </div>
+          )}
 
-          <div className="flex justify-between">
-            <span>Service Fee</span>
-            <span>Rp {service.toLocaleString("id-ID")}</span>
-          </div>
+          {transactionData?.data.serviceCharge && (
+            <div className="flex justify-between">
+              <span>Service Fee</span>
+              <span>Rp {transactionData?.data.serviceCharge.toLocaleString("id-ID")}</span>
+            </div>
+          )}
+          
+          {transactionData?.data.rounding && (
+            <div className="flex justify-between">
+              <span>Round</span>
+              <span>Rp {transactionData?.data.rounding.toLocaleString("id-ID")}</span>
+            </div>
+          )}
 
           <div className="border-t pt-2 flex justify-between font-semibold text-base">
             <span>Total to Pay</span>
-            <span>Rp {grandTotal.toLocaleString("id-ID")}</span>
+            <span>Rp {transactionData?.data.total.toLocaleString("id-ID")}</span>
           </div>
         </div>
       </div>
@@ -319,7 +339,7 @@ export default function CheckoutPage() {
           onClick={handlePayment}
           disabled={isPending || table === ""}
         >
-          {isPending ? "Loading..." : "Payment Rp " + grandTotal.toLocaleString("id-ID")}
+          {isPending ? "Loading..." : "Payment Rp " + transactionData?.data.total.toLocaleString("id-ID")}
         </button>
       </div>
       

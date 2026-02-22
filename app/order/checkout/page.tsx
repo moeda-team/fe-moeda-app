@@ -85,9 +85,8 @@ export default function CheckoutPage() {
   const tax = taxable * 11 / 100
   const service = taxable * 0.007 + 500
 
-  const grandTotal = Math.max(
-    taxable + tax + service,
-    0
+  const grandTotal = Math.ceil(
+    taxable + tax + service
   )
 
   const handlePayment = () => {

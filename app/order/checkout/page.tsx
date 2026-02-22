@@ -13,6 +13,7 @@ import { CreateTransactionInput } from "@/lib/api/customer/req-api"
 import { toast } from "sonner"
 import axios from "axios"
 import { TransactionQrDrawer } from "./TransactionQrDrawer"
+import LoadingScreen from "@/components/loading"
 
 export default function CheckoutPage() {
 
@@ -321,7 +322,7 @@ export default function CheckoutPage() {
           {isPending ? "Loading..." : "Payment Rp " + grandTotal.toLocaleString("id-ID")}
         </button>
       </div>
-
+      
       <TransactionQrDrawer
         transactionId={transactionId}
         paymentMethod={paymentMethod}
@@ -329,6 +330,7 @@ export default function CheckoutPage() {
         setOpen={setQrOpen}
         onClose={() => setQrOpen(false)}
       />
+      {isPending && <LoadingScreen />}
     </div>
   )
 }

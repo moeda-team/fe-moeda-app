@@ -25,6 +25,7 @@ export default function CheckoutPage() {
    */
   const items = useCartStore((s) => s.items)
   const subtotalFn = useCartStore((s) => s.totalFinal)
+  const nSubtotal = useCartStore((s) => s.subtotal)
   const totalDiscountFn = useCartStore((s) => s.totalDiscount)
   
   /**
@@ -52,6 +53,7 @@ export default function CheckoutPage() {
    * =========================
    */
   const sub = subtotalFn()
+  const nSub = nSubtotal()
   const cartDiscount = totalDiscountFn()
   const { mutate, isPending } = useCreateTransaction()
 
@@ -71,12 +73,12 @@ export default function CheckoutPage() {
   } = useVoucher(sub)
 
   const { data: transactionData } = useQuery({
-    queryKey: ["transaction-calculate", transactionId],
+    queryKey: ["transaction-calculate", discountAmount],
     queryFn: () =>
       getTransactionCalculate(
         paymentMethod!,
         sub,
-        discountAmount + cartDiscount
+        Number(discountAmount)
       ),
     enabled: !!paymentMethod,
   })
@@ -286,16 +288,14 @@ export default function CheckoutPage() {
         <div className="bg-white rounded-xl p-4 shadow-sm space-y-1 text-sm">
 
           <div className="flex justify-between">
-            <span>Sub Total</span>
-            <span>Rp {sub.toLocaleString("id-ID")}</span>
+            <span>Subtotal</span>
+            <span>Rp {nSub.toLocaleString("id-ID")}</span>
           </div>
 
-          {transactionData?.data.discount ? (
-            <div className="flex justify-between text-[#E35336]">
-              <span>Menu Discount</span>
-              <span>- Rp {transactionData?.data.discount.toLocaleString("id-ID")}</span>
-            </div>
-          ) : null}
+          <div className="flex justify-between text-[#E35336]">
+            <span>Menu Discount</span>
+            <span>- Rp {cartDiscount ? cartDiscount.toLocaleString("id-ID") : "0"}</span>
+          </div>
 
           {voucher && (
             <div className="flex justify-between text-[#E35336]">

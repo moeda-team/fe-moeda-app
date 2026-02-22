@@ -118,7 +118,7 @@ export default function CheckoutPage() {
           menuId : item.menuId,
           menuName : item.name,
           quantity : item.qty,
-          price : item.finalPrice,
+          price : item.basePrice,
           subTotal : item.subtotal,
           addOn : item?.options ? Object.values(item.options).flat().join(", ") : "",
           note : item.note ?? ""

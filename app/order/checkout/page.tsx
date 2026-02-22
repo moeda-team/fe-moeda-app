@@ -83,7 +83,7 @@ export default function CheckoutPage() {
   const taxable = sub - cartDiscount - discountAmount
 
   const tax = taxable * 11 / 100
-  const service = taxable * 2 / 100
+  const service = taxable * 0.007 + 500
 
   const grandTotal = Math.max(
     taxable + tax + service,
@@ -91,6 +91,16 @@ export default function CheckoutPage() {
   )
 
   const handlePayment = () => {
+    setTransactionId(null)
+    localStorage.removeItem("active-transaction-id")
+    localStorage.removeItem("transactionId")
+    localStorage.removeItem("qrGenerated")
+    localStorage.removeItem("expireTimestamp")
+    localStorage.removeItem("paymentExpiredAt")
+    setQrOpen(true)
+    setTransactionId(null)
+    setPaymentMethod('qris')
+
     const payload : CreateTransactionInput = {
       outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',
       transactionType : "dine-in",

@@ -1,9 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Menuitem } from "@/lib/api/menu/req-api"
-import { Button } from "@/components/ui/button"
-import { ShoppingBag } from "lucide-react"
+import { MenuitemBestseller } from "@/lib/api/menu/req-api"
 import {
   Carousel,
   CarouselContent,
@@ -11,7 +9,7 @@ import {
 } from "@/components/ui/carousel"
 
 interface CardBestProps {
-  data: Menuitem[]
+  data: MenuitemBestseller[]
 }
 
 export function CardBest({ data }: CardBestProps) {
@@ -26,8 +24,8 @@ export function CardBest({ data }: CardBestProps) {
             <div className="bg-primary/10 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2 w-[150px]">
               <div className="relative h-28">
                 <Image
-                  src={item.img}
-                  alt={item.name}
+                  src={item.menu.img}
+                  alt={item.menu.name}
                   fill
                   className="object-cover object-top rounded-t-lg"
                 />
@@ -36,7 +34,7 @@ export function CardBest({ data }: CardBestProps) {
 
               <div className="space-y-1 p-3 text-center">
                 <p className="text-sm font-medium line-clamp-1">
-                  {item.name}
+                  {item.menu.name}
                 </p>
               </div>
 

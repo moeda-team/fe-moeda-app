@@ -23,6 +23,12 @@ export type Menuitem = {
   discountMenus: DiscountMenu[]
 }
 
+export type MenuitemBestseller = {
+  id: string,
+  menuId: string,
+  menu: Menuitem,
+}
+
 export type Voucher = {
   voucherId: string,
   voucher: {
@@ -58,9 +64,24 @@ export type MenuListResponse = {
   paginate: Paginate
 }
 
+export type MenuBestsellerResponse = {
+  statusCode: number
+  additional: unknown
+  data: MenuitemBestseller[]
+  paginate: Paginate
+}
+
 export async function getMenus(
   params?: MenuQueryParams
 ): Promise<MenuListResponse> {
   const res = await axiosClient.get<MenuListResponse>(`/menus/main`, { params })
+  return res.data
+}
+
+
+export async function getBestseller(
+  params?: MenuQueryParams
+): Promise<MenuBestsellerResponse> {
+  const res = await axiosClient.get<MenuBestsellerResponse>(`/menus/best-seller`, { params })
   return res.data
 }

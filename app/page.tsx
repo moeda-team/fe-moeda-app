@@ -2,7 +2,7 @@
 
 import { PublicLayout } from "@/components/public/public-layout"
 import Hero from "@/components/public/component/hero/page"
-import { useCategoriesQuery, useMenuQuery } from "@/components/public/hooks/use"
+import { useCategoriesQuery, useMenuQuery, useBestsellerQuery } from "@/components/public/hooks/use"
 import { useEffect, useState } from "react"
 import { InputGroup } from "@/components/ui/input-group"
 import { InputGroupInput } from "@/components/ui/input-group"
@@ -24,7 +24,7 @@ export default function Home() {
 
   // categories
   const { data : categoriesData, isLoading : isLoadingCategories } = useCategoriesQuery()
-  const { data : bestData, isLoading : isLoadingBest } = useMenuQuery({ best : true })
+  const { data : bestData, isLoading : isLoadingBest } = useBestsellerQuery()
   const { data : menuData, isLoading : isLoadingMenu } = useMenuQuery({ search : debouncedSearch, category : selectedCategory === 'All' ? "" : selectedCategory ? selectedCategory : undefined })
 
   // scroll set sticky 

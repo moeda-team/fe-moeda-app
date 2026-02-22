@@ -183,7 +183,7 @@ export function TransactionQrDrawer({
       // toast.error("Payment expired")
 
       setTimeout(() => {
-        // window.location.reload()
+        window.location.reload()
       }, 0)
     }
   }, [remainingSeconds, statusData, onClose])

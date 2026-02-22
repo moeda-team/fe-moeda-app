@@ -134,24 +134,25 @@ export default function Home() {
         {/* HERO */}
         
         {/* BEST */}
-        <div className="space-y-3 px-4">
-          <h2 className="text-lg font-semibold">
-            Best Seller
-          </h2>
-          {
-            isLoadingBest ? 
-              <div className="grid grid-cols-2 gap-4">
-              {Array.from({ length: 2 }).map((_, i) => (
-                <Skeleton
-                  key={i}
-                  className="h-40 rounded-2xl bg-primary/30"
-                />
-              ))}
-              </div> : 
-            <CardBest data={bestData?.data ?? []} />
-          }
-        </div>
-        {/* BEST */}
+        {bestData && bestData?.data.length >0 && (
+          <div className="space-y-3 px-4">
+            <h2 className="text-lg font-semibold">
+              Best Seller
+            </h2>
+            {
+              isLoadingBest ? 
+                <div className="grid grid-cols-2 gap-4">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    className="h-40 rounded-2xl bg-primary/30"
+                  />
+                ))}
+                </div> : 
+              <CardBest data={bestData?.data ?? []} />
+            }
+          </div>
+        )}
 
         {/* MENU */}
         <div className="space-y-3 px-4">

@@ -97,7 +97,7 @@ export default function CheckoutPage() {
       tableNumber : parseInt(table),
       paymentMethod : paymentMethod,
       customerName : name,
-      discount : discountAmount,
+      discount : cartDiscount,
       additionalNote : "",
       voucher : code,
       cart : items.map((item) => ({
@@ -287,12 +287,12 @@ export default function CheckoutPage() {
           )}
 
           <div className="flex justify-between">
-            <span>Tax 11%</span>
+            <span>Tax</span>
             <span>Rp {tax.toLocaleString("id-ID")}</span>
           </div>
 
           <div className="flex justify-between">
-            <span>Service 2%</span>
+            <span>Service Fee</span>
             <span>Rp {service.toLocaleString("id-ID")}</span>
           </div>
 

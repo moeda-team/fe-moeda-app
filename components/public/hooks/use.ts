@@ -50,3 +50,5 @@ export function useBestsellerQuery(params?: MenuQueryParams) {
     queryFn: () => getBestseller(params),
   })
 }
+
+

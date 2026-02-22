@@ -24,6 +24,7 @@ export function StickyBottomCart() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="max-w-lg mx-auto">
+        {/* order progress */}
         {
           orderId.length > 0 &&(
             <div
@@ -43,6 +44,8 @@ export function StickyBottomCart() {
             </div>
           )  
         }
+        
+        {/* cart */}
         {items.length > 0 && (
           <div
             className="
@@ -85,9 +88,9 @@ export function StickyBottomCart() {
 
             <div className="flex gap-4">
               {/* CENTER - PRICE */}
-              <div className="text-center">
+              <div className="text-end">
                 {totalDiscount > 0 && (
-                  <p className="text-xs line-through text-gray-400">
+                  <p className="text-xs line-through text-[#E35336]">
                     Rp {subtotal.toLocaleString("id-ID")}
                   </p>
                 )}

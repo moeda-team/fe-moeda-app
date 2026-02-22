@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Drawer,
   DrawerContent,
@@ -21,46 +21,94 @@ type Props = {
   transactionId: string | null
   paymentMethod: string | null
   open: boolean
+  setOpen: (open: boolean) => void
   onClose: () => void
-  removeVoucher?: () => void
 }
 
 export function TransactionQrDrawer({
   transactionId,
   paymentMethod,
   open,
+  setOpen,
   onClose,
 }: Props) {
   const router = useRouter()
   const clearCart = useCartStore((s) => s.clearCart)
+  const addCompletedOrder = useOrderStore((s) => s.addCompletedOrder)
 
   /**
-   * =========================
-   * FETCH QR (ONCE)
-   * =========================
+   * 🔥 RESTORE LOCAL STORAGE
+   */
+  const [restored] = useState(() => {
+    if (typeof window === "undefined") return null
+
+    const storedQr = localStorage.getItem("qrGenerated")
+    const storedId = localStorage.getItem("transactionId")
+    const storedExpire = localStorage.getItem("paymentExpiredAt")
+
+    if (storedQr && storedId && storedExpire) {
+      return {
+        qrUrl: storedQr,
+        transactionId: storedId,
+        expiredAt: Number(storedExpire),
+      }
+    }
+
+    return null
+  })
+
+  const activeTransactionId =
+    transactionId || restored?.transactionId || null
+  console.log(!!activeTransactionId && !restored?.qrUrl)
+  /**
+   * 🔥 FETCH QR
    */
   const { data: qrData } = useQuery({
-    queryKey: ["transaction-qr", transactionId],
+    queryKey: ["transaction-qr", activeTransactionId],
     queryFn: () =>
       getTransactionByPaymentNumber(
-        transactionId!,
+        activeTransactionId!,
         paymentMethod!
       ),
-    enabled: !!transactionId,
+    enabled: !!activeTransactionId && !restored?.qrUrl,
     refetchOnWindowFocus: false,
   })
 
+  const qrUrl =
+    qrData?.data?.actions?.[0]?.url ||
+    restored?.qrUrl ||
+    null
+
   /**
-   * =========================
-   * POLLING STATUS (BACKEND AUTHORITY)
-   * =========================
+   * 🔥 SAVE QR + EXPIRE TIMESTAMP
    */
-  const {
-    data: statusData,
-  } = useQuery({
-    queryKey: ["transaction-status", transactionId],
-    queryFn: () => checkTransactionStatus(transactionId!),
-    enabled: !!transactionId,
+  const qrSavedRef = useRef(false)
+
+  useEffect(() => {
+    if (!qrUrl || qrSavedRef.current) return
+
+    qrSavedRef.current = true
+
+    const FIVE_MINUTES = 5 * 60 * 1000
+    const expireTimestamp = Date.now() + FIVE_MINUTES
+
+    localStorage.setItem("qrGenerated", qrUrl)
+    localStorage.setItem("transactionId", activeTransactionId!)
+    localStorage.setItem("paymentExpiredAt", expireTimestamp.toString())
+
+    toast.success("QR Code generated")
+
+    // aman karena tidak sync render loop
+    setTimeout(() => setOpen(true), 0)
+  }, [qrUrl, activeTransactionId, setOpen])
+
+  /**
+   * 🔥 POLLING STATUS
+   */
+  const { data: statusData } = useQuery({
+    queryKey: ["transaction-status", activeTransactionId],
+    queryFn: () => checkTransactionStatus(activeTransactionId!),
+    enabled: !!activeTransactionId,
     refetchInterval: (query) => {
       const data = query.state.data
       return data?.data?.status === "pending" ? 5000 : false
@@ -69,72 +117,85 @@ export function TransactionQrDrawer({
   })
 
   /**
-   * =========================
-   * HANDLE STATUS CHANGES
-   * =========================
+   * 🔥 HANDLE COMPLETED
    */
-  const addCompletedOrder = useOrderStore(
-    (s) => s.addCompletedOrder
-  )
-
   useEffect(() => {
-    if (statusData?.data.status === "completed") {
-      const trx = statusData.data
-      
-      // simpan ke completed
-      addCompletedOrder({
-        id: trx.details.id,
-        paidAt: Date.now(),
-        total: trx.details.total,
-        customerName: trx.details.customerName,
-      })
+    if (statusData?.data?.status !== "completed") return
 
-      clearCart()
-      toast.success("Payment successful")
-      setTimeout(() => {
-        router.replace(`/`)
-      }, 3000);
-    }
+    const trx = statusData.data
+
+    addCompletedOrder({
+      id: trx.details.id,
+      paidAt: Date.now(),
+      total: trx.details.total,
+      customerName: trx.details.customerName,
+    })
+
+    clearCart()
+
+    localStorage.removeItem("transactionId")
+    localStorage.removeItem("qrGenerated")
+    localStorage.removeItem("paymentExpiredAt")
+
+    toast.success("Payment successful")
+
+    setTimeout(() => {
+      router.replace("/")
+    }, 3000)
   }, [statusData, addCompletedOrder, clearCart, router])
 
   /**
-   * =========================
-   * UI TIMER (ONLY FOR DISPLAY)
-   * =========================
+   * 🔥 TIMER (PERSISTENT)
    */
-  const expired = statusData?.data?.status === "expired"
-  const completed = statusData?.data?.status === "completed"
   const [now, setNow] = useState(() => Date.now())
 
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(Date.now())
     }, 1000)
-
     return () => clearInterval(interval)
   }, [])
 
+  const expiredAt =
+    restored?.expiredAt ||
+    Number(localStorage.getItem("paymentExpiredAt"))
+
   const remainingSeconds = useMemo(() => {
-    if (!statusData?.data?.expiredAt) return null
+    if (!expiredAt) return 0
+    return Math.max(
+      Math.floor((expiredAt - now) / 1000),
+      0
+    )
+  }, [expiredAt, now])
 
-    const expireTime = new Date(
-      statusData.data.expiredAt
-    ).getTime()
+  /**
+   * 🔥 HANDLE EXPIRED
+   */
+  useEffect(() => {
+    if (
+      remainingSeconds === 0 &&
+      statusData?.data?.status === "pending"
+    ) {
+      localStorage.removeItem("transactionId")
+      localStorage.removeItem("qrGenerated")
+      localStorage.removeItem("paymentExpiredAt")
 
-    const diff = expireTime - now
+      toast.error("Payment expired")
 
-    return Math.max(Math.floor(diff / 1000), 0)
-  }, [statusData, now])
+      setTimeout(() => {
+        onClose()
+      }, 0)
+    }
+  }, [remainingSeconds, statusData, onClose])
 
-  if (!transactionId) return null
+  if (!activeTransactionId) return null
+
+  const pending = statusData?.data?.status === "pending"
+  const expired = statusData?.data?.status === "expired"
+  const completed = statusData?.data?.status === "completed"
 
   return (
-    <Drawer
-      open={open}
-      onOpenChange={() => {
-        if (expired) onClose()
-      }}
-    >
+    <Drawer open={open} dismissible={false}>
       <DrawerContent className="px-4 pb-6 max-w-lg mx-auto">
         <DrawerHeader>
           <DrawerTitle>Scan QR to Pay</DrawerTitle>
@@ -142,18 +203,22 @@ export function TransactionQrDrawer({
 
         <div className="flex flex-col items-center gap-4 py-4">
 
-          {qrData?.data.actions?.[0]?.url && (
-            <img src={qrData.data.actions[0].url} alt="QR Code" width={250} height={250} className="rounded-lg" />
+          {qrUrl && (
+            <img
+              src={qrUrl}
+              alt="QR Code"
+              width={250}
+              height={250}
+              className="rounded-lg"
+            />
           )}
 
-          {statusData?.data.status === "pending" && (
-            <p className="text-sm text-muted-foreground">
-              Waiting for payment confirmation...
-            </p>
-          )}
+          {pending && (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Waiting for payment confirmation...
+              </p>
 
-          {remainingSeconds !== null &&
-            statusData?.data.status === "pending" && (
               <p className="text-xs text-red-500 font-medium">
                 Expires in{" "}
                 {Math.floor(remainingSeconds / 60)}:
@@ -161,20 +226,13 @@ export function TransactionQrDrawer({
                   .toString()
                   .padStart(2, "0")}
               </p>
-            )}
+            </>
+          )}
 
           {expired && (
-            <div className="text-center">
-              <p className="text-red-600 font-semibold">
-                Payment Expired
-              </p>
-              <button
-                onClick={onClose}
-                className="mt-2 text-primary underline text-sm"
-              >
-                Close
-              </button>
-            </div>
+            <p className="text-red-600 font-semibold">
+              Payment Expired
+            </p>
           )}
 
           {completed && (

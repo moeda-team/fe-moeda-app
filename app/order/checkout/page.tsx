@@ -318,7 +318,7 @@ export default function CheckoutPage() {
         transactionId={transactionId}
         paymentMethod={paymentMethod}
         open={qrOpen}
-        removeVoucher={removeVoucher}
+        setOpen={setQrOpen}
         onClose={() => setQrOpen(false)}
       />
     </div>

@@ -198,10 +198,12 @@ export function TransactionQrDrawer({
     <Drawer open={open} dismissible={false}>
       <DrawerContent className="px-4 pb-6 max-w-lg mx-auto">
         <DrawerHeader>
-          <DrawerTitle>Scan QR to Pay</DrawerTitle>
+          <DrawerTitle className="text-lg font-semibold text-primary">
+            Scan QR to Pay
+          </DrawerTitle>
         </DrawerHeader>
 
-        <div className="flex flex-col items-center gap-4 py-4">
+        <div className="flex flex-col items-center gap-2">
 
           {qrUrl && (
             <img

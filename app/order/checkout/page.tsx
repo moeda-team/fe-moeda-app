@@ -91,14 +91,13 @@ export default function CheckoutPage() {
 
   const handlePayment = () => {
     setTransactionId(null)
+    setQrOpen(true)
+    setPaymentMethod('qris')
     localStorage.removeItem("active-transaction-id")
     localStorage.removeItem("transactionId")
     localStorage.removeItem("qrGenerated")
     localStorage.removeItem("expireTimestamp")
     localStorage.removeItem("paymentExpiredAt")
-    setQrOpen(true)
-    setTransactionId(null)
-    setPaymentMethod('qris')
 
     const payload : CreateTransactionInput = {
       outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',

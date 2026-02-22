@@ -13,7 +13,7 @@ export function CardMenu({ data }: CardMenuProps) {
     <div className="grid grid-cols-2 gap-4">
       {data.map((item) => (
         <div key={item.id} className="bg-card rounded-xl shadow-soft overflow-hidden p-3 flex flex-col space-y-1 justify-between relative">
-          <div className="relative h-28 w-full">
+          <div className="relative h-32 w-full">
             <Image
               src={item.img}
               alt={item.name}
@@ -34,8 +34,8 @@ export function CardMenu({ data }: CardMenuProps) {
           </div>
           
           {/* price */}
-          <div className="flex flex-col gap-">
-            <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col mt-1">
               <div className="flex items-center justify-between">
                 {item.discountMenus.length > 0 && (
                   <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.discountMenus[0].discount.name}</div>

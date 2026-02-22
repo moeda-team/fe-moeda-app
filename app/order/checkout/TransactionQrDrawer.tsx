@@ -88,7 +88,7 @@ export function TransactionQrDrawer({
 
     qrSavedRef.current = true
 
-    const FIVE_MINUTES = 5 * 60 * 1000
+    const FIVE_MINUTES = 1 * 60 * 1000
     const expireTimestamp = Date.now() + FIVE_MINUTES
 
     localStorage.setItem("qrGenerated", qrUrl)
@@ -183,7 +183,7 @@ export function TransactionQrDrawer({
       // toast.error("Payment expired")
 
       setTimeout(() => {
-        window.location.reload()
+        onClose()
       }, 0)
     }
   }, [remainingSeconds, statusData, onClose])

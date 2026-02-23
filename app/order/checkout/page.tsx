@@ -357,7 +357,7 @@ export default function CheckoutPage() {
           onClick={handlePayment}
           disabled={isPending || table === ""}
         >
-          {isPending ? "Loading..." : "Payment Rp " + transactionData?.data.total.toLocaleString("id-ID")}
+          {isPending ? "Loading..." : "Payment Rp " + (transactionData?.data.total ? transactionData?.data.total.toLocaleString("id-ID") : "0")}
         </button>
       </div>
       

@@ -1,13 +1,15 @@
 "use client"
 
 import * as React from "react"
+import { useForm } from "react-hook-form"
 import {
   useDiscountsQuery,
   useCreateDiscount,
   useUpdateDiscount,
   useDeleteDiscount,
+  useUpdateDiscountMenu,
 } from "@/app/dashboard/master-data/discount/hooks/use"
-import type { UpdateDiscountsInput, DiscountFormValue, DiscountsItem } from "@/lib/api/discounts/req-api"
+import type { UpdateDiscountsInput, DiscountFormValue, DiscountsItem, UpdateDiscountsInputMenu } from "@/lib/api/discounts/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -37,6 +39,9 @@ import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { VoucherFormDialog } from "@/components/dialog/form-voucher"
 import { formatDate } from "date-fns"
 import { formatCurrency } from "@/lib/helpers"
+import { Badge } from "@/components/ui/badge"
+import { SelectMenuDialogPro } from "@/components/dialog/select-menu-dialog"
+import { getMenus } from "@/lib/api/menu/req-api"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
@@ -56,6 +61,16 @@ export default function DiscountPage() {
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebounce(search, 400)
 
+  // ===== MENU DIALOG =====
+  const [openMenuDialog, setOpenMenuDialog] = React.useState(false)
+  const [selectedDiscountId, setSelectedDiscountId] = React.useState("")
+
+  // RHF khusus dialog menu
+  const menuForm = useForm<{ menuIds: string[] }>({
+    defaultValues: {
+      menuIds: [],
+    },
+  })
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
   const [selectedDiscount, setSelectedDiscount] = React.useState<DiscountsItem | null>(null)
@@ -75,6 +90,7 @@ export default function DiscountPage() {
   const createMut = useCreateDiscount()
   const updateMut = useUpdateDiscount()
   const deleteMut = useDeleteDiscount()
+  const updateMenuMut = useUpdateDiscountMenu()
 
   /** dialog form */
   const [open, setOpen] = React.useState(false)
@@ -89,7 +105,7 @@ export default function DiscountPage() {
 
   const openEdit = (u: DiscountsItem) => {
     setEditing(u)
-    console.log(u)
+
     setForm({
       name: u.name ?? "",
       type: u.type ?? "",
@@ -148,6 +164,22 @@ export default function DiscountPage() {
   const tableLoading = isLoading
   const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
 
+  const handleMenuIntegration = async (menuIds: string[]) => {
+    if (!selectedDiscountId) return
+
+    try {
+      await updateMenuMut.mutateAsync({
+        discountId: selectedDiscountId ?? "",
+        menuId: menuIds,
+      })
+
+      toast.success("Discount menu berhasil diperbarui")
+      setOpenMenuDialog(false)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}
@@ -202,7 +234,25 @@ export default function DiscountPage() {
                     </TableCell>
                     <TableCell>{v.maxUsage}</TableCell>
                     <TableCell>{formatDate(v.expiredAt, "dd MMMM yyyy")}</TableCell>
-                    <TableCell>{v.allMenu ? "All Menu" : `${v.discountMenus.length} Selected`}</TableCell>
+                    <TableCell>
+                      <Badge 
+                        className={ v.allMenu ? "bg-primary text-primary-foreground cursor-pointer" : "bg-[#E35336]/20 text-[#E35336] cursor-pointer"}
+                        onClick={() => {
+                          if (!v.allMenu) {
+                            const discountMenus = v.discountMenus.map((dm) => dm.menu.id)
+
+                            menuForm.reset({
+                              menuIds: discountMenus,
+                            })
+
+                            setSelectedDiscountId(v.id??"")
+                            setOpenMenuDialog(true)
+                          }
+                        }}
+                      >
+                        {v.allMenu ? "All Menu" : `${v.discountMenus.length} Menu`}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"
@@ -293,6 +343,33 @@ export default function DiscountPage() {
           confirmVariant="destructive"
           loading={deleteMut.isPending}
           onConfirm={handleConfirmDelete}
+        />
+        <SelectMenuDialogPro
+          open={openMenuDialog}
+          onOpenChange={setOpenMenuDialog}
+          control={menuForm.control}
+          name="menuIds"
+          multiple
+          fetchData={async ({ page, search }) => {
+            const res = await getMenus({
+              page,
+              perPage: 10,
+              search,
+            })
+
+            return {
+              data: res.data.map((m) => ({
+                id: m.id,
+                label: m.name,
+                img: m.img,
+                description: formatCurrency(Number(m.price)),
+              })),
+              hasMore: false,
+            }
+          }}
+          onSave={(ids) => {
+            handleMenuIntegration(ids)
+          }}
         />
       </div>
     </DashboardLayout>

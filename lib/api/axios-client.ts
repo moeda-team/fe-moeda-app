@@ -55,6 +55,7 @@ axiosClient.interceptors.request.use(
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
+        config.headers["X-Basic-Auth"] = basicAuth
       } else {
         config.headers.Authorization = basicAuth
       }

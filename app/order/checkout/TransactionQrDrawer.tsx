@@ -129,7 +129,7 @@ export function TransactionQrDrawer({
 
     setTimeout(() => {
       router.replace(`/order/checkout/${trx.details.id}`)
-    }, 3000)
+    }, 2000)
   }, [statusData, addCompletedOrder, clearCart, router])
 
   /**

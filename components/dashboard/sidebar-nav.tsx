@@ -15,6 +15,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import Image from "next/image"
 
 type Props = {
   groups: NavGroup[]
@@ -83,12 +84,19 @@ export function SidebarNav({ groups, onNavigate }: Props) {
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-3">
-        <div className="px-2 py-2 text-sm font-semibold">Admin Shadcn</div>
+      <div className="">
+        <div className="h-14 text-sm font-semibold flex items-center justify-center gap-2">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            width={80}
+            height={80}
+          />
+        </div>
 
-        <Separator className="my-2" />
+        <Separator className="mb-3" />
 
-        <div className="space-y-4">
+        <div className="space-y-4 px-2">
           {filtered.map((g) => (
             <div key={g.label} className="space-y-2">
               <div className="px-2 text-xs font-medium text-muted-foreground">

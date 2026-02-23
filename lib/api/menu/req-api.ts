@@ -53,6 +53,8 @@ export type DiscountMenu =
 
 export type MenuQueryParams = {
   search?: string
+  page?: number
+  perPage?: number
   category?: string
   best?: boolean
 }

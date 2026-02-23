@@ -51,6 +51,11 @@ export type CreateDiscountsInput = DiscountFormValue
 
 export type UpdateDiscountsInput = DiscountFormValue
 
+export type UpdateDiscountsInputMenu = {
+  discountId: string,
+  menuId: string[]
+}
+
 export async function getDiscounts(
   params?: DiscountsQueryParams
 ): Promise<DiscountsListResponse> {
@@ -70,5 +75,10 @@ export async function updateDiscount(id: string, input: UpdateDiscountsInput) {
 
 export async function deleteDiscount(id: string) {
   const res = await axiosClient.delete(`/discounts/${id}`)
+  return res.data
+}
+
+export async function updateDiscountMenu(input: UpdateDiscountsInputMenu) {
+  const res = await axiosClient.post(`/discounts/menus`, input)
   return res.data
 }

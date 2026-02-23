@@ -4,10 +4,12 @@ import {
   createDiscount,
   updateDiscount,
   deleteDiscount,
+  updateDiscountMenu,
   type DiscountsQueryParams,
   type DiscountsListResponse,
   type CreateDiscountsInput,
   type UpdateDiscountsInput,
+  type UpdateDiscountsInputMenu,
 } from "@/lib/api/discounts/req-api"
 
 const discountsKey = (params?: DiscountsQueryParams) => ["discounts", params ?? {}] as const
@@ -45,6 +47,17 @@ export function useDeleteDiscount() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => deleteDiscount(id),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["discounts"] })
+    },
+  })
+}
+
+export function useUpdateDiscountMenu() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: UpdateDiscountsInputMenu) =>
+      updateDiscountMenu(input),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["discounts"] })
     },

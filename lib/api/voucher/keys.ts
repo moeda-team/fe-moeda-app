@@ -1,8 +1,8 @@
-export const discountsKeys = {
-  all: ["discounts"] as const,
-  lists: () => [...discountsKeys.all, "list"] as const,
+export const tablesKeys = {
+  all: ["tables"] as const,
+  lists: () => [...tablesKeys.all, "list"] as const,
   list: (params?: { q?: string; page?: number; limit?: number }) =>
-    [...discountsKeys.lists(), params ?? {}] as const,
-  details: () => [...discountsKeys.all, "detail"] as const,
-  detail: (id: string) => [...discountsKeys.details(), id] as const,
+    [...tablesKeys.lists(), params ?? {}] as const,
+  details: () => [...tablesKeys.all, "detail"] as const,
+  detail: (id: string) => [...tablesKeys.details(), id] as const,
 }

@@ -39,8 +39,9 @@ export const NAV: NavGroup[] = [
         icon: TicketPercent,
         roles: ["ADMIN", "OWNER"],
         children: [
-          { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER"] },
           { title: "Discount", href: "/dashboard/master-data/discount", roles: ["ADMIN", "OWNER"] },
+          { title: "Tables", href: "/dashboard/master-data/tables", roles: ["ADMIN", "OWNER"] },
+          { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER"] },
         ],
       },
       {

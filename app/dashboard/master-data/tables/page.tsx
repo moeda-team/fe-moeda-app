@@ -3,13 +3,12 @@
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import {
-  useDiscountsQuery,
-  useCreateDiscount,
-  useUpdateDiscount,
-  useDeleteDiscount,
-  useUpdateDiscountMenu,
-} from "@/app/dashboard/master-data/discount/hooks/use"
-import type { UpdateDiscountsInput, DiscountFormValue, DiscountsItem, UpdateDiscountsInputMenu } from "@/lib/api/discounts/req-api"
+  useTablesQuery,
+  useCreateTable,
+  useUpdateTable,
+  useDeleteTable,
+} from "@/app/dashboard/master-data/tables/hooks/use"
+import type { UpdateTablesInput, TableFormValue, TablesItem } from "@/lib/api/tables/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -36,22 +35,13 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
-import { VoucherFormDialog } from "@/components/dialog/form-voucher"
-import { formatDate } from "date-fns"
-import { formatCurrency } from "@/lib/helpers"
-import { Badge } from "@/components/ui/badge"
-import { SelectMenuDialogPro } from "@/components/dialog/select-menu-dialog"
-import { getMenus } from "@/lib/api/menu/req-api"
+import { TablesFormDialog } from "@/components/dialog/form-tables"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
-const emptyForm: DiscountFormValue = {
+const emptyForm: TableFormValue = {
   name: "",
-  type: "",
-  discount: 0,
-  maxUsage: 0,
-  expiredAt: "",
-  allMenu: false,
+  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
 }
 
 export default function DiscountPage() {
@@ -61,22 +51,12 @@ export default function DiscountPage() {
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebounce(search, 400)
 
-  // ===== MENU DIALOG =====
-  const [openMenuDialog, setOpenMenuDialog] = React.useState(false)
-  const [selectedDiscountId, setSelectedDiscountId] = React.useState("")
-
-  // RHF khusus dialog menu
-  const menuForm = useForm<{ menuIds: string[] }>({
-    defaultValues: {
-      menuIds: [],
-    },
-  })
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [selectedDiscount, setSelectedDiscount] = React.useState<DiscountsItem | null>(null)
+  const [selectedDiscount, setSelectedDiscount] = React.useState<TablesItem | null>(null)
 
   /** data */
-  const { data, isLoading } = useDiscountsQuery({
+  const { data, isLoading } = useTablesQuery({
     page,
     perPage,
     search: debouncedSearch,
@@ -87,15 +67,14 @@ export default function DiscountPage() {
   }, [debouncedSearch])
 
   /** mutations */
-  const createMut = useCreateDiscount()
-  const updateMut = useUpdateDiscount()
-  const deleteMut = useDeleteDiscount()
-  const updateMenuMut = useUpdateDiscountMenu()
+  const createMut = useCreateTable()
+  const updateMut = useUpdateTable()
+  const deleteMut = useDeleteTable()
 
   /** dialog form */
   const [open, setOpen] = React.useState(false)
-  const [editing, setEditing] = React.useState<DiscountsItem | null>(null)
-  const [form, setForm] = React.useState<DiscountFormValue>(emptyForm)
+  const [editing, setEditing] = React.useState<TablesItem | null>(null)
+  const [form, setForm] = React.useState<TableFormValue>(emptyForm)
 
   const openCreate = () => {
     setEditing(null)
@@ -103,37 +82,29 @@ export default function DiscountPage() {
     setOpen(true)
   }
 
-  const openEdit = (u: DiscountsItem) => {
+  const openEdit = (u: TablesItem) => {
     setEditing(u)
 
     setForm({
       name: u.name ?? "",
-      type: u.type ?? "",
-      discount: u.discount ?? 0,
-      maxUsage: u.maxUsage ?? 0,
-      expiredAt: formatDate(u.expiredAt ?? "", "yyyy-MM-dd") ?? "",
-      allMenu: u.allMenu ?? false,
+      outletId: u.outletId ?? "",
     })
     setOpen(true)
   }
 
-  const onSubmit = async (data: DiscountFormValue) => {
+  const onSubmit = async (data: TableFormValue) => {
     try {
       if (editing) {
         const payload: Record<string, unknown> = {
           name: data.name,
-          type: data.type,
-          discount: data.discount,
-          maxUsage: data.maxUsage,
-          expiredAt: data.expiredAt,
-          allMenu: data.allMenu,
+          outletId: data.outletId,
         }
 
-        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateDiscountsInput })
-        toast.success("Discount berhasil diperbarui")
+        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateTablesInput })
+        toast.success("Table berhasil diperbarui")
       } else {
         await createMut.mutateAsync(data)
-        toast.success("Discount berhasil dibuat")
+        toast.success("Table berhasil dibuat")
       }
 
       setOpen(false)
@@ -147,7 +118,7 @@ export default function DiscountPage() {
 
     try {
       await deleteMut.mutateAsync(selectedDiscount.id??"")
-      toast.success(`Discount "${selectedDiscount.name}" dihapus`)
+      toast.success(`Table "${selectedDiscount.name}" dihapus`)
       setConfirmOpen(false)
       setSelectedDiscount(null)
     } catch (err) {
@@ -164,21 +135,6 @@ export default function DiscountPage() {
   const tableLoading = isLoading
   const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
 
-  const handleMenuIntegration = async (menuIds: string[]) => {
-    if (!selectedDiscountId) return
-
-    try {
-      await updateMenuMut.mutateAsync({
-        discountId: selectedDiscountId ?? "",
-        menuId: menuIds,
-      })
-
-      toast.success("Discount menu berhasil diperbarui")
-      setOpenMenuDialog(false)
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    }
-  }
 
   return (
     <DashboardLayout>
@@ -188,7 +144,7 @@ export default function DiscountPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Discount</h1>
+          <h1 className="text-2xl font-semibold">Tables</h1>
 
           <div className="flex gap-2">
             <Input
@@ -199,7 +155,7 @@ export default function DiscountPage() {
               disabled={fullscreenLoading}
             />
             <Button onClick={openCreate} disabled={fullscreenLoading}>
-              Create Discount
+              Create Table
             </Button>
           </div>
         </div>
@@ -210,10 +166,6 @@ export default function DiscountPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Discount</TableHead>
-                <TableHead>Max Usage</TableHead>
-                <TableHead>Expired At</TableHead>
-                <TableHead>Menu</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -229,30 +181,6 @@ export default function DiscountPage() {
                 discounts.map((v) => (
                   <TableRow key={v.id}>
                     <TableCell className="font-medium">{v.name}</TableCell>
-                    <TableCell>
-                      {v.type === "fixed" ? formatCurrency(v.discount) : `${v.discount}%`}
-                    </TableCell>
-                    <TableCell>{v.maxUsage}</TableCell>
-                    <TableCell>{formatDate(v.expiredAt, "dd MMMM yyyy")}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        className={ v.allMenu ? "bg-primary text-primary-foreground cursor-pointer" : "bg-[#E35336]/20 text-[#E35336] cursor-pointer"}
-                        onClick={() => {
-                          if (!v.allMenu) {
-                            const discountMenus = v.discountMenus.map((dm) => dm.menu.id)
-
-                            menuForm.reset({
-                              menuIds: discountMenus,
-                            })
-
-                            setSelectedDiscountId(v.id??"")
-                            setOpenMenuDialog(true)
-                          }
-                        }}
-                      >
-                        {v.allMenu ? "All Menu" : `${v.discountMenus.length} Selected`}
-                      </Badge>
-                    </TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"
@@ -316,7 +244,7 @@ export default function DiscountPage() {
         </div>
 
         {/* Form dialog */}
-        <VoucherFormDialog
+        <TablesFormDialog
           open={open}
           onOpenChange={setOpen}
           editing={editing}
@@ -326,7 +254,6 @@ export default function DiscountPage() {
             onSubmit(data)
           }}
           loading={createMut.isPending || updateMut.isPending}
-          type="discount"
         />
 
         {/* Confirm delete */}
@@ -343,33 +270,6 @@ export default function DiscountPage() {
           confirmVariant="destructive"
           loading={deleteMut.isPending}
           onConfirm={handleConfirmDelete}
-        />
-        <SelectMenuDialogPro
-          open={openMenuDialog}
-          onOpenChange={setOpenMenuDialog}
-          control={menuForm.control}
-          name="menuIds"
-          multiple
-          fetchData={async ({ page, search }) => {
-            const res = await getMenus({
-              page,
-              perPage: 10,
-              search,
-            })
-
-            return {
-              data: res.data.map((m) => ({
-                id: m.id,
-                label: m.name,
-                img: m.img,
-                description: formatCurrency(Number(m.price)),
-              })),
-              hasMore: false,
-            }
-          }}
-          onSave={(ids) => {
-            handleMenuIntegration(ids)
-          }}
         />
       </div>
     </DashboardLayout>

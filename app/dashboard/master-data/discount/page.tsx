@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import {
-  useVouchersQuery,
-  useCreateVoucher,
-  useUpdateVoucher,
-  useDeleteVoucher,
-} from "@/app/dashboard/voucher/hooks/use"
-import type { UpdateVouchersInput, VoucherFormValue, VouchersItem } from "@/lib/api/voucher/req-api"
+  useDiscountsQuery,
+  useCreateDiscount,
+  useUpdateDiscount,
+  useDeleteDiscount,
+} from "@/app/dashboard/master-data/discount/hooks/use"
+import type { UpdateDiscountsInput, DiscountFormValue, DiscountsItem } from "@/lib/api/discounts/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -40,16 +40,16 @@ import { formatCurrency } from "@/lib/helpers"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
-const emptyForm: VoucherFormValue = {
+const emptyForm: DiscountFormValue = {
   name: "",
   type: "",
   discount: 0,
   maxUsage: 0,
   expiredAt: "",
-  allMenu: true,
+  allMenu: false,
 }
 
-export default function VouchersPage() {
+export default function DiscountPage() {
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
@@ -58,10 +58,10 @@ export default function VouchersPage() {
 
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [selectedVoucher, setSelectedVoucher] = React.useState<VouchersItem | null>(null)
+  const [selectedDiscount, setSelectedDiscount] = React.useState<DiscountsItem | null>(null)
 
   /** data */
-  const { data, isLoading } = useVouchersQuery({
+  const { data, isLoading } = useDiscountsQuery({
     page,
     perPage,
     search: debouncedSearch,
@@ -72,14 +72,14 @@ export default function VouchersPage() {
   }, [debouncedSearch])
 
   /** mutations */
-  const createMut = useCreateVoucher()
-  const updateMut = useUpdateVoucher()
-  const deleteMut = useDeleteVoucher()
+  const createMut = useCreateDiscount()
+  const updateMut = useUpdateDiscount()
+  const deleteMut = useDeleteDiscount()
 
   /** dialog form */
   const [open, setOpen] = React.useState(false)
-  const [editing, setEditing] = React.useState<VouchersItem | null>(null)
-  const [form, setForm] = React.useState<VoucherFormValue>(emptyForm)
+  const [editing, setEditing] = React.useState<DiscountsItem | null>(null)
+  const [form, setForm] = React.useState<DiscountFormValue>(emptyForm)
 
   const openCreate = () => {
     setEditing(null)
@@ -87,7 +87,7 @@ export default function VouchersPage() {
     setOpen(true)
   }
 
-  const openEdit = (u: VouchersItem) => {
+  const openEdit = (u: DiscountsItem) => {
     setEditing(u)
     console.log(u)
     setForm({
@@ -101,7 +101,7 @@ export default function VouchersPage() {
     setOpen(true)
   }
 
-  const onSubmit = async (data: VoucherFormValue) => {
+  const onSubmit = async (data: DiscountFormValue) => {
     try {
       if (editing) {
         const payload: Record<string, unknown> = {
@@ -113,11 +113,11 @@ export default function VouchersPage() {
           allMenu: data.allMenu,
         }
 
-        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateVouchersInput })
-        toast.success("Voucher berhasil diperbarui")
+        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateDiscountsInput })
+        toast.success("Discount berhasil diperbarui")
       } else {
         await createMut.mutateAsync(data)
-        toast.success("Voucher berhasil dibuat")
+        toast.success("Discount berhasil dibuat")
       }
 
       setOpen(false)
@@ -127,19 +127,19 @@ export default function VouchersPage() {
   }
 
   const handleConfirmDelete = async () => {
-    if (!selectedVoucher) return
+    if (!selectedDiscount) return
 
     try {
-      await deleteMut.mutateAsync(selectedVoucher.id??"")
-      toast.success(`Voucher "${selectedVoucher.name}" dihapus`)
+      await deleteMut.mutateAsync(selectedDiscount.id??"")
+      toast.success(`Discount "${selectedDiscount.name}" dihapus`)
       setConfirmOpen(false)
-      setSelectedVoucher(null)
+      setSelectedDiscount(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
   }
 
-  const vouchers = data?.data ?? []
+  const discounts = data?.data ?? []
   const total = data?.paginate?.total
   const serverPerPage = data?.paginate?.perPage ?? perPage
   const hasNext = data?.paginate?.next != null
@@ -156,7 +156,7 @@ export default function VouchersPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Users</h1>
+          <h1 className="text-2xl font-semibold">Discount</h1>
 
           <div className="flex gap-2">
             <Input
@@ -167,7 +167,7 @@ export default function VouchersPage() {
               disabled={fullscreenLoading}
             />
             <Button onClick={openCreate} disabled={fullscreenLoading}>
-              Create User
+              Create Discount
             </Button>
           </div>
         </div>
@@ -181,19 +181,20 @@ export default function VouchersPage() {
                 <TableHead>Discount</TableHead>
                 <TableHead>Max Usage</TableHead>
                 <TableHead>Expired At</TableHead>
+                <TableHead>Menu</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {!tableLoading && vouchers.length === 0 ? (
+              {!tableLoading && discounts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center">
                     No data
                   </TableCell>
                 </TableRow>
               ) : (
-                vouchers.map((v) => (
+                discounts.map((v) => (
                   <TableRow key={v.id}>
                     <TableCell className="font-medium">{v.name}</TableCell>
                     <TableCell>
@@ -201,6 +202,7 @@ export default function VouchersPage() {
                     </TableCell>
                     <TableCell>{v.maxUsage}</TableCell>
                     <TableCell>{formatDate(v.expiredAt, "dd MMMM yyyy")}</TableCell>
+                    <TableCell>{v.allMenu ? "All Menu" : `${v.discountMenus.length} Selected`}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"
@@ -215,7 +217,7 @@ export default function VouchersPage() {
                         size="sm"
                         variant="destructive"
                         onClick={() => {
-                          setSelectedVoucher(v)
+                          setSelectedDiscount(v)
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
@@ -274,16 +276,17 @@ export default function VouchersPage() {
             onSubmit(data)
           }}
           loading={createMut.isPending || updateMut.isPending}
+          type="discount"
         />
 
         {/* Confirm delete */}
         <ConfirmDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Delete voucher?"
+          title="Delete discount?"
           description={
             <>
-              Voucher <b>{selectedVoucher?.name}</b> akan dihapus permanen.
+              Discount <b>{selectedDiscount?.name}</b> akan dihapus permanen.
             </>
           }
           confirmText="Delete"

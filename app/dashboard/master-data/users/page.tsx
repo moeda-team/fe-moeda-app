@@ -6,7 +6,7 @@ import {
   useCreateUser,
   useUpdateUser,
   useDeleteUser,
-} from "@/app/dashboard/users/hooks/use"
+} from "@/app/dashboard/master-data/users/hooks/use"
 import type { UserFormValue, UserItem } from "@/lib/api/users/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"

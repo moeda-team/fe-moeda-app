@@ -58,7 +58,7 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
 
       <div className="flex-1">
         <div className="text-sm text-muted-foreground capitalize">
-          {crumbs.join(" / ")}
+          {crumbs.join(" / ").replaceAll("-", " ")}
         </div>
       </div>
 

@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { type VouchersItem } from "@/lib/api/voucher/req-api"
+import { Switch } from "@/components/ui/switch"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label"
 import { PhoneInputGroup } from "../input/PhoneInputGroup"
 import { SelectSearch } from "../input/SelectSearch"
 import type { VoucherFormValue } from "@/lib/api/voucher/req-api"
+import { NumberInput } from "../input/NumberInput"
 
 type Props = {
   open: boolean
@@ -27,6 +28,7 @@ type Props = {
   value: VoucherFormValue
   onChange: (value: VoucherFormValue) => void
   onSubmit: (data: VoucherFormValue) => void
+  type?: string
 }
 
 export function VoucherFormDialog({
@@ -37,6 +39,7 @@ export function VoucherFormDialog({
   value,
   onChange,
   onSubmit,
+  type,
 }: Props) {
   const isEdit = !!editing
 
@@ -69,7 +72,7 @@ export function VoucherFormDialog({
     onSubmit(data)
   })
 
-  // const verified = watch("isVerified")
+  const voucherType = watch("type")
 
   return (
     <Dialog
@@ -102,19 +105,6 @@ export function VoucherFormDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label>Discount</Label>
-            <Input
-              type="number"
-              {...register("discount", {
-                required: "Discount is required",
-              })}
-            />
-            {errors.discount && (
-              <p className="text-sm text-red-500">{errors.discount.message}</p>
-            )}
-          </div>
-          
-          <div className="grid gap-2">
             <Label>Type</Label>
 
             <Controller
@@ -138,18 +128,32 @@ export function VoucherFormDialog({
               <p className="text-sm text-red-500">{errors.type.message}</p>
             )}
           </div>
+          
+          <div className="grid gap-2">
+            <NumberInput
+              control={control}
+              name="discount"
+              label={
+                voucherType === "percent"
+                  ? "Discount (%)"
+                  : "Discount Amount"
+              }
+              required
+              min={1}
+              max={voucherType === "percent" ? 100 : undefined}
+              currency={voucherType === "fixed"}
+              currencyCode="IDR"
+            />
+          </div>
 
           <div className="grid gap-2">
-            <Label>Max Usage</Label>
-            <Input
-              type="number"
-              {...register("maxUsage", {
-                required: "Max Usage is required",
-              })}
+            <NumberInput
+              control={control}
+              name="maxUsage"
+              label="Max Usage"
+              required
+              min={1}
             />
-            {errors.maxUsage && (
-              <p className="text-sm text-red-500">{errors.maxUsage.message}</p>
-            )}
           </div>
 
           <div className="grid gap-2">
@@ -164,6 +168,18 @@ export function VoucherFormDialog({
               <p className="text-sm text-red-500">{errors.expiredAt.message}</p>
             )}
           </div>
+
+          {type === 'discount' && (
+            <div className="flex items-center justify-between rounded-md border p-3">
+            <Label>Discount for all menu ?</Label>
+            <Switch
+              checked={watch("allMenu")}
+              onCheckedChange={(v) =>
+                setValue("allMenu", v, { shouldValidate: true })
+              }
+            />
+          </div>
+          )}
 
           <DialogFooter className="mt-4">
             <Button

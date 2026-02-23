@@ -87,7 +87,7 @@ export default function CheckoutPage() {
   } = useVoucher(sub)
 
   const { data: transactionData } = useQuery({
-    queryKey: ["transaction-calculate", discountAmount],
+    queryKey: ["transaction-calculate", discountAmount, sub],
     queryFn: () =>
       getTransactionCalculate(
         paymentMethod!,

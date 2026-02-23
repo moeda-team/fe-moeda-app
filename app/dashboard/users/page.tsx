@@ -6,8 +6,8 @@ import {
   useCreateUser,
   useUpdateUser,
   useDeleteUser,
-} from "@/app/users/hooks/use"
-import type { UserItem } from "@/lib/api/users/req-api"
+} from "@/app/dashboard/users/hooks/use"
+import type { UserFormValue, UserItem } from "@/lib/api/users/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,6 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
 import {
   UserFormDialog,
-  type UserFormValue,
 } from "@/components/dialog/form-users"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
@@ -42,13 +41,17 @@ import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
 const emptyForm: UserFormValue = {
-  fullname: "",
-  username: "",
+  name: "",
   phoneNumber: "",
+  outletId: process.env.NEXT_PUBLIC_OUTLET_ID,
   email: "",
   password: "",
   roles: "HRD",
-  isVerified: true,
+  status: "active",
+  position: "",
+  address: "",
+  gender: "",
+  fee: 0,
 }
 
 export default function UsersPage() {
@@ -92,13 +95,17 @@ export default function UsersPage() {
   const openEdit = (u: UserItem) => {
     setEditing(u)
     setForm({
-      fullname: u.fullname ?? "",
-      username: u.username ?? "",
+      name: u.name ?? "",
       phoneNumber: u.phoneNumber ?? "",
+      outletId: u.outletId ?? "",
       email: u.email ?? "",
+      status: u.status ?? "",
       password: "",
-      roles: u.roles as UserFormValue["roles"],
-      isVerified: Boolean(u.isVerified),
+      roles: u.role as UserFormValue["roles"],
+      position: u.position ?? "",
+      address: u.address ?? "",
+      gender: u.gender ?? "",
+      fee: Number(u.fee) ?? 0,
     })
     setOpen(true)
   }
@@ -107,13 +114,17 @@ export default function UsersPage() {
     try {
       if (editing) {
         const payload: Record<string, unknown> = {
-          fullname: data.fullname,
-          username: data.username,
+          name: data.name,
           phoneNumber: data.phoneNumber,
           email: data.email,
           roles: data.roles,
+          position: data.position ? data.position : data.roles ? data.roles.replace("_", " ").toLowerCase() : "",
+          address: data.address,
+          gender: data.gender,
+          outletId: data.outletId,
           isVerified: true,
         }
+
         if (data.password) payload.password = data.password
 
         await updateMut.mutateAsync({ id: editing.id, input: payload })
@@ -134,7 +145,7 @@ export default function UsersPage() {
 
     try {
       await deleteMut.mutateAsync(selectedUser.id)
-      toast.success(`User "${selectedUser.fullname}" dihapus`)
+      toast.success(`User "${selectedUser.name}" dihapus`)
       setConfirmOpen(false)
       setSelectedUser(null)
     } catch (err) {
@@ -180,8 +191,7 @@ export default function UsersPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fullname</TableHead>
-                <TableHead>Username</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Roles</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
@@ -198,10 +208,9 @@ export default function UsersPage() {
               ) : (
                 users.map((u) => (
                   <TableRow key={u.id}>
-                    <TableCell>{u.fullname}</TableCell>
-                    <TableCell>{u.username}</TableCell>
+                    <TableCell>{u.name}</TableCell>
                     <TableCell>{u.email}</TableCell>
-                    <TableCell>{u.roles}</TableCell>
+                    <TableCell>{u.position}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"
@@ -284,7 +293,7 @@ export default function UsersPage() {
           title="Delete user?"
           description={
             <>
-              User <b>{selectedUser?.fullname}</b> akan dihapus permanen.
+              User <b>{selectedUser?.name}</b> akan dihapus permanen.
             </>
           }
           confirmText="Delete"

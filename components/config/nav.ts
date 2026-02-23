@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react"
-import { LayoutDashboard, Users } from "lucide-react"
+import { LayoutDashboard, Users, TicketPercent } from "lucide-react"
 
-export type UserRole = "ADMIN" | "USER"
+export type UserRole = "ADMIN" | "USER" | "OWNER" | "CHASIER"
 
 export type NavItem = {
   title: string
@@ -29,9 +29,17 @@ export const NAV: NavGroup[] = [
       {
         title: "Users",
         icon: Users,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "OWNER"],
         children: [
-          { title: "List", href: "/users", roles: ["ADMIN"] },
+          { title: "List", href: "/dashboard/users", roles: ["ADMIN", "OWNER"] },
+        ],
+      },
+      {
+        title: "Voucer / Discount",
+        icon: TicketPercent,
+        roles: ["ADMIN", "OWNER"],
+        children: [
+          { title: "List", href: "/dashboard/voucher", roles: ["ADMIN", "OWNER"] },
         ],
       },
     ],

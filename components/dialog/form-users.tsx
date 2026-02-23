@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
-import type { UserItem } from "@/lib/api/users/req-api"
+import { Controller, useForm } from "react-hook-form"
+import { roleOptions, type UserItem } from "@/lib/api/users/req-api"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,19 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PhoneInputGroup } from "../input/PhoneInputGroup"
 import { SelectSearch } from "../input/SelectSearch"
-import { Switch } from "../ui/switch"
-
-type Roles = "ADMIN" | "HRD" | "HELPER" | (string & {})
-
-export type UserFormValue = {
-  fullname: string
-  username: string
-  phoneNumber: string
-  email: string
-  password: string
-  roles: Roles
-  isVerified: boolean
-}
+import type { UserFormValue } from "@/lib/api/users/req-api"
 
 type Props = {
   open: boolean
@@ -40,14 +28,6 @@ type Props = {
   onChange: (value: UserFormValue) => void
   onSubmit: (data: UserFormValue) => void
 }
-
-const roleOptions = [
-  { label: "Admin", value: "ADMIN", keywords: ["super"] },
-  { label: "HRD", value: "HRD" },
-  { label: "Helper", value: "HELPER" },
-  { label: "Teknisi", value: "TEKNISI" },
-  { label: "Marketing", value: "MARKETING" },
-]
 
 export function UserFormDialog({
   open,
@@ -86,7 +66,7 @@ export function UserFormDialog({
   const submit = handleSubmit((data) => {
     // ✅ kirim form terbaru ke parent hanya saat submit
     onChange(data)
-    onSubmit(data)
+    onSubmit({...data, roles : undefined, position :data.roles ? data.roles?.replace("_", " ").toLowerCase() : ""})
   })
 
   // const verified = watch("isVerified")
@@ -108,33 +88,22 @@ export function UserFormDialog({
         </DialogHeader>
 
         <form onSubmit={submit} className="grid gap-4">
+          <Input
+            type="hidden"
+            {...register("outletId", {
+              required: "Outlet ID is required",
+            })}
+          />
           <div className="grid gap-2">
-            <Label>Fullname</Label>
+            <Label>Name</Label>
             <Input
-              {...register("fullname", {
-                required: "Fullname is required",
+              {...register("name", {
+                required: "Name is required",
                 minLength: { value: 3, message: "Min 3 characters" },
               })}
             />
-            {errors.fullname && (
-              <p className="text-sm text-red-500">{errors.fullname.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Username</Label>
-            <Input
-              {...register("username", {
-                required: "Username is required",
-                minLength: { value: 3, message: "Min 3 characters" },
-                pattern: {
-                  value: /^[a-zA-Z0-9._-]+$/,
-                  message: "Only letters, numbers, dot, underscore, dash",
-                },
-              })}
-            />
-            {errors.username && (
-              <p className="text-sm text-red-500">{errors.username.message}</p>
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name.message}</p>
             )}
           </div>
 
@@ -146,7 +115,6 @@ export function UserFormDialog({
               required
             />
           </div>
-
 
           <div className="grid gap-2">
             <Label>Email</Label>
@@ -166,13 +134,60 @@ export function UserFormDialog({
           </div>
 
           <div className="grid gap-2">
-            <Label>Roles</Label>
-            <SelectSearch
-              options={roleOptions}
-              value={value.roles}
-              onChange={(v) => onChange({ ...value, roles: v })}
-              placeholder="Pilih role"
+            <Label>Alamat</Label>
+            <Input
+              type="text"
+              {...register("address", {
+                required: "Alamat is required",
+              })}
             />
+            {errors.address && (
+              <p className="text-sm text-red-500">{errors.address.message}</p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Jenis Kelamin</Label>
+
+            <Controller
+              control={control}
+              name="gender"
+              rules={{ required: "Gender is required" }}
+              render={({ field }) => (
+                <SelectSearch
+                  options={[
+                    { label: "Laki-laki", value: "male" },
+                    { label: "Perempuan", value: "female" },
+                  ]}
+                  value={field.value}
+                  onChange={(v) => field.onChange(v)}
+                  placeholder="Pilih gender"
+                />
+              )}
+            />
+
+            {errors.gender && (
+              <p className="text-sm text-red-500">{errors.gender.message}</p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Roles</Label>
+
+            <Controller
+              control={control}
+              name="roles"
+              rules={{ required: "Role is required" }}
+              render={({ field }) => (
+                <SelectSearch
+                  options={roleOptions}
+                  value={field.value}
+                  onChange={(v) => field.onChange(v)}
+                  placeholder="Pilih role"
+                />
+              )}
+            />
+
             {errors.roles && (
               <p className="text-sm text-red-500">{errors.roles.message}</p>
             )}

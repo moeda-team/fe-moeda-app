@@ -1,13 +1,40 @@
 import { axiosClient } from "../axios-client"
 
 export type UserItem = {
-  id: string
-  fullname: string
-  username: string
-  phoneNumber: string | null
-  email: string
-  roles: string
-  isVerified: boolean
+  id:string;
+  outletId:string;
+  name:string;
+  position:string;
+  email:string;
+  password:string;
+  address:string;
+  gender:string;
+  fee:number;
+  phoneNumber:string;
+  role:string;
+  status:string;
+}
+
+type Roles = "EMPLOYEE" | "OWNER" | "STORE_MANAGER" | "TEKNISI" | "MARKETING" | (string & {})
+
+export const roleOptions = [
+  { label: "Employee", value: "EMPLOYEE", keywords: ["super"] },
+  { label: "Owner", value: "OWNER" },
+  { label: "Store Manager", value: "STORE_MANAGER" },
+]
+
+export type UserFormValue = {
+  name : string,
+  position : string,
+  email : string,
+  password : string,
+  address : string,
+  gender : string,
+  phoneNumber : string,
+  outletId ?: string,
+  status : string,
+  roles?: Roles
+  fee ?: number,
 }
 
 export type UsersQueryParams = {
@@ -32,15 +59,7 @@ export type UsersListResponse = {
   paginate: Paginate
 }
 
-export type CreateUserInput = {
-  fullname: string
-  username: string
-  phoneNumber: string | null
-  email: string
-  roles: string
-  isVerified: boolean
-  password: string
-}
+export type CreateUserInput = UserFormValue
 
 export type UpdateUserInput = {
   fullname?: string
@@ -54,21 +73,21 @@ export type UpdateUserInput = {
 export async function getUsers(
   params?: UsersQueryParams
 ): Promise<UsersListResponse> {
-  const res = await axiosClient.get<UsersListResponse>("/v1/users", { params })
+  const res = await axiosClient.get<UsersListResponse>("/users", { params })
   return res.data
 }
 
 export async function createUser(input: CreateUserInput) {
-  const res = await axiosClient.post("/v1/users", input)
+  const res = await axiosClient.post("/users", input)
   return res.data
 }
 
 export async function updateUser(id: string, input: UpdateUserInput) {
-  const res = await axiosClient.patch(`/v1/users/${id}`, input)
+  const res = await axiosClient.put(`/users/${id}`, input)
   return res.data
 }
 
 export async function deleteUser(id: string) {
-  const res = await axiosClient.delete(`/v1/users/${id}`)
+  const res = await axiosClient.delete(`/users/${id}`)
   return res.data
 }

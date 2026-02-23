@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const subtotalFn = useCartStore((s) => s.totalFinal)
   const nSubtotal = useCartStore((s) => s.subtotal)
   const totalDiscountFn = useCartStore((s) => s.totalDiscount)
-  
+
   /**
    * =========================
    * CUSTOMER STORE
@@ -91,8 +91,9 @@ export default function CheckoutPage() {
     queryFn: () =>
       getTransactionCalculate(
         paymentMethod!,
-        sub,
-        Number(discountAmount)
+        nSub,
+        Number(discountAmount),
+        cartDiscount,
       ),
     enabled: !!paymentMethod,
   })
@@ -113,7 +114,7 @@ export default function CheckoutPage() {
   const handlePayment = () => {
     setQrOpen(true)
     setPaymentMethod('qris')
-    const FIVE_MINUTES = 5 * 60 * 1000
+    const FIVE_MINUTES = 1 * 60 * 1000
     const expireTimestamp = Date.now() + FIVE_MINUTES
     localStorage.setItem("paymentExpiredAt", expireTimestamp.toString())
     localStorage.removeItem("transactionId")
@@ -307,10 +308,12 @@ export default function CheckoutPage() {
             <span>Rp {nSub.toLocaleString("id-ID")}</span>
           </div>
 
-          <div className="flex justify-between text-[#E35336]">
-            <span>Menu Discount</span>
-            <span>- Rp {cartDiscount ? cartDiscount.toLocaleString("id-ID") : "0"}</span>
-          </div>
+          {transactionData?.data.discountMenu && (
+            <div className="flex justify-between text-[#E35336]">
+              <span>Menu Discount</span>
+              <span>- Rp {transactionData?.data.discountMenu.toLocaleString("id-ID")}</span>
+            </div>
+          )}
 
           {voucher && (
             <div className="flex justify-between text-[#E35336]">

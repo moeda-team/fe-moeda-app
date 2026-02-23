@@ -43,6 +43,7 @@ type CartState = {
   subtotal: () => number
   totalDiscount: () => number
   totalFinal: () => number
+  optionMenu: () => number
 }
 
 export const useCartStore = create<CartState>()(
@@ -279,6 +280,11 @@ export const useCartStore = create<CartState>()(
       totalFinal: () =>
         get().items.reduce(
           (total, item) => total + item.finalPrice,
+          0
+        ),
+      optionMenu: () =>
+        get().items.reduce(
+          (total, item) => total + item.extraPrice,
           0
         ),
     }),

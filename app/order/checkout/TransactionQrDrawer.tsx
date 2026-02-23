@@ -95,7 +95,7 @@ export function TransactionQrDrawer({
   const { data: statusData } = useQuery({
     queryKey: ["transaction-status", activeTransactionId],
     queryFn: () => checkTransactionStatus(activeTransactionId!),
-    enabled: !!activeTransactionId && !!restored?.qrUrl,
+    enabled: !!activeTransactionId && !!qrUrl,
     refetchInterval: (query) => {
       const data = query.state.data
       return data?.data?.status === "pending" ? 7000 : false

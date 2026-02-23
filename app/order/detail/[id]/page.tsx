@@ -5,7 +5,6 @@ import { HeaderWithBackground } from "@/components/public/component/HeaderWithBa
 import { useQuery } from "@tanstack/react-query"
 import { getOrderList } from "@/lib/api/customer/req-api"
 import Image from "next/image"
-import { ChevronRight } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
 export default function FeedbackPage() {

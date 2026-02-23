@@ -264,6 +264,7 @@ export type TransactionCalculateResponse = {
     subTotal : number,
     discount : number,
     tax : number,
+    discountMenu : number,
     serviceCharge : number,
     total : number
     rounding : number
@@ -273,12 +274,14 @@ export type TransactionCalculateResponse = {
 export async function getTransactionCalculate(
   paymentMethod: string,
   total: number,
-  discount: number
+  discount: number,
+  discountMenu: number,
 ): Promise<TransactionCalculateResponse> {
   const res = await axiosClient.post<TransactionCalculateResponse>(`/transactions/main/calculate`, {
     paymentMethod,
     total,
-    discount
+    discount,
+    discountMenu,
   })
 
   if (!res) {

@@ -45,12 +45,10 @@ export const NAV: NavGroup[] = [
         ],
       },
       {
-        title: "Admin Menu",
+        title: "Outlet",
         icon: ListCheck,
+        href: "/dashboard/outlet",
         roles: ["ADMIN"],
-        children: [
-          { title: "Outlet", href: "/dashboard/admin-menu/outlet", roles: ["ADMIN"] },
-        ],
       },
     ],
   },

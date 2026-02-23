@@ -88,7 +88,7 @@ export default function FeedbackPage() {
 
             <div className="flex justify-between">
               <span>Table</span>
-              <span>{details.tableNumber}</span>
+              <span>{details.table?.name ?? 'Not Selected'}</span>
             </div>
           </div>
 

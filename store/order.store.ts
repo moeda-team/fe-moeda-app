@@ -17,7 +17,10 @@ import { persist } from "zustand/middleware"
     outletId: string,
     number: string,
     transactionType: string,
-    tableNumber : number,
+    table : {
+      id : string,
+      name : string
+    },
     paymentNumber : string,
     paymentMethod : string,
     customerName : string,

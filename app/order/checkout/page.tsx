@@ -15,6 +15,7 @@ import axios from "axios"
 import { TransactionQrDrawer } from "./TransactionQrDrawer"
 import LoadingScreen from "@/components/loading"
 import { useQuery } from "@tanstack/react-query"
+import { useTablesQuery } from "@/app/dashboard/master-data/tables/hooks/use"
 
 export default function CheckoutPage() {
 
@@ -98,6 +99,13 @@ export default function CheckoutPage() {
     enabled: !!paymentMethod,
   })
 
+  const { data : TABLE_OPTIONS } = useTablesQuery({
+    page : 1,
+    perPage : 1000,
+    search: "",
+  })
+  
+
   /**
    * =========================
    * HYDRATION GUARD
@@ -124,7 +132,7 @@ export default function CheckoutPage() {
     const payload : CreateTransactionInput = {
       outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',
       transactionType : "dine-in",
-      tableNumber : parseInt(table),
+      tableId : table,
       paymentMethod : paymentMethod,
       customerName : name,
       discount : transactionData?.data.discount ?? 0,
@@ -157,6 +165,18 @@ export default function CheckoutPage() {
     })
   }
 
+  const getInitials = (name?: string) => {
+    if (!name || !name.trim()) return "N/A"
+
+    const parts = name.trim().split(/\s+/)
+
+    if (parts.length === 1) {
+      return parts[0].slice(0, 2).toUpperCase()
+    }
+
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
 
@@ -169,7 +189,7 @@ export default function CheckoutPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <div className="rounded-full bg-[#F3A93B] text-lg text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">
-                {table ? table : "N/A"}
+                {getInitials(name)}
               </div>
 
               <div>
@@ -177,13 +197,13 @@ export default function CheckoutPage() {
                 <p className="font-semibold text-base">
                   {name}{" "}
                   <span className="text-xs font-normal">
-                    (Table {table ? table : "Not Selected"})
+                    ({table ? TABLE_OPTIONS?.data?.find((t) => t.id === table)?.name : "Not Selected"})
                   </span>
                 </p>
               </div>
             </div>
 
-            <EditCustomerDrawer />
+            <EditCustomerDrawer tableOptions={TABLE_OPTIONS?.data ?? []}/>
           </div>
         </div>
 
@@ -308,12 +328,12 @@ export default function CheckoutPage() {
             <span>Rp {nSub.toLocaleString("id-ID")}</span>
           </div>
 
-          {transactionData?.data.discountMenu && (
+          {transactionData?.data.discountMenu ? (
             <div className="flex justify-between text-[#E35336]">
               <span>Menu Discount</span>
               <span>- Rp {transactionData?.data.discountMenu.toLocaleString("id-ID")}</span>
             </div>
-          )}
+          ) : null}
 
           {voucher && (
             <div className="flex justify-between text-[#E35336]">

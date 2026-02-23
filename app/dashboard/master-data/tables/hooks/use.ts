@@ -8,6 +8,7 @@ import {
   type TablesListResponse,
   type CreateTablesInput,
   type UpdateTablesInput,
+  switchTable,
 } from "@/lib/api/tables/req-api"
 
 const tablesKey = (params?: TablesQueryParams) => ["tables", params ?? {}] as const
@@ -45,6 +46,17 @@ export function useDeleteTable() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => deleteTable(id),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["tables"] })
+    },
+  })
+}
+
+export function useUpdateSwitchTable() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: {fromTable: string, tableId: string, note?: string}) =>
+      switchTable(input),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["tables"] })
     },

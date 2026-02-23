@@ -9,10 +9,22 @@ import {
   DrawerFooter,
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
 import { useCustomerStore } from "@/store/customer.store"
 import { Edit2 } from "lucide-react"
+import { TablesItem } from "@/lib/api/tables/req-api"
 
-export function EditCustomerDrawer() {
+interface EditCustomerDrawerProps {
+  tableOptions?: TablesItem[]
+}
+
+export function EditCustomerDrawer({ tableOptions }: EditCustomerDrawerProps) {
   const { name, table, setCustomer } = useCustomerStore()
 
   const [open, setOpen] = useState(false)
@@ -37,7 +49,7 @@ export function EditCustomerDrawer() {
         className="absolute top-2 right-2 rounded-full bg-[#F3A93B] text-white"
         size="xs"
       >
-        <Edit2 />
+        <Edit2 size={16} />
       </Button>
 
       <Drawer open={open} onOpenChange={setOpen}>
@@ -47,6 +59,7 @@ export function EditCustomerDrawer() {
           </DrawerHeader>
 
           <div className="space-y-4 mt-2">
+            {/* NAME */}
             <div>
               <label className="text-sm font-medium">
                 Customer Name
@@ -60,18 +73,29 @@ export function EditCustomerDrawer() {
               />
             </div>
 
+            {/* TABLE LIST */}
             <div>
               <label className="text-sm font-medium">
-                Table Number
+                Table
               </label>
-              <input
+
+              <Select
                 value={localTable}
-                type="number"
-                onChange={(e) =>
-                  setLocalTable(e.target.value)
+                onValueChange={(value) =>
+                  setLocalTable(value)
                 }
-                className="w-full mt-2 border rounded-lg px-3 py-2"
-              />
+              >
+                <SelectTrigger className="mt-2 w-full">
+                  <SelectValue placeholder="Select table" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tableOptions && tableOptions?.length > 0 && tableOptions?.map((t) => (
+                    <SelectItem key={t.id} value={t.id ?? ""}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

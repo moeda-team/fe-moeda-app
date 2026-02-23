@@ -58,3 +58,8 @@ export async function deleteTable(id: string) {
   const res = await axiosClient.delete(`/tables/${id}`)
   return res.data
 }
+
+export async function switchTable(input: {fromTable: string, tableId: string, note?: string}) {
+  const res = await axiosClient.patch(`/transactions/main/table/${input.fromTable}`, input)
+  return res.data
+}

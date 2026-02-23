@@ -117,7 +117,7 @@ export type TransactionStatus =
 export type CreateTransactionInput = {
   outletId : string,
   transactionType : string,
-  tableNumber : number,
+  tableId : string,
   paymentMethod : string,
   customerName : string,
   discount : number,
@@ -140,7 +140,7 @@ export type Transaction = {
   id: string
   outletId: string
   transactionType: string
-  tableNumber: string
+  tableId: string
   paymentMethod: string
   paymentNumber: string
   customerName: string
@@ -358,7 +358,7 @@ export interface LogTableMove {
   id: string
   outletId: string
   transactionId: string
-  tableNumber: number
+  tableId: number
   prevTableId: string | null
   nextTableId: string | null
   note: string | null
@@ -378,7 +378,11 @@ export interface TransactionOrder {
   outletId: string
   number: string
   transactionType: string
-  tableNumber: number
+  tableId: string
+  table: {
+    id: string
+    name: string
+  }
   paymentNumber: string
   paymentMethod: string
   customerName: string

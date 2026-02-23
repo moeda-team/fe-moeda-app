@@ -6,10 +6,19 @@ import { useQuery } from "@tanstack/react-query"
 import { getOrderList } from "@/lib/api/customer/req-api"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
+import { useState } from "react"
+import { SwitchTableDrawer } from "./SwitchTableDrawer"
+import { useTablesQuery, useUpdateSwitchTable } from "@/app/dashboard/master-data/tables/hooks/use"
+import { toast } from "sonner"
+import { getErrorMessage } from "@/lib/toast-error"
 
 export default function FeedbackPage() {
   const params = useParams()
   const router = useRouter()
+
+  const [switchTable, setSwitchTable] = useState(false)
+  const [tableCurrentId, setTableCurrentId] = useState("")
+  const updateSwitchTableMut = useUpdateSwitchTable()
 
   const orderId =
     typeof params.id === "string"
@@ -33,6 +42,13 @@ export default function FeedbackPage() {
     enabled: !!orderId, // ⬅️ ini cukup
   })
 
+
+  const { data : TABLE_OPTIONS } = useTablesQuery({
+    page : 1,
+    perPage : 1000,
+    search: "",
+  })
+  
   /**
    * =========================
    * LOADING
@@ -67,8 +83,29 @@ export default function FeedbackPage() {
 
   const transaction = orderList.data[0]
 
-    const total = transaction.subTransactions.length
-    const completed = transaction.subTransactions.map((sub) => sub.status).filter((status) => status === "completed").length
+  const total = transaction.subTransactions.length
+  const completed = transaction.subTransactions.map((sub) => sub.status).filter((status) => status === "completed").length
+
+  const handleSwitchTable = async (data: {
+    fromTable: string
+    tableId: string
+    note?: string
+  }) => {
+    if (!data.tableId) return
+
+    try {
+      await updateSwitchTableMut.mutateAsync({
+        fromTable: transaction.id,
+        tableId: data.tableId,
+        note: data.note,
+      })
+
+      toast.success("Discount menu berhasil diperbarui")
+      setSwitchTable(false)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
   /**
    * =========================
    * PAGE
@@ -94,7 +131,7 @@ export default function FeedbackPage() {
 
           <div className="flex gap-1 items-center text-sm font-semibold text-muted-foreground">
             <span>{transaction.customerName}</span> -
-            <span>Table {transaction.tableNumber}</span>
+            <span>{transaction?.table?.name ?? "Not Selected"}</span>
           </div>
           
           <div className="flex gap-1 items-center text-sm font-semibold text-muted-foreground">
@@ -147,10 +184,22 @@ export default function FeedbackPage() {
         
         <div 
           className="font-semibold text-sm my-2 text-center"
-          onClick={() => console.log("Switch table")}
+          onClick={() => {
+            setSwitchTable(true)
+            setTableCurrentId(transaction.tableId ?? "")
+          }}
         >
           Switch table? <span className="text-xs text-blue-500 cursor-pointer">Click here</span>
         </div>
+        <SwitchTableDrawer
+          open={switchTable}
+          onOpenChange={setSwitchTable}
+          currentTable={tableCurrentId}
+          tableOptions={TABLE_OPTIONS?.data ?? []}
+          onSubmit={(data) => {
+            handleSwitchTable(data)
+          }}
+        />
       </div>
     </div>
   )

@@ -367,55 +367,57 @@ export default function TransactionsListPage() {
 
         {/* Tab Lis History */}
 
-        <div className="relative rounded-xl border bg-background overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Table</TableHead>
-                <TableHead>Order Name</TableHead>
-                <TableHead>Total Menu</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Payment</TableHead>
-                <TableHead>Transaction Type</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {transactions.length === 0 ? (
+        {activeTab === 'history' && (
+          <div className="relative rounded-xl border bg-background overflow-auto">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">
-                    No data
-                  </TableCell>
+                  <TableHead>Table</TableHead>
+                  <TableHead>Order Name</TableHead>
+                  <TableHead>Total Menu</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Payment</TableHead>
+                  <TableHead>Transaction Type</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ) : (
-                transactions.map((v) => (
-                  <TableRow key={v.id}>
-                    <TableCell className="font-medium">{v.table.name ?? 'No selected'}</TableCell>
-                    <TableCell className="font-medium">{v.customerName}</TableCell>
-                    <TableCell className="font-medium">{v.subTransactions.length}</TableCell>
-                    <TableCell className="font-medium">{formatCurrency(Number(v.total))}</TableCell>
-                    <TableCell className="font-medium capitalize">{v.paymentMethod}</TableCell>
-                    <TableCell className="font-medium capitalize">{v.transactionType}</TableCell>
-                    <TableCell className="font-medium capitalize">
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "cursor-pointer capitalize",
-                          v.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-[#F3A93B]/10 text-primary"
-                        )}
-                      >
-                        {v.status}
-                      </Badge>
+              </TableHeader>
+
+              <TableBody>
+                {transactions.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      No data
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                ) : (
+                  transactions.map((v) => (
+                    <TableRow key={v.id}>
+                      <TableCell className="font-medium">{v.table.name ?? 'No selected'}</TableCell>
+                      <TableCell className="font-medium">{v.customerName}</TableCell>
+                      <TableCell className="font-medium">{v.subTransactions.length}</TableCell>
+                      <TableCell className="font-medium">{formatCurrency(Number(v.total))}</TableCell>
+                      <TableCell className="font-medium capitalize">{v.paymentMethod}</TableCell>
+                      <TableCell className="font-medium capitalize">{v.transactionType}</TableCell>
+                      <TableCell className="font-medium capitalize">
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "cursor-pointer capitalize",
+                            v.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-[#F3A93B]/10 text-primary"
+                          )}
+                        >
+                          {v.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   )

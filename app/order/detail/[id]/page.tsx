@@ -78,8 +78,8 @@ export default function FeedbackPage() {
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
       <HeaderWithBackground title="Order Status" url="/" />
 
-      <div className="p-4">
-        <div className="font-semibold text-xl mb-2">
+      <div className="p-4 space-y-4">
+        <div className="font-semibold text-xl">
           Transaction {transaction.paymentNumber}
         </div>
 

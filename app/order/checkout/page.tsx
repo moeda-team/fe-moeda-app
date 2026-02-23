@@ -114,7 +114,7 @@ export default function CheckoutPage() {
   const handlePayment = () => {
     setQrOpen(true)
     setPaymentMethod('qris')
-    const FIVE_MINUTES = 1 * 60 * 1000
+    const FIVE_MINUTES = 5 * 60 * 1000
     const expireTimestamp = Date.now() + FIVE_MINUTES
     localStorage.setItem("paymentExpiredAt", expireTimestamp.toString())
     localStorage.removeItem("transactionId")

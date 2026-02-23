@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 export default function LoginForm() {
   const router = useRouter()
   const sp = useSearchParams()
-  const next = sp.get("next") ?? "/"
+  const next = sp.get("next") ?? "/dashboard"
 
   const [username, setUsername] = React.useState("")
   const [password, setPassword] = React.useState("")

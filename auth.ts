@@ -7,6 +7,14 @@ type LoginResponse = {
   data?: {
     token?: string
     accessToken?: string
+    name?: string
+    email?: string,
+    role?: string,
+    token_type?: string,
+    expires_in?: number,
+    ext_expires_in?: number,
+    access_token?: string,
+    expires_on?: string
   }
 }
 
@@ -51,48 +59,57 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       async authorize(credentials) {
-        const username = String(credentials?.username ?? "")
+        const email = String(credentials?.username ?? "")
         const password = String(credentials?.password ?? "")
-        if (!username || !password) return null
+        if (!email || !password) return null
 
         // 1) LOGIN
-        const loginRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/auth/login`, {
+        const loginRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ email, password }),
         })
 
         if (!loginRes.ok) return null
 
         const loginJson = (await loginRes.json()) as LoginResponse
-        const accessToken = pickToken(loginJson)
+        const accessToken = loginJson.data?.access_token
+        console.log(accessToken)
         if (!accessToken) return null
+         return {
+            id: loginJson.data?.email,
+            name: loginJson.data?.name,
+            email: loginJson.data?.email,
+            image: null,
+            role: loginJson.data?.role ?? "",
+            accessToken,
+          }
 
         // 2) GET ME (ROLE REAL)
-        const meRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/me`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          cache: "no-store",
-        })
+        // const meRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/me`, {
+        //   method: "GET",
+        //   headers: {
+        //     Authorization: `Bearer ${accessToken}`,
+        //     "Content-Type": "application/json",
+        //   },
+        //   cache: "no-store",
+        // })
 
-        if (!meRes.ok) return null
+        // if (!meRes.ok) return null
 
-        const meJson = (await meRes.json()) as MeResponse
-        const me = meJson.data
+        // const meJson = (await meRes.json()) as MeResponse
+        // const me = meJson.data
 
 
         // NextAuth butuh object user-like
-        return {
-          id: me.id,
-          name: me.fullname,
-          email: me.email,
-          image: me.profile?.avatar ?? null,
-          role: me.role ?? "",
-          accessToken, // simpan token backend buat call API lain
-        }
+        // return {
+        //   id: me.id,
+        //   name: me.fullname,
+        //   email: me.email,
+        //   image: me.profile?.avatar ?? null,
+        //   role: me.role ?? "",
+        //   accessToken, // simpan token backend buat call API lain
+        // }
       },
     }),
   ],

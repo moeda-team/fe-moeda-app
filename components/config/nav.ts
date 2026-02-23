@@ -1,13 +1,13 @@
+import { Roles } from "@/lib/api/users/req-api"
 import type { LucideIcon } from "lucide-react"
-import { LayoutDashboard, Users, TicketPercent, ListCheck } from "lucide-react"
+import { LayoutDashboard, Users, TicketPercent, ListCheck, List } from "lucide-react"
 
-export type UserRole = "ADMIN" | "USER" | "OWNER" | "CHASIER"
 
 export type NavItem = {
   title: string
   href?: string
   icon?: LucideIcon
-  roles?: UserRole[]
+  roles?: Roles[]
   children?: NavItem[]
 }
 
@@ -21,6 +21,14 @@ export const NAV: NavGroup[] = [
     label: "Main",
     items: [
       { title: "Dashboard", href: "/", icon: LayoutDashboard },
+      {
+        title: "Transactions",
+        icon: List,
+        roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
+        children: [
+          { title: "List", href: "/dashboard/transactions/list", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+        ],
+      },
     ],
   },
   {

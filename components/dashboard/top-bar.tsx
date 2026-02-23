@@ -56,7 +56,7 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
         <Menu className="h-4 w-4" />
       </Button>
 
-      <div className="flex-1">
+      <div className="flex-1 px-2">
         <div className="text-sm text-muted-foreground capitalize">
           {crumbs.join(" / ").replaceAll("-", " ")}
         </div>

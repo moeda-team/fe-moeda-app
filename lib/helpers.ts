@@ -131,3 +131,68 @@ export const cleanObject = <T extends Record<string, unknown>>(obj: T): Partial<
     Object.entries(obj).filter(([_, v]) => v !== undefined && v !== null)
   ) as Partial<T>
 }
+
+/* ======================================================
+   DATE DIFFERENCE (MINUTES)
+====================================================== */
+
+/**
+ * Get total difference in minutes (integer)
+ */
+export const diffMinutes = (
+  start: MomentInput,
+  end: MomentInput
+): number => {
+  if (!start || !end) return 0
+  return moment(end).diff(moment(start), "minutes")
+}
+
+/**
+ * Get total difference in minutes (decimal)
+ * Example: 90.5 minutes
+ */
+export const diffMinutesDecimal = (
+  start: MomentInput,
+  end: MomentInput
+): number => {
+  if (!start || !end) return 0
+  const duration = moment.duration(
+    moment(end).diff(moment(start))
+  )
+  return duration.asMinutes()
+}
+
+/**
+ * Get absolute difference in minutes
+ */
+export const diffMinutesAbsolute = (
+  start: MomentInput,
+  end: MomentInput
+): number => {
+  if (!start || !end) return 0
+  return Math.abs(
+    moment(end).diff(moment(start), "minutes")
+  )
+}
+
+/**
+ * Get detailed minutes + seconds
+ */
+export const diffMinutesDetail = (
+  start: MomentInput,
+  end: MomentInput
+) => {
+  if (!start || !end) return null
+
+  const duration = moment.duration(
+    moment(end).diff(moment(start))
+  )
+
+  const minutes = Math.floor(duration.asMinutes())
+  const seconds = duration.seconds()
+
+  return {
+    minutes,
+    seconds,
+  }
+}

@@ -314,9 +314,9 @@ export default function TransactionsListPage() {
         {/* Tab List Traksaksi */}
         {activeTab === 'inprogress' && (
           <div className="relative rounded-xl">
-            <div className="grid grid-cols-3 gap-2 min-h-[calc(100vh-200px)]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 min-h-[calc(100vh-200px)]">
               {/* inprogress */}
-              <div className="col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20">
+              <div className="col-span-1 lg:col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20">
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-semibold">In progress</div>
                   <div className="text-sm text-muted-foreground">
@@ -329,14 +329,16 @@ export default function TransactionsListPage() {
                   ))}
                 </div>
 
-                {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "preparation")).length === 0 && (
-                  <div className="flex flex-col justify-center items-center w-full h-full">
-                    <img src="/empty.png" alt="empty" width={200} height={200} />
-                    <div className="text-center text-muted-foreground text-xl">
-                      No transactions preparation
+                <div className="relative">
+                  {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "preparation")).length === 0 && (
+                    <div className="flex flex-col justify-center items-center w-full h-full">
+                      <img src="/empty.png" alt="empty" width={200} height={200} />
+                      <div className="text-center text-muted-foreground text-xl">
+                        No transactions preparation
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* completed */}
@@ -352,14 +354,17 @@ export default function TransactionsListPage() {
                     <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} type="completed" />
                   ))}
                 </div>
-                {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "completed")).length === 0 && (
-                  <div className="flex flex-col justify-center items-center w-full h-full">
-                    <img src="/empty.png" alt="empty" width={200} height={200} />
-                    <div className="text-center text-muted-foreground text-xl">
-                      No transactions completed
+
+                <div className="relative">
+                  {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "completed")).length === 0 && (
+                    <div className="flex flex-col justify-center items-center w-full h-full">
+                      <img src="/empty.png" alt="empty" width={200} height={200} />
+                      <div className="text-center text-muted-foreground text-xl">
+                        No transactions completed
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>

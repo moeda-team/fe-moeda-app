@@ -3,10 +3,10 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, PanelLeft } from "lucide-react"
 import { useSession } from "next-auth/react"
 
-import type { NavGroup, NavItem, UserRole } from "@/components/config/nav"
+import type { NavGroup, NavItem } from "@/components/config/nav"
 import { filterNav } from "@/lib/nav"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -15,51 +15,77 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import Image from "next/image"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Roles } from "@/lib/api/users/req-api"
 
 type Props = {
   groups: NavGroup[]
   onNavigate?: () => void
+  collapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
 function NavLinkItem({
   item,
   active,
+  collapsed,
   onNavigate,
-  className,
 }: {
   item: NavItem
   active: boolean
+  collapsed?: boolean
   onNavigate?: () => void
-  className?: string
 }) {
   const Icon = item.icon
-  return (
+
+  const link = (
     <Link
       href={item.href ?? "#"}
       onClick={onNavigate}
       className={[
-        "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition",
+        "group relative flex items-center rounded-lg px-3 py-2.5 text-sm transition-all duration-200",
+        collapsed ? "justify-center" : "gap-3",
         active
-          ? "bg-muted font-medium"
+          ? "bg-muted font-medium text-foreground"
           : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
-        className ?? "",
       ].join(" ")}
     >
-      {Icon ? <Icon className="h-4 w-4" /> : null}
-      <span className="truncate">{item.title}</span>
+      {Icon && <Icon className="h-4 w-4 shrink-0" />}
+      {!collapsed && (
+        <span className="truncate transition-opacity duration-200">
+          {item.title}
+        </span>
+      )}
     </Link>
+  )
+
+  if (!collapsed) return link
+
+  return (
+    <Tooltip delayDuration={100}>
+      <TooltipTrigger asChild>{link}</TooltipTrigger>
+      <TooltipContent side="right">
+        {item.title}
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
-export function SidebarNav({ groups, onNavigate }: Props) {
+export function SidebarNav({
+  groups,
+  onNavigate,
+  collapsed = false,
+  onToggleCollapse,
+}: Props) {
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
 
-  // role real dari session (hasil /v1/me mapping kamu)
-  const role: UserRole = session?.user?.role ?? "user"
+  const role: Roles = session?.user?.role ?? "ADMIN"
 
-  // saat loading, kita bisa sementara treat sebagai "user"
   const filtered = React.useMemo(
     () => filterNav(groups, role),
     [groups, role]
@@ -69,6 +95,7 @@ export function SidebarNav({ groups, onNavigate }: Props) {
 
   React.useEffect(() => {
     const nextOpen: Record<string, boolean> = {}
+
     for (const g of filtered) {
       for (const item of g.items) {
         if (item.children?.length) {
@@ -79,95 +106,130 @@ export function SidebarNav({ groups, onNavigate }: Props) {
         }
       }
     }
+
     setOpenMap((prev) => ({ ...prev, ...nextOpen }))
   }, [pathname, filtered])
 
   return (
-    <ScrollArea className="h-full">
-      <div className="">
-        <div className="h-14 text-sm font-semibold flex items-center justify-center gap-2">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            width={80}
-            height={80}
-          />
-        </div>
+    <div className="flex h-full flex-col bg-background">
 
-        <Separator className="mb-3" />
+      {/* ================= Header ================= */}
+      <div className="flex h-14 items-center px-3 shrink-0">
+        {!collapsed && (
+          <div className="text-lg font-semibold">
+            <img src="/logo.png" className="w-20" alt="Logo" />
+          </div>
+        )}
 
-        <div className="space-y-4 px-2">
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            className="ml-auto rounded-md p-2 hover:bg-muted transition"
+          >
+            <PanelLeft className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      <Separator />
+
+      {/* ================= Navigation ================= */}
+      <ScrollArea className="flex-1 px-2 py-4">
+        <div className="space-y-6">
           {filtered.map((g) => (
             <div key={g.label} className="space-y-2">
-              <div className="px-2 text-xs font-medium text-muted-foreground">
-                {g.label}
-              </div>
+
+              {!collapsed && (
+                <div className="px-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  {g.label}
+                </div>
+              )}
 
               <div className="space-y-1">
                 {g.items.map((item) => {
-                  const isActive = item.href ? pathname === item.href : false
+                  const isActive =
+                    item.href && pathname === item.href
 
-                  // No children
                   if (!item.children?.length) {
                     return (
                       <NavLinkItem
                         key={item.title}
                         item={item}
-                        active={isActive}
+                        active={!!isActive}
+                        collapsed={collapsed}
                         onNavigate={onNavigate}
                       />
                     )
                   }
 
-                  // With children => collapsible
                   const Icon = item.icon
                   const anyChildActive = item.children.some(
                     (c) => c.href && pathname.startsWith(c.href)
                   )
-                  const open = openMap[item.title] ?? anyChildActive
+
+                  const open =
+                    openMap[item.title] ?? anyChildActive
 
                   return (
                     <Collapsible
                       key={item.title}
-                      open={open}
+                      open={collapsed ? false : open}
                       onOpenChange={(v) =>
-                        setOpenMap((prev) => ({ ...prev, [item.title]: v }))
+                        setOpenMap((prev) => ({
+                          ...prev,
+                          [item.title]: v,
+                        }))
                       }
                     >
                       <CollapsibleTrigger asChild>
                         <button
-                          type="button"
                           className={[
-                            "w-full flex items-center gap-2 rounded-md px-3 py-2 text-sm transition",
+                            "w-full flex items-center rounded-lg px-3 py-2.5 text-sm transition-all duration-200",
+                            collapsed
+                              ? "justify-center"
+                              : "gap-3",
                             anyChildActive
-                              ? "bg-muted font-medium"
+                              ? "bg-muted font-medium text-foreground"
                               : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
                           ].join(" ")}
                         >
-                          {Icon ? <Icon className="h-4 w-4" /> : null}
-                          <span className="flex-1 text-left truncate">
-                            {item.title}
-                          </span>
-                          <ChevronRight
-                            className={[
-                              "h-4 w-4 transition-transform",
-                              open ? "rotate-90" : "rotate-0",
-                            ].join(" ")}
-                          />
+                          {Icon && (
+                            <Icon className="h-4 w-4 shrink-0" />
+                          )}
+
+                          {!collapsed && (
+                            <>
+                              <span className="flex-1 text-left truncate">
+                                {item.title}
+                              </span>
+                              <ChevronRight
+                                className={[
+                                  "h-4 w-4 transition-transform",
+                                  open ? "rotate-90" : "",
+                                ].join(" ")}
+                              />
+                            </>
+                          )}
                         </button>
                       </CollapsibleTrigger>
 
-                      <CollapsibleContent className="mt-1 ml-3 space-y-1 border-l pl-3">
-                        {item.children.map((c) => (
-                          <NavLinkItem
-                            key={c.title}
-                            item={c}
-                            active={c.href ? pathname === c.href : false}
-                            onNavigate={onNavigate}
-                            className="py-1.5"
-                          />
-                        ))}
-                      </CollapsibleContent>
+                      {!collapsed && (
+                        <CollapsibleContent className="ml-4 mt-1 space-y-1 border-l pl-4">
+                          {item.children.map((c) => (
+                            <NavLinkItem
+                              key={c.title}
+                              item={c}
+                              active={
+                                c.href
+                                  ? pathname === c.href
+                                  : false
+                              }
+                              collapsed={false}
+                              onNavigate={onNavigate}
+                            />
+                          ))}
+                        </CollapsibleContent>
+                      )}
                     </Collapsible>
                   )
                 })}
@@ -175,7 +237,7 @@ export function SidebarNav({ groups, onNavigate }: Props) {
             </div>
           ))}
         </div>
-      </div>
-    </ScrollArea>
+      </ScrollArea>
+    </div>
   )
 }

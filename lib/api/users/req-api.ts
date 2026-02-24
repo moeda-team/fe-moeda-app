@@ -15,7 +15,7 @@ export type UserItem = {
   status:string;
 }
 
-export type Roles = "EMPLOYEE" | "OWNER" | "STORE_MANAGER" | "TEKNISI" | "MARKETING" | (string & {})
+export type Roles = "EMPLOYEE" | "OWNER" | "STORE_MANAGER" | "ADMIN" | (string & {})
 
 export const roleOptions = [
   { label: "Employee", value: "EMPLOYEE", keywords: ["super"] },

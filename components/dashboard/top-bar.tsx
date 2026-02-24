@@ -45,62 +45,83 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
   }
 
   return (
-    <div className="flex h-14 items-center gap-3 border-b bg-background px-4">
-      <Button
-        variant="outline"
-        size="icon"
-        className="md:hidden"
-        onClick={onOpenSidebarMobile}
-        aria-label="Open menu"
-      >
-        <Menu className="h-4 w-4" />
-      </Button>
+    <div className="flex h-14 items-center justify-between border-b bg-background px-3 md:px-6">
 
-      <div className="flex-1 px-2">
-        <div className="text-sm text-muted-foreground capitalize">
-          {crumbs.join(" / ").replaceAll("-", " ")}
+      {/* ================= Left Section ================= */}
+      <div className="flex items-center gap-3 min-w-0">
+
+        {/* Mobile Menu Button */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onOpenSidebarMobile}
+          className="lg:hidden"
+          aria-label="Open menu"
+        >
+          <Menu className="h-4 w-4" />
+        </Button>
+
+        {/* Breadcrumb */}
+        <div className="hidden md:block min-w-0">
+          <div className="truncate text-sm text-muted-foreground capitalize">
+            {crumbs.join(" / ").replaceAll("-", " ")}
+          </div>
         </div>
       </div>
 
-      <ModeToggle />
+      {/* ================= Right Section ================= */}
+      <div className="flex items-center gap-2 md:gap-4">
 
-      {/* Jangan render dropdown sebelum session siap */}
-      {status === "loading" ? null : (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <Avatar className="h-6 w-6">
-                {avatar ? (
-                  <AvatarImage src={avatar} alt={name} />
-                ) : (
-                  <AvatarFallback>
-                    {name.slice(0, 1).toUpperCase()}
-                  </AvatarFallback>
-                )}
-              </Avatar>
+        <ModeToggle />
 
-              <span className="hidden sm:block text-sm">{name}</span>
-            </Button>
-          </DropdownMenuTrigger>
+        {status !== "loading" && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 px-2 md:px-3"
+              >
+                <Avatar className="h-7 w-7">
+                  {avatar ? (
+                    <AvatarImage src={avatar} alt={name} />
+                  ) : (
+                    <AvatarFallback>
+                      {name.slice(0, 1).toUpperCase()}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
 
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Role:{" "}
-              <span className="font-medium text-foreground">{role}</span>
-            </DropdownMenuLabel>
+                <span className="hidden sm:block text-sm truncate max-w-[120px]">
+                  {name}
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Role:{" "}
+                <span className="font-medium text-foreground">
+                  {role}
+                </span>
+              </DropdownMenuLabel>
 
-            <DropdownMenuItem onClick={() => router.push("/settings")}>
-              Settings
-            </DropdownMenuItem>
+              <DropdownMenuSeparator />
 
-            <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => router.push("/settings")}
+              >
+                Settings
+              </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem onClick={logout}>
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
     </div>
   )
 }

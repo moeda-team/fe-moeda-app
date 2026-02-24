@@ -35,6 +35,12 @@ export const NAV: NavGroup[] = [
     label: "Master Data",
     items: [
       {
+        title: "Outlet",
+        icon: ListCheck,
+        href: "/dashboard/outlet",
+        roles: ["ADMIN"],
+      },
+      {
         title: "Users",
         icon: Users,
         roles: ["ADMIN", "OWNER"],
@@ -51,12 +57,6 @@ export const NAV: NavGroup[] = [
           { title: "Tables", href: "/dashboard/master-data/tables", roles: ["ADMIN", "OWNER"] },
           { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER"] },
         ],
-      },
-      {
-        title: "Outlet",
-        icon: ListCheck,
-        href: "/dashboard/outlet",
-        roles: ["ADMIN"],
       },
     ],
   },

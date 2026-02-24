@@ -171,14 +171,14 @@ export function VoucherFormDialog({
 
           {type === 'discount' && (
             <div className="flex items-center justify-between rounded-md border p-3">
-            <Label>Discount for all menu ?</Label>
-            <Switch
-              checked={watch("allMenu")}
-              onCheckedChange={(v) =>
-                setValue("allMenu", v, { shouldValidate: true })
-              }
-            />
-          </div>
+              <Label>Discount for all menu ?</Label>
+              <Switch
+                checked={watch("allMenu")}
+                onCheckedChange={(v) =>
+                  setValue("allMenu", v, { shouldValidate: true })
+                }
+              />
+            </div>
           )}
 
           <DialogFooter className="mt-4">

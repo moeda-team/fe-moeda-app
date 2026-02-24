@@ -23,6 +23,15 @@ type Props = {
 }
 
 export function AddMenuDrawer({ menu }: Props) {
+  if (menu.options?.length > 0) {
+    menu.options.forEach((option) => {
+      menu = {
+        ...menu,
+        options: option.data || []
+      }
+    })
+  }
+
   const [open, setOpen] = React.useState(false)
   const [qty, setQty] = React.useState<number>(1)
   const [note, setNote] = React.useState<string>("")

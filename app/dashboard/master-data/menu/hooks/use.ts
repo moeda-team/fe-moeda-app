@@ -8,7 +8,9 @@ import {
   type MenuListResponse,
   type CreateMenuInput,
   type UpdateMenuInput,
+  updateMenuOption,
 } from "@/lib/api/menu/req-api"
+import { MenuFormValueOptions } from "@/lib/option-utils"
 
 const MenuKey = (params?: MenuQueryParams) => ["Menu", params ?? {}] as const
 
@@ -45,6 +47,16 @@ export function useDeleteMenu() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => deleteMenu(id),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["Menu"] })
+    },
+  })
+}
+
+export function useUpdateMenuOption() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: MenuFormValueOptions) => updateMenuOption(input),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["Menu"] })
     },

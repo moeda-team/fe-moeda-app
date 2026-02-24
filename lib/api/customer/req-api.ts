@@ -86,6 +86,7 @@ export type MenuListResponse = {
 }
 
 export type Choice = {
+  id: string
   label: string
   value: string
   extraPrice?: number,
@@ -98,6 +99,7 @@ export type MenuOption = {
   type: "single" | "multiple"
   required?: boolean
   choices: Choice[]
+  data?: MenuOption[]
 }
 
 export async function getCategories(

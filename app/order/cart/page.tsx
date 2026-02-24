@@ -6,6 +6,7 @@ import { Minus, Plus, ShoppingCart, Trash2, TicketPercent } from "lucide-react"
 import { useCartStore } from "@/store/cart.store"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 import { EditCartItemDrawer } from "./EditCartItemDrawer"
+import { mappingOption } from "@/lib/option-utils"
 
 export default function CartPage() {
   const router = useRouter()
@@ -46,7 +47,7 @@ export default function CartPage() {
                   </div>
                   <div className="text-xs text-muted-foreground">
                     {item?.options
-                      ? Object.values(item.options).flat().join(", ")
+                      ? mappingOption(item.options, item.menuItem.options ?? [])
                       : ""}
                   </div>
                 </div>

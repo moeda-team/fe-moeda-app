@@ -1,3 +1,4 @@
+import { MenuFormValueOptions } from "@/lib/option-utils"
 import { axiosClient } from "../axios-client"
 import { MenuOption } from "../customer/req-api"
 import { Paginate } from "../users/req-api"
@@ -116,5 +117,10 @@ export async function updateMenu(id: string, input: UpdateMenuInput) {
 
 export async function deleteMenu(id: string) {
   const res = await axiosClient.delete(`/menus/main/${id}`)
+  return res.data
+}
+
+export async function updateMenuOption (input: MenuFormValueOptions) {
+  const res = await axiosClient.post("/menus/options", input)
   return res.data
 }

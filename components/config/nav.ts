@@ -41,7 +41,6 @@ export const NAV: NavGroup[] = [
         children: [
           { title: "List", href: "/dashboard/master-data/menu", roles: ["ADMIN", "OWNER"] },
           { title: "Category", href: "/dashboard/master-data/menu/categories", roles: ["ADMIN", "OWNER"] },
-          { title: "Options", href: "/dashboard/master-data/menu/options", roles: ["ADMIN", "OWNER"] },
         ],
       },
       {

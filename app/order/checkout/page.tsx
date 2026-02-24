@@ -16,6 +16,7 @@ import { TransactionQrDrawer } from "./TransactionQrDrawer"
 import LoadingScreen from "@/components/loading"
 import { useQuery } from "@tanstack/react-query"
 import { useTablesQuery } from "@/app/dashboard/master-data/tables/hooks/use"
+import { mappingOption } from "@/lib/option-utils"
 
 export default function CheckoutPage() {
 
@@ -251,11 +252,7 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="text-xs text-muted-foreground">
-                      {item.options
-                        ? Object.values(item.options)
-                            .flat()
-                            .join(", ")
-                        : ""}
+                      {item?.options ? mappingOption(item.options, item.menuItem.options ?? []) : ""}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {item.note}

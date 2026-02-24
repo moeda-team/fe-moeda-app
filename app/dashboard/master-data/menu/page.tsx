@@ -6,6 +6,7 @@ import {
   useCreateMenu,
   useUpdateMenu,
   useDeleteMenu,
+  useUpdateMenuOption,
 } from "@/app/dashboard/master-data/menu/hooks/use"
 import type { UpdateMenuInput, MenuFormValue, Menuitem } from "@/lib/api/menu/req-api"
 
@@ -38,6 +39,11 @@ import { TablesFormDialog } from "@/components/dialog/form-tables"
 import { formatCurrency } from "@/lib/helpers"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
+import { Settings } from "lucide-react"
+import { useState } from "react"
+import { MenuOption } from "@/lib/api/customer/req-api"
+import { VariantSettingDrawer } from "./options/VariantSettingDrawer"
+import { MenuFormValueOptions } from "@/lib/option-utils"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
@@ -56,6 +62,8 @@ export default function MenuPage() {
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
   const [selected, setSelected] = React.useState<Menuitem | null>(null)
+  const [openVariantDialog, setOpenVariantDialog] = useState(false)
+  const [selectedVariant, setSelectedVariant] = useState<MenuOption[] | null>(null)
 
   /** data */
   const { data, isLoading } = useMenuQuery({
@@ -72,6 +80,7 @@ export default function MenuPage() {
   const createMut = useCreateMenu()
   const updateMut = useUpdateMenu()
   const deleteMut = useDeleteMenu()
+  const updateOptionMut = useUpdateMenuOption()
 
   /** dialog form */
   const [open, setOpen] = React.useState(false)
@@ -137,7 +146,44 @@ export default function MenuPage() {
   const tableLoading = isLoading
   const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
 
+  const openVariant = (row: Menuitem) => {
+    
+    const options = row.options.map((option) => option.data).flat()
 
+    setSelectedVariant(options as MenuOption[])
+    setSelected(row)
+    setOpenVariantDialog(true)
+  }
+    
+  function normalizeOptions(options: MenuOption[]): MenuOption[] {
+    return options.map((option) => ({
+      ...option,
+      choices: option.choices.map((choice) => ({
+        ...choice,
+        extraPrice: choice.extraPrice ?? 0,
+        subOptions: choice.subOptions
+          ? normalizeOptions(choice.subOptions)
+          : [],
+      })),
+    }))
+  }
+
+  const handlerVariant = async (data: MenuOption[]) => {
+    try {
+      const payload: MenuFormValueOptions = {
+        menuId: selected?.id ?? "",
+        data: normalizeOptions(data),
+      }
+
+      await updateOptionMut.mutateAsync(payload)
+      toast.success("Options berhasil diperbarui")
+
+      setOpenVariantDialog(false)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+  
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}
@@ -170,6 +216,7 @@ export default function MenuPage() {
                 <TableHead>Name</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Discount Menu</TableHead>
+                <TableHead>Variant</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
@@ -196,6 +243,16 @@ export default function MenuPage() {
                     </TableCell>
                     <TableCell className="font-medium">{formatCurrency(Number(v.price))}</TableCell>
                     <TableCell className="font-medium">{v.discountMenus.length}</TableCell>
+                    <TableCell className="font-medium">
+                      <Badge
+                        variant="outline"
+                        className="cursor-pointer"
+                        onClick={() => openVariant(v)}
+                      >
+                        <Settings className="w-4 h-4 mr-1" />
+                        {v.options.length > 0 ? `${v.options.length} Variant` : "No Variant"}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="font-medium">
                       <Badge variant={v.isActive ? "default" : "destructive"}>{v.isActive ? "Active" : "Inactive"}</Badge>
                     </TableCell>
@@ -288,6 +345,16 @@ export default function MenuPage() {
           confirmVariant="destructive"
           loading={deleteMut.isPending}
           onConfirm={handleConfirmDelete}
+        />
+
+        {/* DRAWER */}
+        <VariantSettingDrawer
+          open={openVariantDialog}
+          onOpenChange={setOpenVariantDialog}
+          value={selectedVariant}
+          onSubmit={(data) => {
+            handlerVariant(data)
+          }}
         />
       </div>
     </DashboardLayout>

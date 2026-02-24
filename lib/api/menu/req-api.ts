@@ -80,10 +80,40 @@ export async function getMenus(
   return res.data
 }
 
-
 export async function getBestseller(
   params?: MenuQueryParams
 ): Promise<MenuBestsellerResponse> {
   const res = await axiosClient.get<MenuBestsellerResponse>(`/menus/best-seller`, { params })
+  return res.data
+}
+
+export type MenuFormValue = {
+  name : string,
+  outletId : string,
+}
+
+export type OptionsListResponse = {
+  statusCode: number
+  additional: unknown
+  data: Menuitem[]
+  paginate: Paginate
+}
+
+export type CreateMenuInput = MenuFormValue
+
+export type UpdateMenuInput = MenuFormValue
+
+export async function createMenu (input: CreateMenuInput) {
+  const res = await axiosClient.post("/menus/main", input)
+  return res.data
+}
+
+export async function updateMenu(id: string, input: UpdateMenuInput) {
+  const res = await axiosClient.put(`/menus/main/${id}`, input)
+  return res.data
+}
+
+export async function deleteMenu(id: string) {
+  const res = await axiosClient.delete(`/menus/main/${id}`)
   return res.data
 }

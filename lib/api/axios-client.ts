@@ -4,6 +4,7 @@ import axios, {
   AxiosRequestConfig,
 } from "axios"
 import { getSession } from "next-auth/react"
+import { signOut } from "next-auth/react"
 
 type RetryConfig = AxiosRequestConfig & {
   _retry?: boolean
@@ -79,6 +80,9 @@ axiosClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as RetryConfig | undefined
 
+    // ==============================
+    // TRY REFRESH ONCE
+    // ==============================
     if (
       error.response?.status === 401 &&
       originalRequest &&
@@ -87,12 +91,30 @@ axiosClient.interceptors.response.use(
       originalRequest._retry = true
 
       try {
-        // Trigger NextAuth refresh (jwt callback)
         await getSession()
-
         return axiosClient(originalRequest)
-      } catch (refreshError) {
-        return Promise.reject(refreshError)
+      } catch {
+        // lanjut ke force logout
+      }
+    }
+
+    // ==============================
+    // FORCE LOGOUT
+    // ==============================
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        try {
+          // remove next-auth session
+          await signOut({ redirect: false })
+
+          // optional: clear localStorage (kalau ada token manual)
+          localStorage.clear()
+
+          // redirect
+          window.location.href = "/login"
+        } catch {
+          window.location.href = "/login"
+        }
       }
     }
 

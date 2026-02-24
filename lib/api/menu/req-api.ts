@@ -27,6 +27,7 @@ export type MenuitemBestseller = {
   id: string,
   menuId: string,
   menu: Menuitem,
+  order: number
 }
 
 export type Voucher = {

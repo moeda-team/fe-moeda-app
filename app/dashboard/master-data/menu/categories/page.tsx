@@ -34,13 +34,13 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
-import { TablesFormDialog } from "@/components/dialog/form-tables"
+import { CategoriesFormDialog } from "@/components/dialog/form-categories"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
 const emptyForm: CategoriesFormValue = {
   name: "",
-  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
+  icon: "",
 }
 
 export default function DiscountPage() {
@@ -86,7 +86,7 @@ export default function DiscountPage() {
 
     setForm({
       name: u.name ?? "",
-      outletId: u.outletId ?? "",
+      icon: u.icon ?? "",
     })
     setOpen(true)
   }
@@ -96,7 +96,7 @@ export default function DiscountPage() {
       if (editing) {
         const payload: Record<string, unknown> = {
           name: data.name,
-          outletId: data.outletId,
+          icon: data.icon,
         }
 
         await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateCategoriesInput })
@@ -179,7 +179,12 @@ export default function DiscountPage() {
               ) : (
                 discounts.map((v) => (
                   <TableRow key={v.id}>
-                    <TableCell className="font-medium">{v.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <div><img src={v.icon} alt={v.name} className="w-10 h-10 rounded-full" /></div>
+                        <div>{v.name}</div>
+                      </div>
+                    </TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"
@@ -243,7 +248,7 @@ export default function DiscountPage() {
         </div>
 
         {/* Form dialog */}
-        <TablesFormDialog
+        <CategoriesFormDialog
           open={open}
           onOpenChange={setOpen}
           editing={editing}

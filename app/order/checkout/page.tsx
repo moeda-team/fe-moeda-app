@@ -200,6 +200,7 @@ export default function CheckoutPage() {
                     ({table ? TABLE_OPTIONS?.data?.find((t) => t.id === table)?.name : "Not Selected"})
                   </span>
                 </p>
+                {!name && <p className="text-xs text-red-500">Please select customer</p>}
               </div>
             </div>
 

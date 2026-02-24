@@ -134,7 +134,7 @@ function TransactionCard({
         )}
 
         {/* LIST MENU */}
-        <div className="text-sm space-y-1">
+        <div className="text-sm space-y-2">
           {visibleItems.map((item) => {
             const nextStatus =
               item.status === "preparation"
@@ -215,7 +215,7 @@ function TransactionCard({
           disabled={type === "completed"}
           onClick={handleCompleteAll}
         >
-          {type === "completed" ? "Pesanan Selesai" : "Selesaikan Pesanan"}
+          {type === "completed" ? "Pesanan Selesai" : "Selesaikan semua pesanan"}
         </Button>
       </div>
     </div>
@@ -314,9 +314,9 @@ export default function TransactionsListPage() {
         {/* Tab List Traksaksi */}
         {activeTab === 'inprogress' && (
           <div className="relative rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 min-h-[calc(100vh-200px)]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               {/* inprogress */}
-              <div className="col-span-1 lg:col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20">
+              <div className="col-span-1 lg:col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-semibold">In progress</div>
                   <div className="text-sm text-muted-foreground">
@@ -342,7 +342,7 @@ export default function TransactionsListPage() {
               </div>
 
               {/* completed */}
-              <div className="col-span-1 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20">
+              <div className="col-span-1 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-semibold">Completed</div>
                   <div className="text-sm text-muted-foreground">

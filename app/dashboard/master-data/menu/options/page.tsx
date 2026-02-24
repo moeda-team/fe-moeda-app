@@ -155,7 +155,7 @@ export default function DiscountPage() {
               disabled={fullscreenLoading}
             />
             <Button onClick={openCreate} disabled={fullscreenLoading}>
-              Create Table
+              Create Options
             </Button>
           </div>
         </div>

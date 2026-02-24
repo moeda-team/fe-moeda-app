@@ -3,12 +3,12 @@ import { axiosClient } from "../axios-client"
 export type CategoriesItem = {
   id?: string,
   name: string,
-  outletId: string,
+  icon: string,
 }
 
 export type CategoriesFormValue = {
   name : string,
-  outletId : string,
+  icon : string,
 }
 
 export type CategoriesQueryParams = {

@@ -103,7 +103,7 @@ export function ChoiceFields({
   }, [labelValue, parentValue, name, setValue])
 
   return (
-    <div className="pl-4 ml-3 border-l border-muted space-y-3">
+    <div className="pl-4 ml-3 border-l-2 border-primary/40 space-y-3">
       <div className="flex gap-2 items-center">
         {/* LABEL */}
         <Input

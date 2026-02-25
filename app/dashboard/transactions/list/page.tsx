@@ -234,12 +234,20 @@ export default function TransactionsListPage() {
     page: 1,
     perPage: 10,
     search: debouncedSearch,
+    status: "active"
+  })
+  const { data : dataCompleted } = useTransactionsQuery({
+    page: 1,
+    perPage: 10,
+    search: debouncedSearch,
+    status: "completed"
   })
 
   /** mutations */
   const updateMut = useUpdateTransaction()
 
   const transactions = data?.data?.transactions ?? []
+  const transactionsCompleted = dataCompleted?.data?.transactions ?? []
 
   /** overlays */
   const fullscreenLoading = updateMut.isPending || isLoading
@@ -261,6 +269,7 @@ export default function TransactionsListPage() {
       toast.error(getErrorMessage(err))
     }
   }
+  
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}
@@ -320,17 +329,17 @@ export default function TransactionsListPage() {
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-semibold">In progress</div>
                   <div className="text-sm text-muted-foreground">
-                    {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "preparation")).length ?? 0} transactions
+                    {transactions.length} transactions
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "preparation")).map((transaction) => (
+                  {transactions.map((transaction) => (
                     <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} />
                   ))}
                 </div>
 
                 <div className="relative">
-                  {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "preparation")).length === 0 && (
+                  {transactions.length === 0 && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                       <img src="/empty.png" alt="empty" width={200} height={200} />
                       <div className="text-center text-muted-foreground text-xl">
@@ -346,17 +355,17 @@ export default function TransactionsListPage() {
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-semibold">Completed</div>
                   <div className="text-sm text-muted-foreground">
-                    {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "completed")).length ?? 0} transactions
+                    {transactionsCompleted.length} transactions
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-4">
-                  {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "completed")).map((transaction) => (
+                  {transactionsCompleted.map((transaction) => (
                     <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} type="completed" />
                   ))}
                 </div>
 
                 <div className="relative">
-                  {transactions.filter((transaction) => transaction.subTransactions.find((subTransaction) => subTransaction.status === "completed")).length === 0 && (
+                  {transactionsCompleted.length === 0 && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                       <img src="/empty.png" alt="empty" width={200} height={200} />
                       <div className="text-center text-muted-foreground text-xl">
@@ -388,14 +397,14 @@ export default function TransactionsListPage() {
               </TableHeader>
 
               <TableBody>
-                {transactions.length === 0 ? (
+                {transactionsCompleted.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center">
                       No data
                     </TableCell>
                   </TableRow>
                 ) : (
-                  transactions.map((v) => (
+                  transactionsCompleted.map((v) => (
                     <TableRow key={v.id}>
                       <TableCell className="font-medium">{v.table.name ?? 'No selected'}</TableCell>
                       <TableCell className="font-medium">{v.customerName}</TableCell>

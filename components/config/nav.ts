@@ -41,6 +41,7 @@ export const NAV: NavGroup[] = [
         children: [
           { title: "List", href: "/dashboard/master-data/menu", roles: ["ADMIN", "OWNER"] },
           { title: "Category", href: "/dashboard/master-data/menu/categories", roles: ["ADMIN", "OWNER"] },
+          { title: "Tables", href: "/dashboard/master-data/tables", roles: ["ADMIN", "OWNER"] },
         ],
       },
       {
@@ -63,7 +64,6 @@ export const NAV: NavGroup[] = [
         roles: ["ADMIN", "OWNER"],
         children: [
           { title: "Discount", href: "/dashboard/master-data/discount", roles: ["ADMIN", "OWNER"] },
-          { title: "Tables", href: "/dashboard/master-data/tables", roles: ["ADMIN", "OWNER"] },
           { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER"] },
         ],
       },

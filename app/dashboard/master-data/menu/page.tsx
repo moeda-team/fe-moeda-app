@@ -244,7 +244,7 @@ export default function MenuPage() {
                   <TableRow key={v.id} className={"hover:bg-accent " + (v.discountMenus.length > 0 ? "bg-primary/20" : "")}>
                     <TableCell className="font-medium">
                       <div className="flex gap-2 items-center">
-                        <Image src={v.img} alt={v.name} width={50} height={50} className="rounded-lg"/>
+                        <Image src={v.img} alt={v.name} width={50} height={50} className="rounded-lg border border-primary/50"/>
                         <div className="">
                           <div className="font-medium">{v.name}</div>
                           <div className="text-xs text-muted-foreground" title={v.desc}>{v.desc.length > 30 ? v.desc.substring(0, 30) + "..." : v.desc}</div>

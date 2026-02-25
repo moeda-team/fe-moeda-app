@@ -5,6 +5,7 @@ export type TransactionsQueryParams = {
   page?: number
   perPage?: number
   search?: string
+  status?: string
 }
 
 export type Paginate = {

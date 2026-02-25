@@ -49,7 +49,7 @@ export function FormMenuDrawer({
       categoryId: "",
       name: "",
       desc: "",
-      img: "https://moeda-space.s3.ap-southeast-1.amazonaws.com/choco+banana.png",
+      img: "https://moeda-space.s3.ap-southeast-1.amazonaws.com/default.png",
       price: 0,
     },
   })
@@ -57,7 +57,7 @@ export function FormMenuDrawer({
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const imgValue = watch("img")
 
-  const { data : categoriesData, isLoading : isLoadingCategories } = useCategoriesQuery()
+  const { data : categoriesData } = useCategoriesQuery()
 
   // reset saat drawer dibuka
   useEffect(() => {
@@ -97,7 +97,7 @@ export function FormMenuDrawer({
   }
 
   const submit = handleSubmit((data) => {
-    onSubmit?.(data)
+    onSubmit?.({...data, img: imgValue === "" ? "https://moeda-space.s3.ap-southeast-1.amazonaws.com/default.png" : imgValue})
   })
 
   return (
@@ -127,7 +127,7 @@ export function FormMenuDrawer({
                   {!imgValue && (
                     <div className="relative h-32 w-32">
                       <Image
-                        src="https://moeda-space.s3.ap-southeast-1.amazonaws.com/choco+banana.png"
+                        src="https://moeda-space.s3.ap-southeast-1.amazonaws.com/default.png"
                         alt="preview"
                         fill
                         className="object-cover rounded-md border cursor-pointer"

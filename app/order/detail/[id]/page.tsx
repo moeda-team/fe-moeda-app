@@ -100,7 +100,7 @@ export default function FeedbackPage() {
         note: data.note,
       })
 
-      toast.success("Discount menu berhasil diperbarui")
+      toast.success("Table berhasil diubah")
       setSwitchTable(false)
     } catch (err) {
       toast.error(getErrorMessage(err))

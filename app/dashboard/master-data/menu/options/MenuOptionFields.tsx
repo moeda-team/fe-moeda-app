@@ -46,8 +46,8 @@ export function MenuOptionFields({
   return (
     <div
       className={`
-        pl-4 border-b-2 pb-4 border-dashed
-        ${level > 0 ? "border-l-2 border-muted ml-3" : ""}
+        pl-4 border-b-2 pb-4
+        ${level > 0 ? "border-l-2 border-primary/40 ml-3" : ""}
         space-y-4
       `}
     >

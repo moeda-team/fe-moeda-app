@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge"
 import { Clock, List, ShoppingBag } from "lucide-react"
 import { useLiveTimeAgo } from "@/lib/useLiveTimeAgo"
 import { TransactionOrder } from "@/lib/api/customer/req-api"
-import { formatCurrency } from "@/lib/helpers"
+import { diffMinutes, diffMinutesAbsolute, diffMinutesDecimal, diffMinutesDetail, formatCurrency, formatTime } from "@/lib/helpers"
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -90,10 +90,10 @@ function TransactionCard({
 
             <Badge
               variant="outline"
-              className="bg-[#F3A93B]/10 text-[#F3A93B] flex items-center gap-1"
+              className={` flex items-center gap-1 ${type === "completed" ? "bg-green-100 text-green-700" : "bg-[#F3A93B]/10 text-[#F3A93B]"}`}
             >
               <Clock size={14} />
-              {timeAgo}
+              {type=== "completed"? diffMinutes(transaction.createdAt, transaction.updatedAt) + " Minutes":timeAgo}
             </Badge>
           </div>
 
@@ -211,11 +211,11 @@ function TransactionCard({
       <div className="relative">
         <Button 
           size="sm"
-          className="w-full"
+          className={`w-full ${type === "completed" ? 'bg-gray-500' :""}`}
           disabled={type === "completed"}
           onClick={handleCompleteAll}
         >
-          {type === "completed" ? "Pesanan Selesai" : "Selesaikan semua pesanan"}
+          {type === "completed" ? `Selesai ${formatTime(transaction.updatedAt)}` : "Selesaikan semua pesanan"}
         </Button>
       </div>
     </div>

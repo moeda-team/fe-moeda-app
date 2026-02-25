@@ -139,7 +139,7 @@ export default function FeedbackPage() {
               const hasNext = !!item.nextTable
 
               return (
-                <div key={item.id} className="flex items-center gap-2">
+                <div key={item.id} className="flex items-center gap-1">
                   
                   {/* PREV TABLE */}
 
@@ -149,7 +149,7 @@ export default function FeedbackPage() {
                       <span className="text-muted-foreground"><ArrowRight size={10}/></span>
                       <Badge
                         variant="outline"
-                        className="text-[10px] rounded-sm bg-primary/25 text-primary"
+                        className="text-[10px] rounded-sm"
                       >
                         {item.nextTable?.name ?? "-"}
                       </Badge>

@@ -373,7 +373,7 @@ export default function CheckoutPage() {
         <button 
           className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handlePayment}
-          disabled={isPending || table === ""}
+          disabled={isPending || !table }
         >
           {isPending ? "Loading..." : "Payment Rp " + (transactionData?.data.total ? transactionData?.data.total.toLocaleString("id-ID") : "0")}
         </button>

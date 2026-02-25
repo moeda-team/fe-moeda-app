@@ -27,6 +27,7 @@ export const NAV: NavGroup[] = [
         roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
         children: [
           { title: "List", href: "/dashboard/transactions/list", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+          { title: "Order", href: "/dashboard/transactions/order", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
         ],
       },
     ],

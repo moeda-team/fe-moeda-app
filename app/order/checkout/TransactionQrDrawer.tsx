@@ -198,6 +198,12 @@ export function TransactionQrDrawer({
             />
           )}
 
+          {qrUrl && (
+            <div onClick={() => navigator.clipboard.writeText(qrUrl!)} className="cursor-pointer font-bold underline text-sm">
+              Copy Payment Number
+            </div>
+          )}
+
           {pending && (
             <>
               <p className="text-sm text-muted-foreground">

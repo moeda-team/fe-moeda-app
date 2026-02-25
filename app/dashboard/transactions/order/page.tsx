@@ -41,6 +41,9 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table"
+import { MenuForm, Menuitem, UpdateMenuInput } from "@/lib/api/menu/req-api"
+import { FormMenuDrawer } from "../../master-data/menu/FormMenuDrawer"
+import { useCreateMenu } from "../../master-data/menu/hooks/use"
 
 function TransactionCard({
   transaction,
@@ -222,7 +225,37 @@ function TransactionCard({
   )
 }
 
+const emptyForm: MenuForm = {
+  name: "",
+  categoryId: "",
+  desc: "",
+  img: "",
+  price: 0,
+}
+
 export default function TransactionsListPage() {
+
+  //!! Menu
+  const [open, setOpen] = React.useState(false)
+  const [form, setForm] = React.useState<MenuForm>(emptyForm)
+  const createMut = useCreateMenu()
+
+  const openCreate = () => {
+    setForm(emptyForm)
+    setOpen(true)
+  }
+  
+  const onSubmit = async (data: MenuForm) => {
+    try {
+      await createMut.mutateAsync(data)
+      setOpen(false)
+      toast.success("Menu berhasil dibuat")
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+  //!! Menu
+  
   /** paging + search */
   const [search, setSearch] = React.useState("")
   const [isLoading, setIsLoading] = React.useState(false)
@@ -281,40 +314,9 @@ export default function TransactionsListPage() {
           <h1 className="text-2xl font-semibold">Order</h1>
 
           <div className="flex gap-2">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search ..."
-              className="w-full sm:w-80"
-              disabled={fullscreenLoading}
-            />
-
-            <Tabs  
-              defaultValue="inprogress" 
-              value={activeTab}
-              className="space-y-4"
-              onValueChange={
-                (value) => {
-                  setActiveTab(value)
-                  setSearch("")
-                  setIsLoading(true)
-                  setTimeout(() => {
-                    setIsLoading(false)
-                  }, 1000);
-                }
-              }
-            >
-              <TabsList className="bg-primary/10">
-                <TabsTrigger value="inprogress" className="text-primary">
-                  <List />
-                  List Transaksi
-                </TabsTrigger>
-                <TabsTrigger value="history" className="text-primary">
-                  <ShoppingBag />
-                  History
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <Button onClick={openCreate} disabled={fullscreenLoading}>
+              Create Menu
+            </Button>
           </div>
         </div>
 
@@ -432,6 +434,15 @@ export default function TransactionsListPage() {
             </Table>
           </div>
         )}
+        
+        <FormMenuDrawer 
+          open={open} 
+          onOpenChange={setOpen}
+          value={form}
+          onSubmit={(data) => {
+            onSubmit(data)
+          }}
+        />
       </div>
     </DashboardLayout>
   )

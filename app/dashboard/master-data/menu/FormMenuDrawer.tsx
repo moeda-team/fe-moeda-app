@@ -19,6 +19,7 @@ import { NumberInput } from "@/components/input/NumberInput"
 import { SelectSearch } from "@/components/input/SelectSearch"
 import { useCategoriesQuery } from "./categories/hooks/use"
 import { MenuForm } from "@/lib/api/menu/req-api"
+import { Textarea } from "@/components/ui/textarea"
 
 type Props = {
   open: boolean
@@ -217,12 +218,22 @@ export function FormMenuDrawer({
 
             {/* DESCRIPTION */}
             <div className="grid gap-2">
-              <Label>Description</Label>
-              <textarea
-                className="border rounded-md p-2 text-sm"
+              <Textarea
+                {...register("desc", {
+                  required: "Description is required",
+                  minLength: {
+                    value: 3,
+                    message: "Min 3 characters",
+                  },
+                })}
                 rows={3}
-                {...register("desc")}
+                placeholder="Description .."
               />
+              {errors.desc && (
+                <p className="text-sm text-red-500">
+                  {errors.desc.message}
+                </p>
+              )}
             </div>
 
             {/* PDF */}

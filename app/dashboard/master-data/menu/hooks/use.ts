@@ -12,7 +12,7 @@ import {
 } from "@/lib/api/menu/req-api"
 import { MenuFormValueOptions } from "@/lib/option-utils"
 
-const MenuKey = (params?: MenuQueryParams) => ["Menu", params ?? {}] as const
+const MenuKey = (params?: MenuQueryParams) => ["menu", params ?? {}] as const
 
 export function useMenuQuery(params?: MenuQueryParams) {
   return useQuery<MenuListResponse>({
@@ -27,7 +27,7 @@ export function useCreateMenu() {
   return useMutation({
     mutationFn: (input: CreateMenuInput) => createMenu(input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["Menu"] })
+      await qc.invalidateQueries({ queryKey: ["menu"] })
     },
   })
 }
@@ -38,7 +38,7 @@ export function useUpdateMenu() {
     mutationFn: ({ id, input }: { id: string; input: UpdateMenuInput }) =>
       updateMenu(id, input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["discounts"] })
+      await qc.invalidateQueries({ queryKey: ["menu"] })
     },
   })
 }
@@ -48,7 +48,7 @@ export function useDeleteMenu() {
   return useMutation({
     mutationFn: (id: string) => deleteMenu(id),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["Menu"] })
+      await qc.invalidateQueries({ queryKey: ["menu"] })
     },
   })
 }
@@ -58,7 +58,7 @@ export function useUpdateMenuOption() {
   return useMutation({
     mutationFn: (input: MenuFormValueOptions) => updateMenuOption(input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["Menu"] })
+      await qc.invalidateQueries({ queryKey: ["menu"] })
     },
   })
 }

@@ -365,6 +365,14 @@ export interface LogTableMove {
   prevTableId: string | null
   nextTableId: string | null
   note: string | null
+  nextTable:{
+    id: string
+    name: string
+  }
+  prevTable:{
+    id: string
+    name: string
+  }
   createdAt: string
   updatedAt: string
 }

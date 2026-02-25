@@ -58,7 +58,7 @@ export function useUpdateSwitchTable() {
     mutationFn: (input: {fromTable: string, tableId: string, note?: string}) =>
       switchTable(input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["tables"] })
+      await qc.invalidateQueries({ queryKey: ["transaction-order"] })
     },
   })
 }

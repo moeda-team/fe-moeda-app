@@ -11,6 +11,7 @@ import { SwitchTableDrawer } from "./SwitchTableDrawer"
 import { useTablesQuery, useUpdateSwitchTable } from "@/app/dashboard/master-data/tables/hooks/use"
 import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
+import { ArrowRight } from "lucide-react"
 
 export default function FeedbackPage() {
   const params = useParams()
@@ -130,8 +131,38 @@ export default function FeedbackPage() {
           </div>
 
           <div className="flex gap-1 items-center text-sm font-semibold text-muted-foreground">
-            <span>{transaction.customerName}</span> -
-            <span>{transaction?.table?.name ?? "Not Selected"}</span>
+            <span>{transaction.customerName}</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+            {transaction.logTableMove?.map((item) => {
+              const hasNext = !!item.nextTable
+
+              return (
+                <div key={item.id} className="flex items-center gap-2">
+                  
+                  {/* PREV TABLE */}
+
+                  {/* NEXT TABLE (only if exists) */}
+                  {hasNext ? (
+                    <>
+                      <span className="text-muted-foreground"><ArrowRight size={10}/></span>
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] rounded-sm bg-primary/25 text-primary"
+                      >
+                        {item.nextTable?.name ?? "-"}
+                      </Badge>
+                    </>
+                  ) : (
+                    <Badge variant="outline" className="text-[10px] rounded-sm">
+                      {item.prevTable?.name ?? "-"}
+                    </Badge>
+                  )}
+
+                </div>
+              )
+            })}
           </div>
           
           <div className="flex gap-1 items-center text-sm font-semibold text-muted-foreground">
@@ -185,6 +216,11 @@ export default function FeedbackPage() {
         <div 
           className="font-semibold text-sm my-2 text-center"
           onClick={() => {
+            if(transaction.logTableMove.length > 2){
+              toast.error("You can't switch table MAX 3")
+              return
+            }
+
             setSwitchTable(true)
             setTableCurrentId(transaction.tableId ?? "")
           }}

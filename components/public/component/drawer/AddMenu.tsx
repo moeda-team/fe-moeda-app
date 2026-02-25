@@ -28,7 +28,6 @@ export function AddMenuDrawer({ menu }: Props) {
       ...menu,
       options: (menu.options || []).flatMap(o => o?.data ?? [])
     }
-    console.log(menu)
   }
 
   const [open, setOpen] = React.useState(false)

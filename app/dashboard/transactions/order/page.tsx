@@ -1,229 +1,29 @@
 "use client"
 
 import * as React from "react"
-import {
-  useTransactionsQuery,
-  useUpdateTransaction,
-} from "@/app/dashboard/transactions/list/hooks/use"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { Input } from "@/components/ui/input"
 import { LoadingOverlay } from "@/components/ui/loading"
 
 import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
-import { useDebounce } from "@/components/use-debounce"
-import { Badge } from "@/components/ui/badge"
-import { Clock, List, ShoppingBag } from "lucide-react"
-import { useLiveTimeAgo } from "@/lib/useLiveTimeAgo"
-import { TransactionOrder } from "@/lib/api/customer/req-api"
-import { formatCurrency } from "@/lib/helpers"
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-
-import {
-  Table,
-  TableHeader,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table"
-import { MenuForm, Menuitem, UpdateMenuInput } from "@/lib/api/menu/req-api"
+import { MenuForm } from "@/lib/api/menu/req-api"
 import { FormMenuDrawer } from "../../master-data/menu/FormMenuDrawer"
 import { useCreateMenu } from "../../master-data/menu/hooks/use"
-
-function TransactionCard({
-  transaction,
-  handleUpdateStatus,
-  type
-}: {
-  transaction: TransactionOrder
-  handleUpdateStatus: (subTransactionId: string, status: string) => void
-  type? : string
-}) {
-  const timeAgo = useLiveTimeAgo(transaction.createdAt)
-  const [showAll, setShowAll] = useState(false)
-
-  const items = transaction.subTransactions ?? []
-
-  const visibleItems = showAll ? items : items.slice(0, 0)
-  const [openPopoverId, setOpenPopoverId] = React.useState<string | null>(null)
-  const handleCompleteAll = async () => {
-    try {
-      const preparationItems = transaction.subTransactions.filter(
-        (item) => item.status === "preparation"
-      )
-
-      if (preparationItems.length === 0) return
-
-      await Promise.all(
-        preparationItems.map((item) =>
-          handleUpdateStatus(item.id, "completed")
-        )
-      )
-
-      toast.success("Semua pesanan diselesaikan")
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    }
-  }
-
-  return (
-    <div className="bg-gray-100 p-3 rounded-xl shadow-sm border border-primary/20 flex flex-col gap-2 justify-between">
-      <div className="space-y-2">
-        {/* HEADER */}
-        <div>
-          <div className="flex justify-between items-center">
-            <div className="text-sm font-semibold">
-              {transaction?.table?.name ?? "Table"}
-            </div>
-
-            <Badge
-              variant="outline"
-              className="bg-[#F3A93B]/10 text-[#F3A93B] flex items-center gap-1"
-            >
-              <Clock size={14} />
-              {timeAgo}
-            </Badge>
-          </div>
-
-          {/* CUSTOMER */}
-          <div className="flex justify-between text-sm pt-2">
-            <div className="text-sm">
-              {transaction?.customerName}
-            </div>
-            <div>
-              {transaction?.paymentNumber}
-            </div>
-          </div>
-        </div>
-
-        {/* SUBTOTAL */}
-        <div className="flex justify-between text-sm font-medium border-t pt-2">
-          <span>
-            Subtotal ({items.length} menu)
-          </span>
-          <span>
-            {formatCurrency(Number(transaction.total), "id-ID")}
-          </span>
-        </div>
-
-        {/* SHOW ALL TOGGLE */}
-        {items.length > 0 && (
-          <div
-            onClick={() => setShowAll((prev) => !prev)}
-            className="flex items-center text-xs mt-1 cursor-pointer text-primary font-bold select-none"
-          >
-            {showAll ? "Show Less" : "Show All"}
-            <ChevronDown
-              className={`w-4 h-4 ml-1 transition-transform duration-300 ${
-                showAll ? "rotate-180" : ""
-              }`}
-            />
-          </div>
-        )}
-
-        {/* LIST MENU */}
-        <div className="text-sm space-y-2">
-          {visibleItems.map((item) => {
-            const nextStatus =
-              item.status === "preparation"
-                ? "completed"
-                : "preparation"
-
-            return (
-              <div
-                key={item.id}
-                className="flex justify-between items-center"
-              >
-                <span
-                  title={item.menu?.name}
-                  className="cursor-pointer"
-                >
-                  {item.menu?.name.length > 20
-                    ? item.menu?.name.slice(0, 20) + "..."
-                    : item.menu?.name}{" "}
-                  x{item.quantity}
-                </span>
-                {type !== 'completed' ? (
-                  <Popover
-                    open={openPopoverId === item.id}
-                    onOpenChange={(open) =>
-                      setOpenPopoverId(open ? item.id : null)
-                    }
-                  >
-                    <PopoverTrigger asChild>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "cursor-pointer capitalize",
-                          item.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-[#F3A93B]/10 text-primary"
-                        )}
-                      >
-                        {item.status}
-                      </Badge>
-                    </PopoverTrigger>
-
-                    <PopoverContent className={`w-32 p-0 text-center hover:text-primary hover:bg-gray-100 ${nextStatus === "completed" ? "bg-green-100 text-green-700 hover:bg-muted" : "bg-primary text-white"}`}>
-                      <button
-                        onClick={() =>{ 
-                          handleUpdateStatus(item.id, nextStatus)
-                          // 🔥 auto close
-                          setOpenPopoverId(null)
-                        }}
-                        className="w-full text-sm text-center  px-2 py-1 rounded-sm capitalize"
-                      >
-                        {nextStatus}
-                      </button>
-                    </PopoverContent>
-                  </Popover>
-                ) :
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "cursor-pointer capitalize",
-                      item.status === "completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-[#F3A93B]/10 text-primary"
-                    )}
-                  >
-                    {item.status}
-                  </Badge>
-                }
-              </div>
-            )
-          })}
-        </div>
-      </div>
-      
-      <div className="relative">
-        <Button 
-          size="sm"
-          className="w-full"
-          disabled={type === "completed"}
-          onClick={handleCompleteAll}
-        >
-          {type === "completed" ? "Pesanan Selesai" : "Selesaikan semua pesanan"}
-        </Button>
-      </div>
-    </div>
-  )
-}
+import { useBestsellerQuery, useCategoriesQuery } from "@/components/public/hooks/use"
+import { useMenuQuery } from "@/components/public/hooks/use"
+import { useEffect, useState } from "react"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
+import { Minus, Plus, SearchIcon, ShoppingCart, TicketPercent, Trash2, XIcon } from "lucide-react"
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { Skeleton } from "@/components/ui/skeleton"
+import { CardBest } from "@/components/public/component/best/page"
+import { useTablesQuery } from "../../master-data/tables/hooks/use"
+import { useCustomerStore } from "@/store/customer.store"
+import { EditCustomerDrawer } from "@/app/order/checkout/EditCustomerDrawer"
+import { CardMenu } from "@/components/public/component/menu/page"
+import { useCartStore } from "@/store/cart.store"
 
 const emptyForm: MenuForm = {
   name: "",
@@ -234,7 +34,6 @@ const emptyForm: MenuForm = {
 }
 
 export default function TransactionsListPage() {
-
   //!! Menu
   const [open, setOpen] = React.useState(false)
   const [form, setForm] = React.useState<MenuForm>(emptyForm)
@@ -255,54 +54,50 @@ export default function TransactionsListPage() {
     }
   }
   //!! Menu
+
+  const [searchInput, setSearchInput] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('All')
+
+  const { data : categoriesData, isLoading : isLoadingCategories } = useCategoriesQuery()
+  const { data : bestData, isLoading : isLoadingBest } = useBestsellerQuery()
+  const { data : menuData, isLoading : isLoadingMenu } = useMenuQuery({ search : debouncedSearch, category : selectedCategory === 'All' ? "" : selectedCategory ? selectedCategory : undefined })
+
+  const { data : tableData } = useTablesQuery({page : 1, perPage : 1000, search: ""})
   
-  /** paging + search */
-  const [search, setSearch] = React.useState("")
-  const [isLoading, setIsLoading] = React.useState(false)
-  const debouncedSearch = useDebounce(search, 400)
-  const [activeTab, setActiveTab] = React.useState("inprogress")
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchInput)
+    }, 500) // 500ms delay
 
-  /** data */
-  const { data } = useTransactionsQuery({
-    page: 1,
-    perPage: 10,
-    search: debouncedSearch,
-    status: "active"
-  })
-  const { data : dataCompleted } = useTransactionsQuery({
-    page: 1,
-    perPage: 10,
-    search: debouncedSearch,
-    status: "completed"
-  })
-
-  /** mutations */
-  const updateMut = useUpdateTransaction()
-
-  const transactions = data?.data?.transactions ?? []
-  const transactionsCompleted = dataCompleted?.data?.transactions ?? []
-
-  /** overlays */
-  const fullscreenLoading = updateMut.isPending || isLoading
-
-  const handleUpdateStatus = async (
-    subTransactionId: string,
-    status: string
-  ) => {
-    try {
-      await updateMut.mutateAsync({
-        id: subTransactionId,
-        input: {
-          status,
-        },
-      })
-
-      toast.success("Status updated")
-    } catch (err) {
-      toast.error(getErrorMessage(err))
+    return () => {
+      clearTimeout(handler)
     }
-  }
+  }, [searchInput])
   
+  /** overlays */
+  const fullscreenLoading = isLoadingCategories
+
+  const name = useCustomerStore((s) => s.name)
+  const table = useCustomerStore((s) => s.table)
+  const getInitials = (name?: string) => {
+    if (!name || !name.trim()) return "N/A"
+
+    const parts = name.trim().split(/\s+/)
+
+    if (parts.length === 1) {
+      return parts[0].slice(0, 2).toUpperCase()
+    }
+
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+
+  // cart
+  const items = useCartStore((s) => s.items)
+  const updateQty = useCartStore((s) => s.updateQty)
+  const removeItem = useCartStore((s) => s.removeItem)
+  const totalFinal = useCartStore((s) => s.totalFinal)
+
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}
@@ -322,119 +117,266 @@ export default function TransactionsListPage() {
 
         <hr />
 
-        {/* Tab List Traksaksi */}
-        {activeTab === 'inprogress' && (
-          <div className="relative rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {/* inprogress */}
-              <div className="col-span-1 lg:col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
-                <div className="flex justify-between items-center">
-                  <div className="text-lg font-semibold">In progress</div>
-                  <div className="text-sm text-muted-foreground">
-                    {transactions.length} transactions
-                  </div>
+        <div className="relative rounded-xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {/* product list */}
+            <div className="col-span-1 lg:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
+              {/* Header */}
+              <div className="sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4 bg-white">
+                <div className="w-full">
+                  <InputGroup className="w-full">
+                    <InputGroupInput placeholder="Search product..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+                    <InputGroupAddon>
+                      <SearchIcon className="text-primary" size={18} />
+                    </InputGroupAddon>
+                    {searchInput && (
+                      <InputGroupAddon onClick={() => setSearchInput("")} className="cursor-pointer end-4 absolute">
+                        <XIcon className="text-primary" size={18} />
+                      </InputGroupAddon>
+                    )}
+                  </InputGroup>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {transactions.map((transaction) => (
-                    <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} />
-                  ))}
-                </div>
+                
+                <div className="w-full">
+                  <Carousel opts={{ align: "start" }} className="w-full">
+                    <CarouselContent className="my-1">
+                      <CarouselItem
+                        className="basis-auto cursor-pointer"
+                        onClick={() => setSelectedCategory("All")}
+                      >
+                        <div
+                          className={`px-4 py-1 rounded-full text-xs whitespace-nowrap transition ${
+                            selectedCategory === "All"
+                              ? "bg-primary text-white"
+                              : "bg-primary/10"
+                          }`}
+                        >
+                          All
+                        </div>
+                      </CarouselItem>
 
-                <div className="relative">
-                  {transactions.length === 0 && (
-                    <div className="flex flex-col justify-center items-center w-full h-full">
-                      <img src="/empty.png" alt="empty" width={200} height={200} />
-                      <div className="text-center text-muted-foreground text-xl">
-                        No transactions preparation
-                      </div>
+                      {categoriesData?.data?.map((item) => (
+                        <CarouselItem
+                          key={item.id}
+                          className="basis-auto cursor-pointer"
+                          onClick={() => setSelectedCategory(item.id)}
+                        >
+                          <div
+                            className={`px-2 py-1 rounded-full text-xs whitespace-nowrap transition ${
+                              selectedCategory === item.id
+                                ? "bg-primary text-white"
+                                : "bg-primary/10"
+                            }`}
+                          >
+                            {item.name}
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
+                </div>
+              </div>
+              
+              {/* best */}
+              <div className="space-y-1 p-4 ">
+                {bestData && bestData?.data.length >0 && (
+                  <div className="space-y-3">
+                    <h2 className="text-lg font-semibold">
+                      Best Seller
+                    </h2>
+                    {
+                      isLoadingBest ? 
+                        <div className="grid grid-cols-2 gap-4">
+                        {Array.from({ length: 2 }).map((_, i) => (
+                          <Skeleton
+                            key={i}
+                            className="h-40 rounded-2xl bg-primary/30"
+                          />
+                        ))}
+                        </div> : 
+                      <CardBest data={bestData?.data ?? []} />
+                    }
+                  </div>
+                )}
+              </div>
+              {/* end best */}
+
+              {/* menu list */}
+              <div className="space-y-3 p-4 ">
+                <h2 className="text-lg font-semibold">
+                  Menu
+                </h2>
+                {
+                  isLoadingMenu ? 
+                    <div className="grid grid-cols-4 gap-4">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <Skeleton
+                        key={i}
+                        className="h-40 rounded-2xl bg-primary/30"
+                      />
+                    ))}
+                    </div> : 
+                  <CardMenu data={menuData?.data ?? []} />
+                }
+      
+                {menuData?.data?.length === 0 && (
+                  <p className="text-center text-sm text-muted-foreground">
+                    No menu found
+                  </p>
+                )}
+              </div>
+                      
+            </div>
+
+            {/* cart */}
+            <div className="relative scol-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
+              {/* customer info */}
+              <div className="bg-white rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="rounded-full bg-[#F3A93B] text-lg text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">
+                      {getInitials(name)}
                     </div>
-                  )}
+      
+                    <div>
+                      <p className="text-sm">Customer</p>
+                      <p className="font-semibold text-base">
+                        {name}{" "}
+                        <span className="text-xs font-normal">
+                          ({table ? tableData?.data?.find((t) => t.id === table)?.name : "Not Selected"})
+                        </span>
+                      </p>
+                      {!name && <p className="text-xs text-red-500">Please select customer</p>}
+                    </div>
+                  </div>
+      
+                  <EditCustomerDrawer tableOptions={tableData?.data ?? []}/>
                 </div>
               </div>
 
-              {/* completed */}
-              <div className="col-span-1 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
-                <div className="flex justify-between items-center">
-                  <div className="text-lg font-semibold">Completed</div>
-                  <div className="text-sm text-muted-foreground">
-                    {transactionsCompleted.length} transactions
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 gap-4">
-                  {transactionsCompleted.map((transaction) => (
-                    <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} type="completed" />
-                  ))}
-                </div>
+              {/* cart list */}
+              <div className="px-3 py-2 space-y-4 min-h-[calc(94vh-300px)]">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-lg shadow-sm p-2 relative"
+                  >
+                    <div className="flex gap-4">
+                      {/* INFO */}
+                      <div className="flex flex-col justify-between">
+                        <div className="flex flex-col">
+                          <div className="text-sm font-bold">
+                            {item.name}
+                          </div>
+                        </div>
 
-                <div className="relative">
-                  {transactionsCompleted.length === 0 && (
-                    <div className="flex flex-col justify-center items-center w-full h-full">
-                      <img src="/empty.png" alt="empty" width={200} height={200} />
-                      <div className="text-center text-muted-foreground text-xl">
-                        No transactions completed
+                        <div className="flex flex-col">
+                          {/* NOTE */}
+                          <div className="text-xs text-muted-foreground">
+                            {item.note}
+                          </div>
+
+                          {/* PRICE */}
+                          <div className="flex flex-col space-y-1 text-sm">
+                            <div className="flex items-center gap-4">
+                              {item.discountAmount > 0 && (
+                                <p className="text-sm line-through text-[#E35336] min-w-18">
+                                  Rp {item.subtotal.toLocaleString("id-ID")}
+                                </p>
+                              )}
+                              <div className="flex items-center">
+                                {item.menuItem.discountMenus.length > 0 && (
+                                  <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{item.menuItem.discountMenus[0].discount.name}</div>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                              <p className="font-semibold  min-w-18">
+                                Rp {item.finalPrice.toLocaleString("id-ID")}
+                              </p>
+
+                              {item.discountAmount > 0 && (
+                                <div className="bg-green-200 text-[10px] px-2 py-0.5 rounded-sm text-green-900 flex items-center">
+                                  <TicketPercent size={15}/>
+                                  {item.menuItem.discountMenus[0].discount.type === "fixed" ? (
+                                    <div className="text-[10px] ml-1">Rp.{item.menuItem.discountMenus[0].discount.discount.toLocaleString()}</div>
+                                  ) : (
+                                    <div className="text-[10px] ml-1">{item.menuItem.discountMenus[0].discount.discount}%</div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  )}
-                </div>
+
+                    {/* BOTTOM ACTION */}
+                    <div className="flex justify-between items-center mt-2 bg-primary/10 rounded-lg border border-primary">
+                      {/* QTY */}
+                      <div className="flex items-center gap-2 text-xs bg-white rounded-l-lg h-8 px-2">
+                        <button
+                          onClick={() =>{
+                            updateQty(item.id, item.qty - 1)
+                            if (item.qty <= 1) {
+                              removeItem(item.id)
+                            }
+                          }}
+                          className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center"
+                        >
+                          <Minus size={14} />
+                        </button>
+
+                        <span>{item.qty}</span>
+
+                        <button
+                          onClick={() =>
+                            updateQty(item.id, item.qty + 1)
+                          }
+                          className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+
+                      {/* REMOVE */}
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="bg-[#E35336] text-white px-2 py-2 rounded-r-lg text-xs"
+                      >
+                        <Trash2 size={16}/>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                {items.length === 0 && (
+                  <div className="text-center py-12">
+                    <ShoppingCart size={48} className="mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-500">Cart is empty</p>
+                  </div>
+                )}
+              </div>
+
+              {/* payment button */}
+              <div className="bg-white rounded-t-sm p-3 shadow-sm sticky bottom-0 z-10 mx-auto">
+                <Button 
+                  onClick={()=>{
+                    console.log('payment')
+                  }} 
+                  className="text-center w-full"
+                  disabled={fullscreenLoading}
+                >
+                  Checkout · Rp{" "}
+                  {totalFinal().toLocaleString("id-ID")} 
+                </Button>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Tab Lis History */}
-
-        {activeTab === 'history' && (
-          <div className="relative rounded-xl border bg-background overflow-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Table</TableHead>
-                  <TableHead>Order Name</TableHead>
-                  <TableHead>Total Menu</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Payment</TableHead>
-                  <TableHead>Transaction Type</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {transactionsCompleted.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      No data
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  transactionsCompleted.map((v) => (
-                    <TableRow key={v.id}>
-                      <TableCell className="font-medium">{v.table.name ?? 'No selected'}</TableCell>
-                      <TableCell className="font-medium">{v.customerName}</TableCell>
-                      <TableCell className="font-medium">{v.subTransactions.length}</TableCell>
-                      <TableCell className="font-medium">{formatCurrency(Number(v.total))}</TableCell>
-                      <TableCell className="font-medium capitalize">{v.paymentMethod}</TableCell>
-                      <TableCell className="font-medium capitalize">{v.transactionType}</TableCell>
-                      <TableCell className="font-medium capitalize">
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "cursor-pointer capitalize",
-                            v.status === "completed"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-[#F3A93B]/10 text-primary"
-                          )}
-                        >
-                          {v.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-        
+        {/* dialog */}
         <FormMenuDrawer 
           open={open} 
           onOpenChange={setOpen}

@@ -48,7 +48,15 @@ function pickToken(json: LoginResponse): string {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 12, // ✅ 12 jam
+    updateAge: 60 * 60,   // ✅ refresh tiap 1 jam kalau user aktif (sliding)
+  },
+
+  jwt: {
+    maxAge: 60 * 60 * 12, // ✅ 12 jam
+  },
 
   providers: [
     Credentials({
@@ -74,7 +82,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const loginJson = (await loginRes.json()) as LoginResponse
         const accessToken = loginJson.data?.access_token
-        console.log(accessToken)
+
         if (!accessToken) return null
          return {
             id: loginJson.data?.email,

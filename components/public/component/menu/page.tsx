@@ -10,7 +10,7 @@ interface CardMenuProps {
 export function CardMenu({ data }: CardMenuProps) {
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
       {data.map((item) => (
         <div key={item.id} className="bg-card rounded-xl shadow-soft overflow-hidden p-3 flex flex-col space-y-1 justify-between relative">
           <div className="relative h-32 w-full">

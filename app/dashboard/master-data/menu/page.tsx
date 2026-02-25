@@ -7,8 +7,10 @@ import {
   useUpdateMenu,
   useDeleteMenu,
   useUpdateMenuOption,
+  useDeleteBestMenu,
+  useCreateBestMenu,
 } from "@/app/dashboard/master-data/menu/hooks/use"
-import type { UpdateMenuInput,  Menuitem, MenuForm } from "@/lib/api/menu/req-api"
+import type { UpdateMenuInput,  Menuitem, MenuForm, BestSellerMenu } from "@/lib/api/menu/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -38,12 +40,15 @@ import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { formatCurrency } from "@/lib/helpers"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
-import { Settings } from "lucide-react"
+import { Settings, X } from "lucide-react"
 import { useState } from "react"
 import { MenuOption } from "@/lib/api/customer/req-api"
 import { VariantSettingDrawer } from "./options/VariantSettingDrawer"
 import { MenuFormValueOptions } from "@/lib/option-utils"
 import { FormMenuDrawer } from "./FormMenuDrawer"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { BestSellerFormDialog } from "@/components/dialog/form-best"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
@@ -53,6 +58,11 @@ const emptyForm: MenuForm = {
   desc: "",
   img: "",
   price: 0,
+}
+const emptyFormBest: BestSellerMenu = {
+  id: "",
+  menuId: "",
+  order: 0,
 }
 
 export default function MenuPage() {
@@ -85,6 +95,9 @@ export default function MenuPage() {
   const deleteMut = useDeleteMenu()
   const updateOptionMut = useUpdateMenuOption()
 
+  const createBestMut = useCreateBestMenu()
+  const deleteBestMut = useDeleteBestMenu()
+
   /** dialog form */
   const [open, setOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<Menuitem | null>(null)
@@ -94,6 +107,24 @@ export default function MenuPage() {
     setEditing(null)
     setForm(emptyForm)
     setOpen(true)
+  }
+
+  const [openBest, setOpenBest] = React.useState(false)
+  const [editingBest, setEditingBest] = React.useState<BestSellerMenu | null>(null)
+  const [formBest, setFormBest] = React.useState<BestSellerMenu>(emptyFormBest)
+
+  const openCreateBest = (data: Menuitem) => {
+    setEditingBest({
+      menuId: data.id ?? "",
+      order: 0,
+      id: "",
+    })
+    setFormBest({
+      menuId: data.id ?? "",
+      order: 0,
+      id: "",
+    })
+    setOpenBest(true)
   }
 
   const openEdit = (u: Menuitem) => {
@@ -140,6 +171,32 @@ export default function MenuPage() {
     try {
       await deleteMut.mutateAsync(selected.id??"")
       toast.success(`Menu "${selected.name}" dihapus`)
+      setConfirmOpen(false)
+      setSelected(null)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
+  const onSubmitBest = async (data: BestSellerMenu) => {
+    try {
+      await createBestMut.mutateAsync({
+        menuId: data.menuId,
+        order: Number(data.order),
+      })
+      toast.success("Menu berhasil dijadikan best seller")
+
+      setOpenBest(false)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+  const deleteBest = async (data:BestSellerMenu) => {
+    if (!data) return
+
+    try {
+      await deleteBestMut.mutateAsync(data.id??"")
+      toast.success(`Behasil`)
       setConfirmOpen(false)
       setSelected(null)
     } catch (err) {
@@ -227,6 +284,7 @@ export default function MenuPage() {
                 <TableHead>Price</TableHead>
                 <TableHead>Discount Menu</TableHead>
                 <TableHead>Variant</TableHead>
+                <TableHead>Best Seller</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
@@ -262,6 +320,21 @@ export default function MenuPage() {
                         <Settings className="w-4 h-4 mr-1" />
                         {v.options.length > 0 ? `${v.options.length} Variant` : "No Variant"}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center justify-between rounded-md border p-3">
+                        <Label>{v.bestSellerMenus.length > 0 ? "Ke : " + v.bestSellerMenus[0].order : <X />}</Label>
+                        <Switch
+                          checked={v.bestSellerMenus.length > 0}
+                          onCheckedChange={(data) =>{
+                            if(data){
+                              openCreateBest(v)
+                            }else{
+                              deleteBest(v.bestSellerMenus[0])
+                            }
+                          }}
+                        />
+                      </div>
                     </TableCell>
                     <TableCell className="font-medium">
                       <Badge variant={v.isActive ? "default" : "destructive"}>{v.isActive ? "Active" : "Inactive"}</Badge>
@@ -353,6 +426,7 @@ export default function MenuPage() {
             handlerVariant(data)
           }}
         />
+        
         <FormMenuDrawer 
           open={open} 
           onOpenChange={setOpen}
@@ -361,7 +435,21 @@ export default function MenuPage() {
             onSubmit(data)
           }}
         />
+        
+        {/* Form dialog */}
+        <BestSellerFormDialog
+          open={openBest}
+          onOpenChange={setOpenBest}
+          editing={editingBest}
+          value={formBest}
+          onChange={setFormBest}
+          onSubmit={(data) => {
+            onSubmitBest(data)
+          }}
+          loading={createMut.isPending || updateMut.isPending}
+        />
       </div>
     </DashboardLayout>
   )
 }
+

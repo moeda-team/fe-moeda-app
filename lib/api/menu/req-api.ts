@@ -22,6 +22,14 @@ export type Menuitem = {
   updatedAt: string
   vouchers: Voucher[],
   discountMenus: DiscountMenu[]
+  bestSellerMenus : BestSellerMenu[]
+}
+
+export type BestSellerMenu = 
+{
+  id: string,
+  menuId: string,
+  order: number,
 }
 
 export type MenuForm = {
@@ -50,15 +58,15 @@ export type Voucher = {
 }
 
 export type DiscountMenu = 
-  {
-    discountId: string,
-    discount: {
-        name: string,
-        discount: string,
-        type: string,
-        maxUsage: string
-    }
+{
+  discountId: string,
+  discount: {
+      name: string,
+      discount: string,
+      type: string,
+      maxUsage: string
   }
+}
 
 export type MenuQueryParams = {
   search?: string
@@ -129,5 +137,15 @@ export async function deleteMenu(id: string) {
 
 export async function updateMenuOption (input: MenuFormValueOptions) {
   const res = await axiosClient.post("/menus/options", input)
+  return res.data
+}
+
+export async function createMenuBest (input: {menuId: string, order: number}) {
+  const res = await axiosClient.post("/menus/best-seller", input)
+  return res.data
+}
+
+export async function deleteBestMenu(id: string) {
+  const res = await axiosClient.delete(`/menus/best-seller/${id}`)
   return res.data
 }

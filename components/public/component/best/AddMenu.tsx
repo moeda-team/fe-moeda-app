@@ -31,7 +31,6 @@ export function AddMenuDrawer({ menu, order }: Props) {
         options: option.data || []
       }
     })
-    console.log(menu)
   }
   
   const [open, setOpen] = React.useState(false)
@@ -183,7 +182,7 @@ export function AddMenuDrawer({ menu, order }: Props) {
               className="object-cover object-top rounded-t-lg"
             />
           </div>
-          <div className="absolute top-2 w-[50px] text-center mx-2 text-[10px] bg-[#E35336] text-white rounded-full px-2 py-1">No. {order + 1}</div>
+          <div className="absolute top-2 w-[50px] text-center mx-2 text-[10px] bg-[#E35336] text-white rounded-full px-2 py-1">No. {order}</div>
 
           <div className="space-y-1 p-3 text-center">
             <p className="text-sm font-medium line-clamp-1">

@@ -24,6 +24,9 @@ import { useCustomerStore } from "@/store/customer.store"
 import { EditCustomerDrawer } from "@/app/order/checkout/EditCustomerDrawer"
 import { CardMenu } from "@/components/public/component/menu/page"
 import { useCartStore } from "@/store/cart.store"
+import { mappingOption } from "@/lib/option-utils"
+import { EditCartItemDrawer } from "./EditCartItemDrawer"
+import { formatCurrency } from "@/lib/helpers"
 
 const emptyForm: MenuForm = {
   name: "",
@@ -96,7 +99,6 @@ export default function TransactionsListPage() {
   const items = useCartStore((s) => s.items)
   const updateQty = useCartStore((s) => s.updateQty)
   const removeItem = useCartStore((s) => s.removeItem)
-  const totalFinal = useCartStore((s) => s.totalFinal)
 
   return (
     <DashboardLayout>
@@ -106,7 +108,7 @@ export default function TransactionsListPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Order Transaction</h1>
+          <h1 className="text-2xl font-semibold">Order</h1>
 
           <div className="flex gap-2">
             <Button onClick={openCreate} disabled={fullscreenLoading}>
@@ -259,15 +261,19 @@ export default function TransactionsListPage() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-lg shadow-sm p-2 relative border"
+                    className="bg-white rounded-lg shadow-sm p-2 relative"
                   >
                     <div className="flex gap-4">
                       {/* INFO */}
-                      <div className="flex flex-col justify-between">
+                      <div className="flex flex-col justify-between gap-1">
                         <div className="flex flex-col">
                           <div className="text-sm font-bold">
                             {item.name}
                           </div>
+                        </div>
+
+                        <div className="text-xs text-muted-foreground">
+                          {item?.options ? mappingOption(item.options, item.menuItem.options ?? []) : ""}
                         </div>
 
                         <div className="flex flex-col">
@@ -312,10 +318,11 @@ export default function TransactionsListPage() {
                       </div>
                     </div>
 
+
                     {/* BOTTOM ACTION */}
-                    <div className="flex justify-between items-center mt-2 bg-primary/10 rounded-lg">
+                    <div className="flex justify-between items-center mt-2 bg-primary/10 rounded-lg border border-primary">
                       {/* QTY */}
-                      <div className="flex items-center gap-2 text-xs bg-primary rounded-l-lg h-8 px-2">
+                      <div className="flex items-center gap-2 text-xs bg-white rounded-l-lg h-8 px-2">
                         <button
                           onClick={() =>{
                             updateQty(item.id, item.qty - 1)
@@ -323,30 +330,33 @@ export default function TransactionsListPage() {
                               removeItem(item.id)
                             }
                           }}
-                          className="h-5 w-5 rounded-full bg-white text-primary flex items-center justify-center"
+                          className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center"
                         >
                           <Minus size={14} />
                         </button>
 
-                        <span className="text-white font-semibold">{item.qty}</span>
+                        <span>{item.qty}</span>
 
                         <button
                           onClick={() =>
                             updateQty(item.id, item.qty + 1)
                           }
-                          className="h-5 w-5 rounded-full bg-white text-primary flex items-center justify-center"
+                          className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center"
                         >
                           <Plus size={14} />
                         </button>
                       </div>
 
                       {/* REMOVE */}
+                      <div>
+                      <EditCartItemDrawer item={item} />
                       <button
                         onClick={() => removeItem(item.id)}
                         className="bg-[#E35336] text-white px-2 py-2 rounded-r-lg text-xs"
                       >
                         <Trash2 size={16}/>
                       </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -368,8 +378,7 @@ export default function TransactionsListPage() {
                   className="text-center w-full"
                   disabled={fullscreenLoading}
                 >
-                  Checkout · Rp{" "}
-                  {totalFinal().toLocaleString("id-ID")} 
+                  Payment {formatCurrency(items.map(item => item.finalPrice).reduce((a, b) => a + b, 0))}
                 </Button>
               </div>
             </div>

@@ -46,6 +46,7 @@ export function mappingOption(
   selectedOptions: Record<string, string[]>,
   menuItemOptions: MenuOption[]
 ): string {
+  console.log(selectedOptions)
   // 🔥 recursive finder
   const findChoiceLabel = (
       options: MenuOption[],

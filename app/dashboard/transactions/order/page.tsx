@@ -106,7 +106,7 @@ export default function TransactionsListPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Order</h1>
+          <h1 className="text-2xl font-semibold">Order Transaction</h1>
 
           <div className="flex gap-2">
             <Button onClick={openCreate} disabled={fullscreenLoading}>
@@ -259,7 +259,7 @@ export default function TransactionsListPage() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-lg shadow-sm p-2 relative"
+                    className="bg-white rounded-lg shadow-sm p-2 relative border"
                   >
                     <div className="flex gap-4">
                       {/* INFO */}
@@ -313,9 +313,9 @@ export default function TransactionsListPage() {
                     </div>
 
                     {/* BOTTOM ACTION */}
-                    <div className="flex justify-between items-center mt-2 bg-primary/10 rounded-lg border border-primary">
+                    <div className="flex justify-between items-center mt-2 bg-primary/10 rounded-lg">
                       {/* QTY */}
-                      <div className="flex items-center gap-2 text-xs bg-white rounded-l-lg h-8 px-2">
+                      <div className="flex items-center gap-2 text-xs bg-primary rounded-l-lg h-8 px-2">
                         <button
                           onClick={() =>{
                             updateQty(item.id, item.qty - 1)
@@ -323,18 +323,18 @@ export default function TransactionsListPage() {
                               removeItem(item.id)
                             }
                           }}
-                          className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center"
+                          className="h-5 w-5 rounded-full bg-white text-primary flex items-center justify-center"
                         >
                           <Minus size={14} />
                         </button>
 
-                        <span>{item.qty}</span>
+                        <span className="text-white font-semibold">{item.qty}</span>
 
                         <button
                           onClick={() =>
                             updateQty(item.id, item.qty + 1)
                           }
-                          className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center"
+                          className="h-5 w-5 rounded-full bg-white text-primary flex items-center justify-center"
                         >
                           <Plus size={14} />
                         </button>

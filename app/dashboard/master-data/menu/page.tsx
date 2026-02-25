@@ -8,7 +8,7 @@ import {
   useDeleteMenu,
   useUpdateMenuOption,
 } from "@/app/dashboard/master-data/menu/hooks/use"
-import type { UpdateMenuInput, MenuFormValue, Menuitem } from "@/lib/api/menu/req-api"
+import type { UpdateMenuInput,  Menuitem, MenuForm } from "@/lib/api/menu/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -35,7 +35,6 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
-import { TablesFormDialog } from "@/components/dialog/form-tables"
 import { formatCurrency } from "@/lib/helpers"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
@@ -44,12 +43,16 @@ import { useState } from "react"
 import { MenuOption } from "@/lib/api/customer/req-api"
 import { VariantSettingDrawer } from "./options/VariantSettingDrawer"
 import { MenuFormValueOptions } from "@/lib/option-utils"
+import { FormMenuDrawer } from "./FormMenuDrawer"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
-const emptyForm: MenuFormValue = {
+const emptyForm: MenuForm = {
   name: "",
-  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
+  categoryId: "",
+  desc: "",
+  img: "",
+  price: 0,
 }
 
 export default function MenuPage() {
@@ -85,7 +88,7 @@ export default function MenuPage() {
   /** dialog form */
   const [open, setOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<Menuitem | null>(null)
-  const [form, setForm] = React.useState<MenuFormValue>(emptyForm)
+  const [form, setForm] = React.useState<MenuForm>(emptyForm)
 
   const openCreate = () => {
     setEditing(null)
@@ -98,17 +101,24 @@ export default function MenuPage() {
 
     setForm({
       name: u.name ?? "",
-      outletId: u.outletId ?? "",
+      categoryId: u.categoryId ?? "",
+      desc: u.desc ?? "",
+      img: u.img ?? "",
+      price: Number(u.price) ?? 0,
     })
     setOpen(true)
   }
 
-  const onSubmit = async (data: MenuFormValue) => {
+  const onSubmit = async (data: MenuForm) => {
     try {
       if (editing) {
         const payload: Record<string, unknown> = {
           name: data.name,
-          outletId: data.outletId,
+          categoryId: data.categoryId,
+          desc: data.desc,
+          img: data.img,
+          price: data.price,
+          pdf: undefined,
         }
 
         await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateMenuInput })
@@ -318,19 +328,6 @@ export default function MenuPage() {
           />
         </div>
 
-        {/* Form dialog */}
-        <TablesFormDialog
-          open={open}
-          onOpenChange={setOpen}
-          editing={editing}
-          value={form}
-          onChange={setForm}
-          onSubmit={(data) => {
-            onSubmit(data)
-          }}
-          loading={createMut.isPending || updateMut.isPending}
-        />
-
         {/* Confirm delete */}
         <ConfirmDialog
           open={confirmOpen}
@@ -354,6 +351,14 @@ export default function MenuPage() {
           value={selectedVariant}
           onSubmit={(data) => {
             handlerVariant(data)
+          }}
+        />
+        <FormMenuDrawer 
+          open={open} 
+          onOpenChange={setOpen}
+          value={form}
+          onSubmit={(data) => {
+            onSubmit(data)
           }}
         />
       </div>

@@ -22,6 +22,7 @@ type NumberInputProps<TFieldValues extends FieldValues> = {
   min?: number
   max?: number
   className?: string
+  placeholder?: string
 }
 
 function formatCurrency(
@@ -52,6 +53,7 @@ export function NumberInput<TFieldValues extends FieldValues>({
   min,
   max,
   className,
+  placeholder,
 }: NumberInputProps<TFieldValues>) {
   return (
     <Controller
@@ -94,6 +96,7 @@ export function NumberInput<TFieldValues extends FieldValues>({
             <Input
               inputMode="numeric"
               disabled={disabled}
+              placeholder={placeholder}
               value={displayValue}
               onChange={(e) => {
                 const raw = e.target.value

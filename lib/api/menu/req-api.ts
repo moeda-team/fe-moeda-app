@@ -24,6 +24,14 @@ export type Menuitem = {
   discountMenus: DiscountMenu[]
 }
 
+export type MenuForm = {
+  categoryId : string,
+  name : string,
+  desc : string,
+  img : string,
+  price : number,
+}
+
 export type MenuitemBestseller = {
   id: string,
   menuId: string,
@@ -51,7 +59,6 @@ export type DiscountMenu =
         maxUsage: string
     }
   }
-
 
 export type MenuQueryParams = {
   search?: string
@@ -101,9 +108,9 @@ export type OptionsListResponse = {
   paginate: Paginate
 }
 
-export type CreateMenuInput = MenuFormValue
+export type CreateMenuInput = MenuForm
 
-export type UpdateMenuInput = MenuFormValue
+export type UpdateMenuInput = MenuForm
 
 export async function createMenu (input: CreateMenuInput) {
   const res = await axiosClient.post("/menus/main", input)

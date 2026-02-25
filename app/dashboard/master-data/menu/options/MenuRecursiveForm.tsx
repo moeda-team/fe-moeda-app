@@ -37,24 +37,29 @@ export default function MenuRecursiveForm({ value, onSubmit }: Props) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(submit)} className="flex flex-col justify-between space-y-6 space-x-2">
+      <form
+        onSubmit={handleSubmit(submit)}
+        className="flex flex-col justify-between space-y-6 space-x-2"
+      >
         {fields.map((field, index) => (
           <MenuOptionFields
             key={field.id}
             control={control}
             name={`data.${index}`}
             remove={() => remove(index)}
+            parentValue={fields[index]?.label}
           />
         ))}
-        {
-          fields.length === 0 && (
-            <div className="text-center text-muted-foreground py-8">
-              No options added yet. Click <strong>Add Option</strong> to get started.
-            </div>
-          )
-        }
 
-        <div className="bg-muted absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-end">
+        {fields.length === 0 && (
+          <div className="text-center text-muted-foreground py-8">
+            No options added yet. Click{" "}
+            <strong>Add Option</strong> to get started.
+          </div>
+        )}
+
+        {/* FOOTER */}
+        <div className="bg-muted absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-end border-t">
           <Button
             type="button"
             className="w-36"
@@ -62,15 +67,19 @@ export default function MenuRecursiveForm({ value, onSubmit }: Props) {
               append({
                 id: uuid(),
                 label: "",
+                value: "",
                 type: "single",
                 required: false,
                 choices: [],
               })
             }
           >
-            <Plus />Add Option
+            <Plus /> Add Option
           </Button>
-          <Button type="submit" className="w-36"><Save /> Save</Button>
+
+          <Button type="submit" className="w-36">
+            <Save /> Save
+          </Button>
         </div>
       </form>
     </FormProvider>

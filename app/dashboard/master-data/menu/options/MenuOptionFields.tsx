@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Control,
   FieldArrayPath,
@@ -15,6 +17,7 @@ type Props = {
   name: Path<MenuFormValueOptions>
   remove: () => void
   level?: number
+  parentValue?: string
 }
 
 export function MenuOptionFields({
@@ -22,10 +25,20 @@ export function MenuOptionFields({
   name,
   remove,
   level = 0,
+  parentValue = "",
 }: Props) {
-  const { register } = useFormContext<MenuFormValueOptions>()
+  const { register, watch } =
+    useFormContext<MenuFormValueOptions>()
 
-  const { fields, append, remove: removeChoice } = useFieldArray({
+    const currentOptionValue = watch(
+    `${name}.label` as Path<MenuFormValueOptions>
+  ) as string | undefined
+
+  const {
+    fields,
+    append,
+    remove: removeChoice,
+  } = useFieldArray({
     control,
     name: `${name}.choices` as FieldArrayPath<MenuFormValueOptions>,
   })
@@ -56,6 +69,12 @@ export function MenuOptionFields({
         </Button>
       </div>
 
+      {/* Hidden VALUE */}
+      <Input
+        type="hidden"
+        {...register(`${name}.value` as Path<MenuFormValueOptions>)}
+      />
+
       {/* CHOICES */}
       <div className="space-y-3">
         {fields.map((field, index) => (
@@ -65,6 +84,7 @@ export function MenuOptionFields({
             name={`${name}.choices.${index}` as Path<MenuFormValueOptions>}
             remove={() => removeChoice(index)}
             level={level + 1}
+            parentValue={parentValue ? `${parentValue}_${currentOptionValue}` : currentOptionValue}
           />
         ))}
 

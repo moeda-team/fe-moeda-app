@@ -24,12 +24,11 @@ type Props = {
 
 export function AddMenuDrawer({ menu }: Props) {
   if (menu.options?.length > 0) {
-    menu.options.forEach((option) => {
-      menu = {
-        ...menu,
-        options: option.data || []
-      }
-    })
+    menu = {
+      ...menu,
+      options: (menu.options || []).flatMap(o => o?.data ?? [])
+    }
+    console.log(menu)
   }
 
   const [open, setOpen] = React.useState(false)

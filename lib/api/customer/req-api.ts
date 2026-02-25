@@ -96,6 +96,7 @@ export type Choice = {
 export type MenuOption = {
   id: string
   label: string
+  value: string
   type: "single" | "multiple"
   required?: boolean
   choices: Choice[]

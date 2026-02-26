@@ -144,11 +144,11 @@ export function AddMenuDrawer({ menu }: Props) {
     }
 
     if (menu.discountMenus[0].discount.type === "fixed") {
-      return Number(menu.discountMenus[0].discount.discount)
+      return Number(menu.discountMenus[0].discount.discount) * qty
     }
 
     return 0
-  }, [menu.discountMenus, subtotal])
+  }, [menu.discountMenus, subtotal, qty])
 
   const totalPrice = Math.max(subtotal - discountAmount, 0)
 

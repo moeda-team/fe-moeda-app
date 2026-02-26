@@ -50,13 +50,13 @@ export default function FeedbackPage() {
           Download Receipt
         </button>
 
-        <div className="bg-white rounded-sm p-4 shadow">
+        <div className="bg-white rounded-sm p-6 shadow-sm border border-gray-200 font-medium">
 
           <h2 className="text-center font-semibold text-lg">
             Thank you for Order’s
           </h2>
 
-          <p className="text-center text-sm text-gray-500 mb-4">
+          <p className="text-center text-sm text-gray-500 mb-2">
             {format(
               new Date(order.paidAt),
               "dd MMMM yyyy",
@@ -92,12 +92,12 @@ export default function FeedbackPage() {
             </div>
           </div>
 
-          <div className="pt-3 space-y-2 text-sm font-medium">
+          <div className="pt-3 space-y-1 text-sm font-medium">
             <p className="font-semibold">
               Payment Details
             </p>
 
-            <hr className="border-dashed my-1" />
+            <hr className="border-dashed my-2" />
 
             {details.subTransactions.map((item) => (
               <div
@@ -109,10 +109,7 @@ export default function FeedbackPage() {
                 </span>
                 <span>
                   Rp.{" "}
-                  {(
-                    item.quantity *
-                    Number(item.price)
-                  ).toLocaleString("id-ID")}
+                  {(Number(item.subTotal)).toLocaleString("id-ID")}
                 </span>
               </div>
             ))}
@@ -126,16 +123,22 @@ export default function FeedbackPage() {
               </span>
             </div>
 
-            <hr className="border-dashed my-1" />
+            <hr className="border-dashed my-2" />
 
-            {/* <div className="flex justify-between">
+            <div className="flex justify-between text-[#E35336]">
+              <span>Menu Discount</span>
+              <span>- Rp {Number(details.discount).toLocaleString("id-ID")}</span>
+            </div>
+
+            <div className="flex justify-between">
               <span>Tax</span>
               <span>
                 Rp.{" "}
                 {Number(details.tax)
                   .toLocaleString("id-ID")}
               </span>
-            </div> */}
+            </div>
+
             <div className="flex justify-between">
               <span>Service Fee</span>
               <span>

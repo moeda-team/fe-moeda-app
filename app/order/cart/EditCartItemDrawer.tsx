@@ -121,9 +121,6 @@ export function EditCartItemDrawer({ item }: Props) {
 
     return total
   }, [item.menuItem.options, selectedOptions])
-  const basePrice = Number(item.menuItem.price) + extraPrice - (item.discountAmount)
-  const subtotal = basePrice * qty
-  const totalPrice = subtotal // kalau mau voucher tinggal tambahin logic sama kayak AddMenuDrawer
 
   /**
    * =========================
@@ -146,6 +143,15 @@ export function EditCartItemDrawer({ item }: Props) {
   const originalPrice = Number(item.menuItem.price)
   const hasDiscount = item.menuItem.discountMenus.length > 0 && Number(item.menuItem.discountMenus[0].discount.discount) > 0
 
+  // diskon
+  const discount = item.menuItem.discountMenus[0].discount.type === "percent" ? 
+                    originalPrice * (Number(item.menuItem.discountMenus[0].discount.discount) / 100) * qty : 
+                    Number(item.menuItem.discountMenus[0].discount.discount) * qty
+
+  const basePrice = Number(item.menuItem.price) + extraPrice
+  const subtotal = basePrice * qty
+  const totalPrice = subtotal - discount // kalau mau voucher tinggal tambahin logic sama kayak AddMenuDrawer
+  
   const discountedPrice = hasDiscount ?
     item.menuItem.discountMenus[0].discount.type === "percent"
       ? originalPrice - (originalPrice * Number(item.menuItem.discountMenus[0].discount.discount)) / 100

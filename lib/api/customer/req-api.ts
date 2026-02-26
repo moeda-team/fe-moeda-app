@@ -148,6 +148,7 @@ export type Transaction = {
   paymentNumber: string
   customerName: string
   discount: number
+  subTotal: number
   tax: string
   serviceCharge: string
   rounding: string

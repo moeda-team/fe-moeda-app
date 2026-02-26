@@ -29,9 +29,10 @@ import { PaymentMethodSelector } from "./PaymentMethodSelector"
 type Props = {
   open: boolean
   onOpenChange: (val: boolean) => void
+  onSuccess?: (data: string) => void
 }
 
-export function CheckoutDrawer({ open, onOpenChange }: Props) {
+export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
   /**
    * =========================
    * STORE
@@ -86,7 +87,7 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
         Number(discountAmount),
         cartDiscount
       ),
-    enabled: !!paymentMethod,
+    enabled: !!paymentMethod && open,
   })
   
   /**
@@ -118,9 +119,10 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
       clearCustoemr()
       setExpiredAt(null)
       setActiveTransactionId(null)
+      onSuccess?.(statusData?.data.details.id)
     }, 500)
     
-  }, [statusData, onOpenChange])
+  }, [statusData, onOpenChange, onSuccess])
 
   const { data: TABLE_OPTIONS } = useTablesQuery({
     page: 1,
@@ -176,7 +178,7 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
         tableId: table,
         paymentMethod,
         customerName: name,
-        discount: transactionData?.data.discount ?? 0,
+        discount: transactionData?.data.discountMenu ?? 0,
         additionalNote: "",
         voucher: code,
         cart:
@@ -184,11 +186,11 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
             menuId: item.menuId,
             menuName: item.name,
             quantity: item.qty,
-            price: item.basePrice,
-            subTotal: item.subtotal,
-            addOn: item?.options
-              ? mappingOption(item.options, item.menuItem.options ?? [])
-              : "",
+            discount : item.discountAmount,
+            price : item.basePrice,
+            subTotal : item.subtotal + Number(item.discountAmount),
+            addOn : item?.options ? Object.values(item.options).flat().join(", ") : "",
+            addOnPrice : item.extraPrice,
             note: item.note ?? "",
           })) ?? [],
       },
@@ -371,6 +373,11 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
               <div className="text-red-500 font-semibold">
                 Expired in {formattedTime}
               </div>
+
+              <div onClick={() => navigator.clipboard.writeText(qr!)} className="cursor-pointer font-bold underline text-sm">
+                Copy Payment Number
+              </div>
+          
             </div>
           ) : (
             <PaymentMethodSelector

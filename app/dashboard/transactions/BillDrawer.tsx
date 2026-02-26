@@ -42,7 +42,10 @@ export default function BillDrawer({
   })
 
   return (
-    <Sheet open={open} onOpenChange={onClose}>
+    <Sheet
+      open={open}
+      onOpenChange={() => {}}
+    >
       <SheetContent
         side="right"
         className="w-[420px] p-0 rounded-l-2xl flex flex-col"
@@ -115,8 +118,25 @@ export default function BillDrawer({
                   </div>
                 </div>
               ))}
+              
+              {item.data.discount && (
+                <div className="flex justify-between text-xs">
+                  <span>Discount</span>
+                  <span>- {formatCurrency(Number(item.data.discount))}</span>
+                </div>
+              )}
 
               <hr className="my-2 border-dashed" />
+              {/* belum vocer */}
+              {item.data.discount && (
+                <div className="flex justify-between text-xs">
+                  <span>Sub Total</span>
+                  <span>{formatCurrency(Number(item.data.subTotal) - Number(item.data.discount))}</span>
+                </div>
+              )}
+
+              <hr className="my-2 border-dashed" />
+
 
               {item.data.tax && (
                 <div className="flex justify-between text-xs">

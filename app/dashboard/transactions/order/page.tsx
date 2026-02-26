@@ -28,6 +28,7 @@ import { mappingOption } from "@/lib/option-utils"
 import { EditCartItemDrawer } from "./EditCartItemDrawer"
 import { formatCurrency } from "@/lib/helpers"
 import { CheckoutDrawer } from "./CheckoutDrawer"
+import BillDrawer from "../BillDrawer"
 
 const emptyForm: MenuForm = {
   name: "",
@@ -100,6 +101,9 @@ export default function TransactionsListPage() {
   const items = useCartStore((s) => s.items)
   const updateQty = useCartStore((s) => s.updateQty)
   const removeItem = useCartStore((s) => s.removeItem)
+
+  const [openBill, setOpenBill] = React.useState(false)
+  const [billId, setBillId] = React.useState<string>("")
 
   return (
     <DashboardLayout>
@@ -397,6 +401,17 @@ export default function TransactionsListPage() {
         <CheckoutDrawer
           open={checkoutOpen}
           onOpenChange={setCheckoutOpen}
+          onSuccess={(data:string) => {
+            setCheckoutOpen(false)
+            setOpenBill(true)
+            setBillId(data)
+          }}
+        />
+        
+        <BillDrawer
+          open={openBill}
+          onClose={() => setOpenBill(false)}
+          transactionId={billId}
         />
       </div>
     </DashboardLayout>

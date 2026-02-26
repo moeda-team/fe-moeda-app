@@ -11,7 +11,7 @@ const paymentMethods = [
   {
     id: "qris",
     label: "QRIS",
-    img: "/images/qris.png",
+    img: "/qris.png",
   },
 ]
 

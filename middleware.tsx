@@ -7,7 +7,7 @@ import { NextResponse } from "next/server"
  * =========================
  */
 const PUBLIC_ROUTES = ["/", "/login", "/error", "/api", "/_next"]
-const PUBLIC_PREFIXES = ["/order", "/images"]
+const PUBLIC_PREFIXES = ["/order", "/images", "/public"]
 
 const API_PREFIX = "/api"
 const STATIC_PREFIXES = ["/_next", "/favicon.ico"]

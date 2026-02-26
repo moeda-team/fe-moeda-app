@@ -21,10 +21,10 @@ import { useTablesQuery } from "@/app/dashboard/master-data/tables/hooks/use"
 import { mappingOption } from "@/lib/option-utils"
 import { useCreateTransaction } from "@/app/order/checkout/hooks/useTransactions"
 import { useVoucher } from "@/app/order/checkout/hooks/useVoucher"
-import { PaymentMethodSelector } from "@/app/order/checkout/PaymentMethodSelector"
 import { EditCustomerDrawer } from "@/app/order/checkout/EditCustomerDrawer"
 import { Button } from "@/components/ui/button"
 import { checkTransactionStatus } from "@/lib/api/customer/req-api"
+import { PaymentMethodSelector } from "./PaymentMethodSelector"
 
 type Props = {
   open: boolean

@@ -14,7 +14,7 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
 import { useDebounce } from "@/components/use-debounce"
 import { Badge } from "@/components/ui/badge"
-import { Clock, List, ShoppingBag } from "lucide-react"
+import { Clock, List, PrinterCheck, ShoppingBag } from "lucide-react"
 import { useLiveTimeAgo } from "@/lib/useLiveTimeAgo"
 import { TransactionOrder } from "@/lib/api/customer/req-api"
 import { diffMinutes, diffMinutesAbsolute, diffMinutesDecimal, diffMinutesDetail, formatCurrency, formatTime } from "@/lib/helpers"
@@ -41,6 +41,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table"
+import BillDrawer from "../BillDrawer"
+import { Menuitem } from "@/lib/api/menu/req-api"
 
 function TransactionCard({
   transaction,
@@ -270,6 +272,8 @@ export default function TransactionsListPage() {
       toast.error(getErrorMessage(err))
     }
   }
+  const [openBill, setOpenBill] = React.useState(false)
+  const [billItems, setBillItems] = React.useState<TransactionOrder>()
   
   return (
     <DashboardLayout>
@@ -394,6 +398,7 @@ export default function TransactionsListPage() {
                   <TableHead>Payment</TableHead>
                   <TableHead>Transaction Type</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>#</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -408,7 +413,9 @@ export default function TransactionsListPage() {
                   transactionsCompleted.map((v) => (
                     <TableRow key={v.id}>
                       <TableCell className="font-medium">{v.table.name ?? 'No selected'}</TableCell>
-                      <TableCell className="font-medium">{v.customerName}</TableCell>
+                      <TableCell className="font-medium">
+                        <div>{v.customerName}</div>
+                        <div className="text-muted-foreground">{v.paymentNumber}</div></TableCell>
                       <TableCell className="font-medium">{v.subTransactions.length}</TableCell>
                       <TableCell className="font-medium">{formatCurrency(Number(v.total))}</TableCell>
                       <TableCell className="font-medium capitalize">{v.paymentMethod}</TableCell>
@@ -426,6 +433,18 @@ export default function TransactionsListPage() {
                           {v.status}
                         </Badge>
                       </TableCell>
+                      <TableCell className="font-medium capitalize">
+                        <Button   
+                          variant="outline"  
+                          size="icon"
+                          onClick={() => {
+                            setOpenBill(true)
+                            setBillItems(v)
+                          }}
+                        >
+                          <PrinterCheck />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
@@ -433,6 +452,12 @@ export default function TransactionsListPage() {
             </Table>
           </div>
         )}
+
+        <BillDrawer
+          open={openBill}
+          onClose={() => setOpenBill(false)}
+          item={billItems?? null}
+        />
       </div>
     </DashboardLayout>
   )

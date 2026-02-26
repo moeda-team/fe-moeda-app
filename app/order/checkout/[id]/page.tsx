@@ -38,7 +38,7 @@ export default function FeedbackPage() {
   }
 
   const details = order.details
-
+  console.log(details)
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
 

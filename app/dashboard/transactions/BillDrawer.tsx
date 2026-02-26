@@ -1,99 +1,172 @@
 "use client"
 
-import { useEffect } from "react"
-import { X } from "lucide-react"
-import { TransactionOrder } from "@/lib/api/customer/req-api"
-import { formatDate } from "@/lib/helpers"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+
+import { Button } from "@/components/ui/button"
+import { formatCurrency, formatDate } from "@/lib/helpers"
+
+import { useRef } from "react"
+import { useReactToPrint } from "react-to-print"
+import { useQuery } from "@tanstack/react-query"
+import { getTransactionDetail  } from "@/lib/api/customer/req-api"
 
 type Props = {
   open: boolean
   onClose: () => void
-  item: TransactionOrder | null
+  transactionId: string | null
 }
 
 export default function BillDrawer({
   open,
   onClose,
-  item,
+  transactionId,
 }: Props) {
+  const receiptRef = useRef<HTMLDivElement>(null)
 
-  console.log(item)
+  // ✅ Fetch detail only when open & id exists
+  const { data: item, isLoading } = useQuery({
+    queryKey: ["transaction-detail", transactionId],
+    queryFn: () => getTransactionDetail (transactionId!),
+    enabled: open && !!transactionId,
+  })
 
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    }
-
-    window.addEventListener("keydown", handleEsc)
-    return () => window.removeEventListener("keydown", handleEsc)
-  }, [onClose])
+  const handlePrint = useReactToPrint({
+    contentRef: receiptRef,
+    documentTitle: item?.data?.paymentNumber || "Receipt",
+    onAfterPrint: () => onClose(),
+  })
 
   return (
-    <>
-      {/* Overlay */}
-      <div
-        onClick={onClose}
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${
-          open ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      />
-
-      {/* Drawer */}
-      <div
-        className={`fixed top-0 right-0 h-full w-[420px] bg-white shadow-2xl rounded-l-2xl transition-transform duration-300 ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent
+        side="right"
+        className="w-[420px] p-0 rounded-l-2xl flex flex-col"
       >
-          <div className="flex justify-between item-center px-6 py-4 border-b">
-            <h2 className="text-lg font-semibold">
-              Order Details
-            </h2>
-            <button onClick={onClose}>
-              <X size={20} />
-            </button>
-          </div>
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle>Order Details</SheetTitle>
+        </SheetHeader>
 
-          <div className="bg-primary/10 m-6 rounded-lg border-primary border shadow-sm">
-            <div className="p-6 py-4 overflow-y-auto h-[calc(100%-80px)]">
-              {/* Header */}
+        <div className="flex-1 overflow-y-auto p-6">
+
+          {isLoading && (
+            <div className="text-center py-10">
+              Loading...
+            </div>
+          )}
+
+          {!isLoading && item && (
+            <div
+              ref={receiptRef}
+              className="receipt-print font-mono text-[11px]"
+            >
+              {/* HEADER */}
               <div className="text-center mb-3">
-                <img src="/logo.png" alt="Logo" className="w-28 h-14 mx-auto" />
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  className="w-28 h-14 mx-auto"
+                />
 
                 <h2 className="mt-2 font-medium">
                   Thank you for Order’s
                 </h2>
-                <p className="text-sm text-gray-500">
-                  {formatDate(item?.createdAt || new Date(), 'DD MMMM YYYY')}
+
+                <p className="text-xs">
+                  {formatDate(
+                    item.data.createdAt,
+                    "DD MMMM YYYY"
+                  )}
                 </p>
               </div>
 
-              {/* Info */}
-              <div className="space-y-1 text-sm font-medium mb-3 text-muted-foreground">
+              {/* INFO */}
+              <div className="text-xs mb-2">
                 <div className="flex justify-between">
-                  <span>Order ID</span>
-                  <span>{item?.paymentNumber}</span>
+                  <span>ID</span>
+                  <span>{item.data.paymentNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Customer Name</span>
-                  <span>{item?.customerName}</span>
+                  <span>Customer</span>
+                  <span>{item.data.customerName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Table</span>
-                  <span>{item?.table.name}</span>
+                  <span>{item.data.table?.name}</span>
                 </div>
               </div>
 
-              <div className="space-y-1 text-lg font-medium">
-                Payment Details
-              </div>
-              <hr className="my-2 border-dashed border-primary/50" />
-              List
-              <hr className="my-2 border-dashed border-primary/50" />
-              
+              <hr className="my-2 border-dashed" />
 
+              {/* ITEMS */}
+              {item.data.subTransactions?.map((menu, i) => (
+                <div key={i} className="text-xs mb-1">
+                  <div className="flex justify-between">
+                    <span>
+                      {menu.quantity}x {menu.menuName}
+                    </span>
+                    <span>
+                      {formatCurrency(Number(menu.subTotal))}
+                    </span>
+                  </div>
+                </div>
+              ))}
+
+              <hr className="my-2 border-dashed" />
+
+              {item.data.tax && (
+                <div className="flex justify-between text-xs">
+                  <span>Tax</span>
+                  <span>{formatCurrency(Number(item.data.tax))}</span>
+                </div>
+              )}
+
+              {item.data.serviceCharge && (
+                <div className="flex justify-between text-xs">
+                  <span>Service</span>
+                  <span>{formatCurrency(Number(item.data.serviceCharge))}</span>
+                </div>
+              )}
+
+              {item.data.rounding && (
+                <div className="flex justify-between text-xs">
+                  <span>Round</span>
+                  <span>{formatCurrency(Number(item.data.rounding))}</span>
+                </div>
+              )}
+
+              <hr className="my-2 border-dashed" />
+
+              <div className="flex justify-between font-semibold text-sm">
+                <span>Total</span>
+                <span>{formatCurrency(item.data.total)}</span>
+              </div>
             </div>
-          </div>
-      </div>
-    </>
+          )}
+        </div>
+
+        <div className="flex gap-4 px-6 pb-6">
+          <Button
+            className="w-2/3"
+            onClick={handlePrint}
+            disabled={!item}
+          >
+            Print Receipt
+          </Button>
+
+          <Button
+            className="w-1/3"
+            variant="outline"
+            onClick={onClose}
+          >
+            Close
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }

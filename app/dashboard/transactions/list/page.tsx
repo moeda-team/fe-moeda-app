@@ -456,7 +456,7 @@ export default function TransactionsListPage() {
         <BillDrawer
           open={openBill}
           onClose={() => setOpenBill(false)}
-          item={billItems?? null}
+          transactionId={billItems?.id ?? null}
         />
       </div>
     </DashboardLayout>

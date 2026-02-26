@@ -136,3 +136,34 @@ button {
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
+
+  html, body {
+    width: 58mm;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-print,
+  .receipt-print * {
+    visibility: visible;
+  }
+
+  .receipt-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 58mm;
+    padding: 0;
+    margin: 0;
+  }
+}

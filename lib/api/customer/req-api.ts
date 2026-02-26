@@ -148,7 +148,9 @@ export type Transaction = {
   paymentNumber: string
   customerName: string
   discount: number
-  tax: number
+  tax: string
+  serviceCharge: string
+  rounding: string
   service: number
   total: number
   status: TransactionStatus
@@ -161,6 +163,11 @@ export type Transaction = {
     type : string
   }[],
   details : CompletedOrderDetails
+  subTransactions: SubTransaction[]
+  table: {
+    id: string
+    name: string
+  }
 }
 
 export type TransactionsQueryParams = {
@@ -224,6 +231,18 @@ export async function getTransactionById(
   id: string
 ): Promise<TransactionResponse> {
   const res = await axiosClient.get<TransactionResponse>(`/transactions/payments/${id}`)
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
+  }
+
+  return res.data
+}
+
+export async function getTransactionDetail (
+  id: string
+): Promise<TransactionResponse> {
+  const res = await axiosClient.get<TransactionResponse>(`/transactions/main/${id}`)
 
   if (!res) {
     throw new Error("Failed to fetch transaction")

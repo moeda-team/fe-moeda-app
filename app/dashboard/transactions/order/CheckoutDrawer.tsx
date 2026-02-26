@@ -24,6 +24,7 @@ import { useVoucher } from "@/app/order/checkout/hooks/useVoucher"
 import { PaymentMethodSelector } from "@/app/order/checkout/PaymentMethodSelector"
 import { EditCustomerDrawer } from "@/app/order/checkout/EditCustomerDrawer"
 import { Button } from "@/components/ui/button"
+import { checkTransactionStatus } from "@/lib/api/customer/req-api"
 
 type Props = {
   open: boolean
@@ -59,6 +60,10 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
   const sub = subtotalFn()
   const nSub = nSubtotal()
   const cartDiscount = totalDiscountFn()
+  const clearCart = useCartStore((s) => s.clearCart)
+  const clearCustoemr = useCustomerStore((s) => s.clearCustomer)
+
+  const [activeTransactionId, setActiveTransactionId] = useState<string | null>(null)
 
   const { mutate, isPending } = useCreateTransaction()
 
@@ -83,6 +88,39 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
       ),
     enabled: !!paymentMethod,
   })
+  
+  /**
+   * 🔥 POLLING STATUS
+   */
+  const { data: statusData } = useQuery({
+    queryKey: ["transaction-status", activeTransactionId],
+    queryFn: () =>
+      checkTransactionStatus(activeTransactionId!),
+    enabled: !!activeTransactionId && !!qr && open,
+    refetchInterval: (query) => {
+      const data = query.state.data
+      return data?.data?.status === "pending"
+        ? 7000
+        : false
+    },
+    refetchOnWindowFocus: false,
+  })
+
+  useEffect(() => {
+    if (statusData?.data?.status !== "completed") return
+
+    toast.success("Payment successful")
+
+    onOpenChange(false)
+    setTimeout(() => {
+      setQr("")
+      clearCart()
+      clearCustoemr()
+      setExpiredAt(null)
+      setActiveTransactionId(null)
+    }, 500)
+    
+  }, [statusData, onOpenChange])
 
   const { data: TABLE_OPTIONS } = useTablesQuery({
     page: 1,
@@ -156,18 +194,18 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
       },
       {
         onSuccess: async (data) => {
-          const transaction =
-            await getTransactionByPaymentNumber(
-              data.data.paymentNumber,
-              paymentMethod
-            )
+          const paymentNumber = data.data.paymentNumber
 
-          const qrUrl =
-            transaction.data.actions?.[0]?.url || ""
+          const transaction = await getTransactionByPaymentNumber(
+            paymentNumber,
+            paymentMethod
+          )
+
+          const qrUrl = transaction.data.actions?.[0]?.url || ""
 
           setQr(qrUrl)
+          setActiveTransactionId(paymentNumber)
 
-          // 🔥 start 5 minute countdown
           const FIVE_MINUTES = 5 * 60 * 1000
           setExpiredAt(Date.now() + FIVE_MINUTES)
         },

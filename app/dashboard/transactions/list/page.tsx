@@ -234,7 +234,8 @@ export default function TransactionsListPage() {
     page: 1,
     perPage: 10,
     search: debouncedSearch,
-    status: "active"
+    status: "active",
+    paymentStatus: "completed"
   })
   const { data : dataCompleted } = useTransactionsQuery({
     page: 1,

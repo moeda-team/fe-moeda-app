@@ -12,7 +12,7 @@ const paymentMethods = [
   {
     id: "qris",
     label: "QRIS",
-    img: "/images/qris.png",
+    img: "/qris.png",
   },
 ]
 
@@ -45,7 +45,7 @@ export function PaymentMethodSelector({ value, onChange }: Props) {
                   <img
                     src={method.img}
                     alt={method.label}
-                    className="object-contain"
+                    className="object-contain h-full w-full"
                   />
                 </div>
               </div>

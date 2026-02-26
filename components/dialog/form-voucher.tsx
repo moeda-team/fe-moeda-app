@@ -163,6 +163,7 @@ export function VoucherFormDialog({
               {...register("expiredAt", {
                 required: "Expired At is required",
               })}
+              min={new Date().toISOString().split("T")[0]}
             />
             {errors.expiredAt && (
               <p className="text-sm text-red-500">{errors.expiredAt.message}</p>

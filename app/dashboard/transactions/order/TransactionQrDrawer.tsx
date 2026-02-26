@@ -1,0 +1,238 @@
+"use client"
+
+import { useEffect, useMemo, useRef, useState } from "react"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
+import { useQuery } from "@tanstack/react-query"
+import { useCartStore } from "@/store/cart.store"
+import { useRouter } from "next/navigation"
+import {
+  getTransactionByPaymentNumber,
+  checkTransactionStatus,
+} from "@/lib/api/customer/req-api"
+import { toast } from "sonner"
+import { useOrderStore } from "@/store/order.store"
+
+type Props = {
+  paymentMethod: string | null
+  open: boolean
+  setOpen: (open: boolean) => void
+  onClose: () => void
+}
+
+export function TransactionQrDrawer({
+  paymentMethod,
+  open,
+  setOpen,
+  onClose,
+}: Props) {
+  const router = useRouter()
+  const clearCart = useCartStore((s) => s.clearCart)
+  const addCompletedOrder = useOrderStore((s) => s.addCompletedOrder)
+
+  /**
+   * 🔥 RESTORE LOCAL STORAGE
+   */
+  const [restored] = useState(() => {
+    if (typeof window === "undefined") return null
+
+    const storedQr = localStorage.getItem("qrGenerated")
+    const storedExpire = localStorage.getItem("paymentExpiredAt")
+
+    if (storedQr && storedExpire) {
+      return {
+        qrUrl: storedQr,
+        expiredAt: Number(storedExpire),
+      }
+    }
+
+    return null
+  })
+
+  const activeTransactionId = localStorage.getItem("transactionId")
+  /**
+   * 🔥 FETCH QR
+   */
+  const { data: qrData } = useQuery({
+    queryKey: ["transaction-qr", activeTransactionId],
+    queryFn: () =>
+      getTransactionByPaymentNumber(
+        activeTransactionId!,
+        paymentMethod!
+      ),
+    enabled: !!activeTransactionId && !restored?.qrUrl,
+    refetchOnWindowFocus: false,
+  })
+
+  const qrUrl =
+    qrData?.data?.actions?.[0]?.url ||
+    restored?.qrUrl ||
+    null
+
+  /**
+   * 🔥 SAVE QR + EXPIRE TIMESTAMP
+   */
+  const qrSavedRef = useRef(false)
+
+  useEffect(() => {
+    if (!qrUrl || qrSavedRef.current) return
+
+    qrSavedRef.current = true
+    localStorage.setItem("qrGenerated", qrUrl)
+    toast.success("QR Code generated")
+
+    // aman karena tidak sync render loop
+    setTimeout(() => setOpen(true), 0)
+  }, [qrUrl, activeTransactionId, setOpen])
+
+  /**
+   * 🔥 POLLING STATUS
+   */
+  const { data: statusData } = useQuery({
+    queryKey: ["transaction-status", activeTransactionId],
+    queryFn: () => checkTransactionStatus(activeTransactionId!),
+    enabled: !!activeTransactionId && !!qrUrl,
+    refetchInterval: (query) => {
+      const data = query.state.data
+      return data?.data?.status === "pending" ? 7000 : false
+    },
+    refetchOnWindowFocus: false,
+  })
+
+  /**
+   * 🔥 HANDLE COMPLETED
+   */
+  useEffect(() => {
+    if (statusData?.data?.status !== "completed") return
+
+    const trx = statusData.data
+
+    addCompletedOrder({
+      id: trx.details.id,
+      paidAt: Date.now(),
+      total: Number(trx.details.total),
+      customerName: trx.details.customerName,
+      details: trx.details,
+    })
+    
+    clearCart()
+
+    localStorage.removeItem("transactionId")
+    localStorage.removeItem("qrGenerated")
+    localStorage.removeItem("paymentExpiredAt")
+
+    toast.success("Payment successful")
+
+    setTimeout(() => {
+      router.replace(`/order/checkout/${trx.details.id}`)
+    }, 2000)
+  }, [statusData, addCompletedOrder, clearCart, router])
+
+  /**
+   * 🔥 TIMER (PERSISTENT)
+   */
+  const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const expiredAt = Number(localStorage.getItem("paymentExpiredAt"))
+
+  const remainingSeconds = useMemo(() => {
+    if (!expiredAt) return 0
+    return Math.max(
+      Math.floor((expiredAt - now) / 1000),
+      0
+    )
+  }, [expiredAt, now])
+
+  /**
+   * 🔥 HANDLE EXPIRED
+   */
+  useEffect(() => {
+    if (remainingSeconds === 0 && statusData?.data?.status === "pending") {
+      localStorage.removeItem("transactionId")
+      localStorage.removeItem("qrGenerated")
+      localStorage.removeItem("paymentExpiredAt")
+
+      toast.error("Payment expired")
+
+      setTimeout(() => {
+        onClose()
+      }, 0)
+    }
+  }, [remainingSeconds, statusData, onClose])
+
+  if (!activeTransactionId) return null
+
+  const pending = statusData?.data?.status === "pending"
+  const expired = statusData?.data?.status === "expired"
+  const completed = statusData?.data?.status === "completed"
+
+  return (
+    <Drawer open={open} dismissible={false} direction="right">
+      <DrawerContent className="px-4 pb-6 max-w-lg mx-auto">
+        <DrawerHeader>
+          <DrawerTitle className="text-lg font-semibold text-primary">
+            Scan QR to Pay
+          </DrawerTitle>
+        </DrawerHeader>
+
+        <div className="flex flex-col items-center gap-2">
+
+          {qrUrl && (
+            <img
+              src={qrUrl}
+              alt="QR Code"
+              width={250}
+              height={250}
+              className="rounded-lg"
+            />
+          )}
+
+          {qrUrl && (
+            <div onClick={() => navigator.clipboard.writeText(qrUrl!)} className="cursor-pointer font-bold underline text-sm">
+              Copy Payment Number
+            </div>
+          )}
+
+          {pending && (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Waiting for payment confirmation...
+              </p>
+
+              <p className="text-xs text-red-500 font-medium">
+                Expires in{" "}
+                {Math.floor(remainingSeconds / 60)}:
+                {(remainingSeconds % 60)
+                  .toString()
+                  .padStart(2, "0")}
+              </p>
+            </>
+          )}
+
+          {expired && (
+            <p className="text-red-600 font-semibold">
+              Payment Expired
+            </p>
+          )}
+
+          {completed && (
+            <p className="text-green-600 font-semibold">
+              Payment Successful
+            </p>
+          )}
+        </div>
+      </DrawerContent>
+    </Drawer>
+  )
+}

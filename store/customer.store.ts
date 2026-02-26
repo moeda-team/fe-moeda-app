@@ -9,6 +9,7 @@ type CustomerState = {
   hasHydrated: boolean
 
   setCustomer: (data: { name: string; table: string }) => void
+  clearCustomer: () => void
 }
 
 export const useCustomerStore = create<CustomerState>()(
@@ -22,6 +23,11 @@ export const useCustomerStore = create<CustomerState>()(
         set({
           name: data.name,
           table: data.table,
+        }),
+      clearCustomer: () =>
+        set({
+          name: "",
+          table: "",
         }),
     }),
     {

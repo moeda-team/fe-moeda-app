@@ -27,6 +27,7 @@ import { useCartStore } from "@/store/cart.store"
 import { mappingOption } from "@/lib/option-utils"
 import { EditCartItemDrawer } from "./EditCartItemDrawer"
 import { formatCurrency } from "@/lib/helpers"
+import { CheckoutDrawer } from "./CheckoutDrawer"
 
 const emptyForm: MenuForm = {
   name: "",
@@ -61,11 +62,11 @@ export default function TransactionsListPage() {
   const [searchInput, setSearchInput] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string | null>('All')
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
 
   const { data : categoriesData, isLoading : isLoadingCategories } = useCategoriesQuery()
   const { data : bestData, isLoading : isLoadingBest } = useBestsellerQuery()
   const { data : menuData, isLoading : isLoadingMenu } = useMenuQuery({ search : debouncedSearch, category : selectedCategory === 'All' ? "" : selectedCategory ? selectedCategory : undefined })
-
   const { data : tableData } = useTablesQuery({page : 1, perPage : 1000, search: ""})
   
   useEffect(() => {
@@ -370,15 +371,13 @@ export default function TransactionsListPage() {
               </div>
 
               {/* payment button */}
-              <div className="bg-white rounded-t-sm p-3 shadow-sm sticky bottom-0 z-10 mx-auto">
+              <div className="bg-white rounded-t-sm p-3 py-4 shadow-sm sticky bottom-0 z-10 mx-auto">
                 <Button 
-                  onClick={()=>{
-                    console.log('payment')
-                  }} 
+                  onClick={() => setCheckoutOpen(true)}
                   className="text-center w-full"
                   disabled={fullscreenLoading}
                 >
-                  Payment {formatCurrency(items.map(item => item.finalPrice).reduce((a, b) => a + b, 0))}
+                  Checkout {formatCurrency(items.map(item => item.finalPrice).reduce((a, b) => a + b, 0))}
                 </Button>
               </div>
             </div>
@@ -393,6 +392,11 @@ export default function TransactionsListPage() {
           onSubmit={(data) => {
             onSubmit(data)
           }}
+        />
+
+        <CheckoutDrawer
+          open={checkoutOpen}
+          onOpenChange={setCheckoutOpen}
         />
       </div>
     </DashboardLayout>

@@ -18,7 +18,7 @@ const paymentMethods = [
 
 export function PaymentMethodSelector({ value, onChange }: Props) {
   return (
-    <div className="bg-white rounded-sm p-3 shadow-sm flex flex-col gap-2">
+    <div className="bg-white rounded-sm p-3 shadow-sm border flex flex-col gap-2">
       <div className="flex items-center gap-2 text-base font-semibold">
         <CircleDollarSign className="w-6 h-6 text-white bg-primary rounded-sm p-1" />
         Select Payment Method

@@ -136,7 +136,7 @@ export default function CheckoutPage() {
       tableId : table,
       paymentMethod : paymentMethod,
       customerName : name,
-      discount : transactionData?.data.discount ?? 0,
+      discount : transactionData?.data.discountMenu ?? 0,
       additionalNote : "",
       voucher : code,
       cart : items.map((item) => ({
@@ -146,6 +146,7 @@ export default function CheckoutPage() {
           price : item.basePrice,
           subTotal : item.subtotal,
           addOn : item?.options ? Object.values(item.options).flat().join(", ") : "",
+          addOnPrice : item.extraPrice,
           note : item.note ?? ""
       })) ?? []
     }

@@ -121,7 +121,6 @@ export function EditCartItemDrawer({ item }: Props) {
 
     return total
   }, [item.menuItem.options, selectedOptions])
-
   const basePrice = Number(item.menuItem.price) + extraPrice - (item.discountAmount)
   const subtotal = basePrice * qty
   const totalPrice = subtotal // kalau mau voucher tinggal tambahin logic sama kayak AddMenuDrawer

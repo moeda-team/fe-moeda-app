@@ -29,7 +29,7 @@ export default function CheckoutPage() {
   const subtotalFn = useCartStore((s) => s.totalFinal)
   const nSubtotal = useCartStore((s) => s.subtotal)
   const totalDiscountFn = useCartStore((s) => s.totalDiscount)
-
+  console.log(items)
   /**
    * =========================
    * CUSTOMER STORE
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
           menuName : item.name,
           quantity : item.qty,
           price : item.basePrice,
-          subTotal : item.subtotal,
+          subTotal : item.subtotal + Number(item.discountAmount),
           addOn : item?.options ? Object.values(item.options).flat().join(", ") : "",
           addOnPrice : item.extraPrice,
           note : item.note ?? ""
@@ -263,7 +263,7 @@ export default function CheckoutPage() {
                   <div className="flex gap-2">
                     {item.discountAmount > 0 && (
                       <div className="text-xs text-[#E35336] line-through ">
-                        {item.subtotal > 0 ? `(${item.subtotal.toLocaleString("id-ID")})` : ""}
+                        {item.subtotal > 0 ? `(${(Number(item.subtotal + item.discountAmount)).toLocaleString("id-ID")})` : ""}
                       </div>
                     )}
                     <div className="font-semibold">

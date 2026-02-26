@@ -42,10 +42,9 @@ export function PaymentMethodSelector({ value, onChange }: Props) {
             >
               <div className="flex items-center gap-3">
                 <div className="relative w-12 h-12">
-                  <Image
+                  <img
                     src={method.img}
                     alt={method.label}
-                    fill
                     className="object-contain"
                   />
                 </div>

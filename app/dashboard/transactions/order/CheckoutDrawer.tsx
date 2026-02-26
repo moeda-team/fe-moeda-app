@@ -11,7 +11,6 @@ import { useCartStore } from "@/store/cart.store"
 import { useCustomerStore } from "@/store/customer.store"
 import { ChevronDown, List, TicketPercent } from "lucide-react"
 import {
-  checkTransactionStatus,
   getTransactionByPaymentNumber,
   getTransactionCalculate,
 } from "@/lib/api/customer/req-api"
@@ -51,7 +50,6 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
    * LOCAL STATE
    * =========================
    */
-  const [transactionId, setTransactionId] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("qris")
   const [qr, setQr] = useState("")
   const [expiredAt, setExpiredAt] = useState<number | null>(null)
@@ -63,8 +61,6 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
   const cartDiscount = totalDiscountFn()
 
   const { mutate, isPending } = useCreateTransaction()
-  const clearCart = useCartStore((s) => s.clearCart)
-  const clearCustomer = useCustomerStore((s) => s.clearCustomer)
 
   const {
     code,
@@ -77,7 +73,7 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
   } = useVoucher(sub)
 
   const { data: transactionData } = useQuery({
-    queryKey: ["transaction-calculate", discountAmount, sub, transactionId, open],
+    queryKey: ["transaction-calculate", discountAmount, sub],
     queryFn: () =>
       getTransactionCalculate(
         paymentMethod,
@@ -85,51 +81,8 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
         Number(discountAmount),
         cartDiscount
       ),
-    enabled: !!paymentMethod && open,
+    enabled: !!paymentMethod,
   })
-
-  /**
-   * 🔥 POLLING STATUS
-   */
-  const { data: statusData } = useQuery({
-    queryKey: ["transaction-status", transactionId],
-    queryFn: () => checkTransactionStatus(transactionId!),
-    enabled: !!transactionId && !!qr && open, // ✅ tambah open
-    refetchInterval: (query) => {
-      const data = query.state.data
-      return data?.data?.status === "pending" ? 7000 : false
-    },
-    refetchOnWindowFocus: false,
-  })
-
-  useEffect(() => {
-    if (!open) {
-      setTimeout(() => {
-        setQr("")
-        setExpiredAt(null)
-        setTransactionId("")
-        setTimeLeft(0)
-      }, 500);
-    }
-  }, [open])
-
-  /**
-   * 🔥 HANDLE COMPLETED
-   */
-  useEffect(() => {
-    if (statusData?.data?.status !== "completed") return
-
-    toast.success("Payment successful")
-
-    onOpenChange(false)
-    setTimeout(() => {
-      setQr("")
-      clearCart()
-      clearCustomer()
-      setExpiredAt(null)
-      setTransactionId("")
-    }, 500);
-  }, [statusData, onOpenChange])
 
   const { data: TABLE_OPTIONS } = useTablesQuery({
     page: 1,
@@ -137,32 +90,30 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
     search: "",
   })
 
+  /**
+   * =========================
+   * COUNTDOWN EFFECT
+   * =========================
+   */
   useEffect(() => {
-    if (!expiredAt || !open) return
-
-    const tick = () => {
-      const remaining = expiredAt - Date.now()
-      const seconds = Math.max(Math.floor(remaining / 1000), 0)
-      setTimeLeft(seconds)
-    }
-
-    tick()
-    const interval = setInterval(tick, 1000)
-
-    return () => clearInterval(interval)
-  }, [expiredAt, open])
-
-  useEffect(() => {
-    if (timeLeft !== 0) return
     if (!expiredAt) return
 
-    // expired
-    setTimeout(() => {
-      setQr("")
-      setExpiredAt(null)
-      setTransactionId("")
-    }, 500);
-  }, [timeLeft, expiredAt])
+    const interval = setInterval(() => {
+      const remaining = expiredAt - Date.now()
+
+      if (remaining <= 0) {
+        clearInterval(interval)
+        setTimeLeft(0)
+        setQr("")
+        setExpiredAt(null)
+        return
+      }
+
+      setTimeLeft(Math.floor(remaining / 1000))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [expiredAt])
 
   const formattedTime = useMemo(() => {
     const minutes = Math.floor(timeLeft / 60)
@@ -215,10 +166,9 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
             transaction.data.actions?.[0]?.url || ""
 
           setQr(qrUrl)
-          setTransactionId(data.data.paymentNumber)
 
           // 🔥 start 5 minute countdown
-          const FIVE_MINUTES = 1 * 60 * 1000
+          const FIVE_MINUTES = 5 * 60 * 1000
           setExpiredAt(Date.now() + FIVE_MINUTES)
         },
         onError: (error) => {
@@ -239,7 +189,7 @@ export function CheckoutDrawer({ open, onOpenChange }: Props) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right" dismissible={false}>
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
       <DrawerContent className="w-[500px] mx-auto flex flex-col">
 
         <DrawerHeader>

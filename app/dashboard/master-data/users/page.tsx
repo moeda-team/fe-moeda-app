@@ -46,8 +46,8 @@ const emptyForm: UserFormValue = {
   outletId: process.env.NEXT_PUBLIC_OUTLET_ID,
   email: "",
   password: "",
-  roles: "HRD",
   status: "active",
+  role: "",
   position: "",
   address: "",
   gender: "",
@@ -100,8 +100,8 @@ export default function UsersPage() {
       outletId: u.outletId ?? "",
       email: u.email ?? "",
       status: u.status ?? "",
+      role: u.role ?? "",
       password: "",
-      roles: u.role as UserFormValue["roles"],
       position: u.position ?? "",
       address: u.address ?? "",
       gender: u.gender ?? "",
@@ -117,8 +117,8 @@ export default function UsersPage() {
           name: data.name,
           phoneNumber: data.phoneNumber,
           email: data.email,
-          roles: data.roles,
-          position: data.position ? data.position : data.roles ? data.roles.replace("_", " ").toLowerCase() : "",
+          role: data.role,
+          position: data.position,
           address: data.address,
           gender: data.gender,
           outletId: data.outletId,
@@ -211,6 +211,7 @@ export default function UsersPage() {
                     <TableCell>{u.name}</TableCell>
                     <TableCell>{u.email}</TableCell>
                     <TableCell>{u.position}</TableCell>
+                    <TableCell>{u.role}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"

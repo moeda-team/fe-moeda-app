@@ -26,6 +26,7 @@ export const roleOptions = [
 export type UserFormValue = {
   name : string,
   position : string,
+  role : string,
   email : string,
   password : string,
   address : string,
@@ -33,7 +34,6 @@ export type UserFormValue = {
   phoneNumber : string,
   outletId ?: string,
   status : string,
-  roles?: Roles
   fee ?: number,
 }
 

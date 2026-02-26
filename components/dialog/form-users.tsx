@@ -66,7 +66,7 @@ export function UserFormDialog({
   const submit = handleSubmit((data) => {
     // ✅ kirim form terbaru ke parent hanya saat submit
     onChange(data)
-    onSubmit({...data, roles : undefined, position :data.roles ? data.roles?.replace("_", " ").toLowerCase() : ""})
+    onSubmit(data)
   })
 
   // const verified = watch("isVerified")
@@ -172,11 +172,24 @@ export function UserFormDialog({
           </div>
 
           <div className="grid gap-2">
+            <Label>Position </Label>
+            <Input
+              type="text"
+              {...register("position", {
+                required: "Position is required",
+              })}
+            />
+            {errors.position && (
+              <p className="text-sm text-red-500">{errors.position.message}</p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
             <Label>Roles</Label>
 
             <Controller
               control={control}
-              name="roles"
+              name="role"
               rules={{ required: "Role is required" }}
               render={({ field }) => (
                 <SelectSearch
@@ -188,8 +201,8 @@ export function UserFormDialog({
               )}
             />
 
-            {errors.roles && (
-              <p className="text-sm text-red-500">{errors.roles.message}</p>
+            {errors.role && (
+              <p className="text-sm text-red-500">{errors.role.message}</p>
             )}
           </div>
 
@@ -211,7 +224,16 @@ export function UserFormDialog({
                 required: isEdit ? false : "Password is required",
                 validate: (v) => {
                   if (isEdit && !v) return true
-                  if (!v || v.length < 6) return "Min 6 characters"
+
+                  if (!v || v.length < 6)
+                    return "Min 6 characters"
+
+                  if (!/[A-Z]/.test(v))
+                    return "Must contain at least 1 uppercase letter"
+
+                  if (!/[!@#$%^&*(),.?\":{}|<>_\-\\[\]\\\/+=~`]/.test(v))
+                    return "Must contain at least 1 symbol"
+
                   return true
                 },
               })}

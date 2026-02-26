@@ -37,7 +37,7 @@ export function useUpdateTable() {
     mutationFn: ({ id, input }: { id: string; input: UpdateTablesInput }) =>
       updateTable(id, input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["discounts"] })
+      await qc.invalidateQueries({ queryKey: ["tables"] })
     },
   })
 }

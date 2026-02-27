@@ -1,60 +1,60 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
-  getStocks,
-  createStock,
-  updateStock,
-  deleteStock,
+  getActivities,
+  createActivity,
+  updateActivity,
+  deleteActivity,
   getCountStatus,
-  type StockQueryParams,
-  type StockListResponse,
-  type CreateStockInput,
-  type UpdateStockInput,
-} from "@/lib/api/inventory/req-api"
+  type ActivityQueryParams,
+  type ActivityListResponse,
+  type CreateActivityInput,
+  type UpdateActivityInput,
+} from "@/lib/api/activity/req-api"
 
-const stockKey = (params?: StockQueryParams) => ["stocks", params ?? {}] as const
+const activityKey = (params?: ActivityQueryParams) => ["activities", params ?? {}] as const
 
-export function useStocksQuery(params?: StockQueryParams) {
-  return useQuery<StockListResponse>({
-    queryKey: stockKey(params),
-    queryFn: () => getStocks(params),
+export function useActivitiesQuery(params?: ActivityQueryParams) {
+  return useQuery<ActivityListResponse>({
+    queryKey: activityKey(params),
+    queryFn: () => getActivities(params),
   })
 }
 
 // create/update/delete tetap sama (invalidate ["vouchers"])
-export function useCreateStock() {
+export function useCreateActivity() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (input: CreateStockInput) => createStock(input),
+    mutationFn: (input: CreateActivityInput) => createActivity(input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["stocks"] })
+      await qc.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }
 
-export function useUpdateStock() {
+export function useUpdateActivity() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateStockInput }) =>
-      updateStock(id, input),
+    mutationFn: ({ id, input }: { id: string; input: UpdateActivityInput }) =>
+      updateActivity(id, input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["stocks"] })
+      await qc.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }
 
-export function useDeleteStock() {
+export function useDeleteActivity() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: string) => deleteStock(id),
+    mutationFn: (id: string) => deleteActivity(id),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["stocks"] })
+      await qc.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }
 
-export function useCountStocks() {
+export function useCountActivities() {
   return useQuery({
-    queryKey: ["countStocks"],
+    queryKey: ["countActivities"],
     queryFn: () => getCountStatus(),
   })
 }

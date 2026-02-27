@@ -2,8 +2,7 @@
 
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { uomOptions, type StockItem } from "@/lib/api/inventory/req-api"
-import { Switch } from "@/components/ui/switch"
+import { type ActivityItem } from "@/lib/api/activity/req-api"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,20 +15,23 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SelectSearch } from "../input/SelectSearch"
-import type { StockFormValue } from "@/lib/api/inventory/req-api"
+import type { ActivityFormValue } from "@/lib/api/activity/req-api"
 import { NumberInput } from "../input/NumberInput"
+import { Textarea } from "../ui/textarea"
+import { StockItem } from "@/lib/api/inventory/req-api"
 
 type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  editing: StockItem | null
+  editing: ActivityItem | null
+  ingridientData: StockItem[]
   loading?: boolean
-  value: StockFormValue
-  onChange: (value: StockFormValue) => void
-  onSubmit: (data: StockFormValue) => void
+  value: ActivityFormValue
+  onChange: (value: ActivityFormValue) => void
+  onSubmit: (data: ActivityFormValue) => void
 }
 
-export function StockFormDialog({
+export function ActivityFormDialog({
   open,
   onOpenChange,
   editing,
@@ -37,6 +39,7 @@ export function StockFormDialog({
   value,
   onChange,
   onSubmit,
+  ingridientData
 }: Props) {
   const isEdit = !!editing
 
@@ -48,7 +51,7 @@ export function StockFormDialog({
     setValue,
     control,
     watch,
-  } = useForm<StockFormValue>({
+  } = useForm<ActivityFormValue>({
     mode: "onChange",
     reValidateMode: "onChange",
     defaultValues: value,
@@ -82,68 +85,91 @@ export function StockFormDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Ingredient" : "Create Ingredient"}</DialogTitle>
+          <DialogTitle>{isEdit ? "Edit Activity" : "Create Activity"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={submit} className="grid gap-4">
-          <Input
-            type="hidden"
-            {...register("outletId", {
-              required: "Outlet ID is required",
-            })}
-          />
-          <div className="grid gap-2">
-            <Label>Name</Label>
-            <Input
-              {...register("name", {
-                required: "Name is required",
-                minLength: { value: 3, message: "Min 3 characters" },
-              })}
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
-          </div>
 
           <div className="grid gap-2">
-            <Label>Unit</Label>
+            <Label>Ingredient</Label>
 
             <Controller
               control={control}
-              name="unit"
-              rules={{ required: "Unit is required" }}
+              name="inventoryId"
+              rules={{ required: "Ingredient is required" }}
               render={({ field }) => (
                 <SelectSearch
-                  options={uomOptions}
+                  options={ingridientData.map((item) => ({
+                    value: item.id,
+                    label: item.name,
+                    unit: item.unit,
+                  }))}
                   value={field.value}
                   onChange={(v) => field.onChange(v)}
-                  placeholder="Pilih unit"
+                  placeholder="Select ingredient"
                 />
               )}
             />
 
-            {errors.unit && (
-              <p className="text-sm text-red-500">{errors.unit.message}</p>
+            {errors.inventoryId && (
+              <p className="text-sm text-red-500">{errors.inventoryId.message}</p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Type</Label>
+
+            <Controller
+              control={control}
+              name="type"
+              rules={{ required: "Type is required" }}
+              render={({ field }) => (
+                <SelectSearch
+                  options={[
+                    { value: "ADD", label: "Add" },
+                    { value: "REDUCE", label: "Reduce" },
+                    { value: "ADJUST", label: "Adjust" },
+                  ]}
+                  value={field.value}
+                  onChange={(v) => field.onChange(v)}
+                  placeholder="Select type"
+                />
+              )}
+            />
+
+            {errors.type && (
+              <p className="text-sm text-red-500">{errors.type.message}</p>
             )}
           </div>
 
           <div className="grid gap-2">
             <NumberInput
               control={control}
-              name="currentStock"
-              label="Current Stock"
+              name="quantity"
+              label="Quantity"
               required
+              suffix={ingridientData.find((item) => item.id === watch("inventoryId"))?.unit}
             />
           </div>
 
+          {/* NOTES */}
           <div className="grid gap-2">
-            <NumberInput
-              control={control}
-              name="minimumStock"
-              label="Min Stock"
-              required
-              min={1}
+            <Textarea
+              {...register("notes", {
+                required: "Notes is required",
+                minLength: {
+                  value: 3,
+                  message: "Min 3 characters",
+                },
+              })}
+              rows={3}
+              placeholder="Notes .."
             />
+            {errors.notes && (
+              <p className="text-sm text-red-500">
+                {errors.notes.message}
+              </p>
+            )}
           </div>
 
           <DialogFooter className="mt-4">

@@ -49,7 +49,7 @@ const emptyForm: StockFormValue = {
   minimumStock: 0,
 }
 
-export default function DiscountPage() {
+export default function StockPage() {
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
@@ -58,7 +58,7 @@ export default function DiscountPage() {
 
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [selectedDiscount, setSelectedDiscount] = React.useState<StockItem | null>(null)
+  const [selectedStock, setSelectedStock] = React.useState<StockItem | null>(null)
 
   /** data */
   const { data, isLoading } = useStocksQuery({
@@ -127,19 +127,19 @@ export default function DiscountPage() {
   }
 
   const handleConfirmDelete = async () => {
-    if (!selectedDiscount) return
+    if (!selectedStock) return
 
     try {
-      await deleteMut.mutateAsync(selectedDiscount.id??"")
-      toast.success(`Table "${selectedDiscount.name}" dihapus`)
+      await deleteMut.mutateAsync(selectedStock.id??"")
+      toast.success(`Table "${selectedStock.name}" dihapus`)
       setConfirmOpen(false)
-      setSelectedDiscount(null)
+      setSelectedStock(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
   }
 
-  const discounts = data?.data ?? []
+  const Stocks = data?.data ?? []
   const total = data?.paginate?.total
   const serverPerPage = data?.paginate?.perPage ?? perPage
   const hasNext = data?.paginate?.next != null
@@ -157,7 +157,7 @@ export default function DiscountPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Ingridients List</h1>
+          <h1 className="text-2xl font-semibold">Ingredients List</h1>
 
           <div className="flex gap-2">
             <Input
@@ -168,7 +168,7 @@ export default function DiscountPage() {
               disabled={fullscreenLoading}
             />
             <Button onClick={openCreate} disabled={fullscreenLoading}>
-              Create Ingridient
+              Create Ingredient
             </Button>
           </div>
         </div>
@@ -252,14 +252,14 @@ export default function DiscountPage() {
             </TableHeader>
 
             <TableBody>
-              {!tableLoading && discounts.length === 0 ? (
+              {!tableLoading && Stocks.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center">
                     No data
                   </TableCell>
                 </TableRow>
               ) : (
-                discounts.map((v) => (
+                Stocks.map((v) => (
                   <TableRow key={v.id}>
                     <TableCell className="font-medium">{v.name}</TableCell>
                     <TableCell className="font-medium">{v.currentStock} {v.unit}</TableCell>
@@ -278,7 +278,7 @@ export default function DiscountPage() {
                         size="sm"
                         variant="destructive"
                         onClick={() => {
-                          setSelectedDiscount(v)
+                          setSelectedStock(v)
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
@@ -343,10 +343,10 @@ export default function DiscountPage() {
         <ConfirmDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Delete discount?"
+          title="Delete Ingredient?"
           description={
             <>
-              Discount <b>{selectedDiscount?.name}</b> akan dihapus permanen.
+              Stock <b>{selectedStock?.name}</b> akan dihapus permanen.
             </>
           }
           confirmText="Delete"

@@ -2,13 +2,12 @@
 
 import * as React from "react"
 import {
-  useStocksQuery,
-  useCreateStock,
-  useUpdateStock,
-  useDeleteStock,
-  useCountStocks,
+  useActivitiesQuery,
+  useCreateActivity,
+  useUpdateActivity,
+  useDeleteActivity,
 } from "@/app/dashboard/master-data/inventory/activity/hooks/use"
-import type { UpdateStockInput, StockFormValue, StockItem } from "@/lib/api/inventory/req-api"
+import type { UpdateActivityInput, ActivityFormValue, ActivityItem } from "@/lib/api/activity/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -35,18 +34,19 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/toast-error"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
-import { StockFormDialog } from "@/components/dialog/form-stock"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertOctagon, BadgeCheck, TriangleAlert } from "lucide-react"
+import { AlertOctagon, BadgeCheck, Trash, TriangleAlert } from "lucide-react"
+import { useCountStocks, useStocksQuery } from "../ingridients/hooks/use"
+import { formatDate } from "date-fns"
+import { ActivityFormDialog } from "@/components/dialog/form-activity"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
-const emptyForm: StockFormValue = {
-  name: "",
-  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
-  unit: "",
-  currentStock: 0,
-  minimumStock: 0,
+const emptyForm: ActivityFormValue = {
+  inventoryId: "",
+  type: "",
+  quantity: 0,
+  notes: "",
 }
 
 export default function DiscountPage() {
@@ -58,10 +58,10 @@ export default function DiscountPage() {
 
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [selectedDiscount, setSelectedDiscount] = React.useState<StockItem | null>(null)
+  const [selectedActivity, setSelectedActivity] = React.useState<ActivityItem | null>(null)
 
   /** data */
-  const { data, isLoading } = useStocksQuery({
+  const { data, isLoading } = useActivitiesQuery({
     page,
     perPage,
     search: debouncedSearch,
@@ -74,14 +74,14 @@ export default function DiscountPage() {
   }, [debouncedSearch])
 
   /** mutations */
-  const createMut = useCreateStock()
-  const updateMut = useUpdateStock()
-  const deleteMut = useDeleteStock()
+  const createMut = useCreateActivity()
+  const updateMut = useUpdateActivity()
+  const deleteMut = useDeleteActivity()
 
   /** dialog form */
   const [open, setOpen] = React.useState(false)
-  const [editing, setEditing] = React.useState<StockItem | null>(null)
-  const [form, setForm] = React.useState<StockFormValue>(emptyForm)
+  const [editing, setEditing] = React.useState<ActivityItem | null>(null)
+  const [form, setForm] = React.useState<ActivityFormValue>(emptyForm)
 
   const openCreate = () => {
     setEditing(null)
@@ -89,35 +89,33 @@ export default function DiscountPage() {
     setOpen(true)
   }
 
-  const openEdit = (u: StockItem) => {
+  const openEdit = (u: ActivityItem) => {
     setEditing(u)
 
     setForm({
-      name: u.name ?? "",
-      outletId: u.outletId ?? "",
-      unit: u.unit ?? "",
-      currentStock: u.currentStock ?? 0,
-      minimumStock: u.minimumStock ?? 0,
+      inventoryId: u.inventoryId ?? "",
+      type: u.type ?? "",
+      quantity: u.quantity ?? 0,
+      notes: u.notes ?? "",
     })
     setOpen(true)
   }
 
-  const onSubmit = async (data: StockFormValue) => {
+  const onSubmit = async (data: ActivityFormValue) => {
     try {
       if (editing) {
         const payload: Record<string, unknown> = {
-          name: data.name,
-          outletId: data.outletId,
-          unit: data.unit,
-          currentStock: data.currentStock,
-          minimumStock: data.minimumStock,
+          inventoryId: data.inventoryId,
+          type: data.type,
+          quantity: data.quantity,
+          notes: data.notes,
         }
 
-        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateStockInput })
-        toast.success("Table berhasil diperbarui")
+        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateActivityInput })
+        toast.success("Success update activity")
       } else {
         await createMut.mutateAsync(data)
-        toast.success("Table berhasil dibuat")
+        toast.success("Success create activity")
       }
 
       setOpen(false)
@@ -127,13 +125,13 @@ export default function DiscountPage() {
   }
 
   const handleConfirmDelete = async () => {
-    if (!selectedDiscount) return
+    if (!selectedActivity) return
 
     try {
-      await deleteMut.mutateAsync(selectedDiscount.id??"")
-      toast.success(`Table "${selectedDiscount.name}" dihapus`)
+      await deleteMut.mutateAsync(selectedActivity.id??"")
+      toast.success(`Table "${selectedActivity.inventoryId}" dihapus`)
       setConfirmOpen(false)
-      setSelectedDiscount(null)
+      setSelectedActivity(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -148,6 +146,11 @@ export default function DiscountPage() {
   const tableLoading = isLoading
   const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
 
+  const { data : ingridientData, } = useStocksQuery({
+      page,
+      perPage,
+      search: debouncedSearch,
+    })
 
   return (
     <DashboardLayout>
@@ -157,7 +160,7 @@ export default function DiscountPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Ingridients List</h1>
+          <h1 className="text-2xl font-semibold">Activity List</h1>
 
           <div className="flex gap-2">
             <Input
@@ -168,7 +171,7 @@ export default function DiscountPage() {
               disabled={fullscreenLoading}
             />
             <Button onClick={openCreate} disabled={fullscreenLoading}>
-              Create Ingridient
+              Create Activity
             </Button>
           </div>
         </div>
@@ -244,9 +247,11 @@ export default function DiscountPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Current Stock</TableHead>
-                <TableHead>Min Stock</TableHead>
+                <TableHead>Inventory</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Notes</TableHead>
+                <TableHead>Action By</TableHead>
+                <TableHead>Last Update</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -261,29 +266,49 @@ export default function DiscountPage() {
               ) : (
                 discounts.map((v) => (
                   <TableRow key={v.id}>
-                    <TableCell className="font-medium">{v.name}</TableCell>
-                    <TableCell className="font-medium">{v.currentStock} {v.unit}</TableCell>
-                    <TableCell className="font-medium">{v.minimumStock} {v.unit}</TableCell>
+                    <TableCell className="font-medium">
+                      <div> {v?.inventory?.name ??""}</div>
+                      <div 
+                        style={{
+                          color: v?.type === "ADD" ? "green" : v?.type === "REDUCE" ? "red" : "#000"
+                        }}
+                      > 
+                        {v?.type === "ADD" ? "+" : v?.type === "REDUCE" ? "-" : ""}
+                        {v?.quantity ??""} {v?.inventory?.unit ??""}
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium capitalize">
+                      <div> {v?.inventory?.name ??""}</div>
+                      <div 
+                        style={{
+                          color: v?.type === "ADD" ? "green" : v?.type === "REDUCE" ? "red" : "#000"
+                        }}
+                      > 
+                        {v?.type === "UPDATE" ? "Update" : ""}
+                        {v?.type.toLowerCase()}
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">{v?.note}</TableCell>
+                    <TableCell className="font-medium">{v?.user?.name ?? ""}</TableCell>
+                    <TableCell className="font-medium">{formatDate(v?.updatedAt, "dd MMMM yyyy HH:mm") ?? ""}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => openEdit(v)}
-                        disabled={fullscreenLoading}
-                      >
-                        Edit
-                      </Button>
-
-                      <Button
-                        size="sm"
-                        variant="destructive"
                         onClick={() => {
-                          setSelectedDiscount(v)
+                          if(v.type==="ADJUST"){
+                            toast.error(
+                              "ADJUST activities cannot be deleted to maintain data integrity",
+                            )
+
+                            return false
+                          }
+                          setSelectedActivity(v)
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
                       >
-                        Delete
+                        <Trash color="red" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -327,7 +352,7 @@ export default function DiscountPage() {
         </div>
 
         {/* Form dialog */}
-        <StockFormDialog
+        <ActivityFormDialog
           open={open}
           onOpenChange={setOpen}
           editing={editing}
@@ -337,16 +362,17 @@ export default function DiscountPage() {
             onSubmit(data)
           }}
           loading={createMut.isPending || updateMut.isPending}
+          ingridientData={ingridientData?.data ?? []}
         />
 
         {/* Confirm delete */}
         <ConfirmDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Delete discount?"
+          title="Delete activity?"
           description={
             <>
-              Discount <b>{selectedDiscount?.name}</b> akan dihapus permanen.
+              Activity <b>{selectedActivity?.inventory?.name}</b> akan dihapus permanen.
             </>
           }
           confirmText="Delete"

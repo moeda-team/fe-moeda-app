@@ -23,6 +23,7 @@ type NumberInputProps<TFieldValues extends FieldValues> = {
   max?: number
   className?: string
   placeholder?: string
+  suffix?: string
 }
 
 function formatCurrency(
@@ -33,6 +34,12 @@ function formatCurrency(
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function formatNumber(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits: 0,
   }).format(value)
 }
@@ -54,6 +61,7 @@ export function NumberInput<TFieldValues extends FieldValues>({
   max,
   className,
   placeholder,
+  suffix,
 }: NumberInputProps<TFieldValues>) {
   return (
     <Controller
@@ -81,34 +89,39 @@ export function NumberInput<TFieldValues extends FieldValues>({
       }}
       render={({ field, fieldState }) => {
         const error = fieldState.error?.message
-
         const numericValue = Number(field.value ?? 0)
 
         const displayValue =
-          currency && field.value
-            ? formatCurrency(numericValue, locale, currencyCode)
-            : field.value ?? ""
+          field.value !== undefined && field.value !== ""
+            ? currency
+              ? formatCurrency(numericValue, locale, currencyCode)
+              : formatNumber(numericValue, locale)
+            : ""
 
         return (
           <div className={["grid gap-2", className].filter(Boolean).join(" ")}>
             {label && <Label>{label}</Label>}
 
-            <Input
-              inputMode="numeric"
-              disabled={disabled}
-              placeholder={placeholder}
-              value={displayValue}
-              onChange={(e) => {
-                const raw = e.target.value
-
-                if (currency) {
-                  const digits = onlyDigits(raw)
+            <div className="relative">
+              <Input
+                inputMode="numeric"
+                disabled={disabled}
+                placeholder={placeholder}
+                value={displayValue}
+                onChange={(e) => {
+                  const digits = onlyDigits(e.target.value)
                   field.onChange(digits ? Number(digits) : "")
-                } else {
-                  field.onChange(raw)
-                }
-              }}
-            />
+                }}
+                onBlur={field.onBlur}
+                className={suffix ? "pr-16" : ""}
+              />
+
+              {suffix && (
+                <div className="absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground pointer-events-none">
+                  {suffix}
+                </div>
+              )}
+            </div>
 
             {error && <p className="text-sm text-red-500">{error}</p>}
           </div>

@@ -2,6 +2,7 @@
 
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -44,7 +45,7 @@ export default function BillDrawer({
   return (
     <Sheet
       open={open}
-      onOpenChange={() => {}}
+      onOpenChange={() => onClose()}
     >
       <SheetContent
         side="right"

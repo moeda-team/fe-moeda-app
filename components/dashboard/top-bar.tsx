@@ -39,8 +39,26 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
   const avatar = user?.image ?? null
 
   const logout = async () => {
+    // 1️⃣ Hapus local storage
+    if (typeof window !== "undefined") {
+      localStorage.clear()
+      sessionStorage.clear()
+    }
+
+    // 2️⃣ Hapus cookie manual (optional - kalau ada custom cookie)
+    document.cookie.split(";").forEach((cookie) => {
+      const eqPos = cookie.indexOf("=")
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim()
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`
+    })
+
+    // 3️⃣ Sign out next-auth
     await signOut({ redirect: false })
+
+    // 4️⃣ Redirect pakai replace biar gak bisa back
     router.replace("/login")
+
+    // 5️⃣ Force refresh state
     router.refresh()
   }
 

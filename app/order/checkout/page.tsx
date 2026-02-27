@@ -290,6 +290,7 @@ export default function CheckoutPage() {
             <input
               value={code}
               onChange={(e) => setCode(e.target.value)}
+              disabled={voucher !== null}
               placeholder="Masukkan Kode Voucher"
               className="flex-1 border rounded-l-lg px-3 py-2 text-sm bg-primary/10"
             />

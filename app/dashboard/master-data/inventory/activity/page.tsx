@@ -2,37 +2,16 @@
 
 import * as React from "react"
 import {
-  useTransactionsQuery,
-  useUpdateTransaction,
-} from "@/app/dashboard/transactions/list/hooks/use"
+  useStocksQuery,
+  useCreateStock,
+  useUpdateStock,
+  useDeleteStock,
+  useCountStocks,
+} from "@/app/dashboard/master-data/inventory/stock/hooks/use"
+import type { UpdateStockInput, StockFormValue, StockItem } from "@/lib/api/inventory/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { Input } from "@/components/ui/input"
-import { LoadingOverlay } from "@/components/ui/loading"
-
-import { toast } from "sonner"
-import { getErrorMessage } from "@/lib/toast-error"
-import { useDebounce } from "@/components/use-debounce"
-import { Badge } from "@/components/ui/badge"
-import { AlertOctagon, BadgeCheck, CircleDivideIcon, Clock, List, PrinterCheck, ShoppingBag, TriangleAlert } from "lucide-react"
-import { useLiveTimeAgo } from "@/lib/useLiveTimeAgo"
-import { TransactionOrder } from "@/lib/api/customer/req-api"
-import { diffMinutes, formatCurrency, formatTime } from "@/lib/helpers"
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-
 import {
   Table,
   TableHeader,
@@ -41,60 +20,135 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table"
+import { AppPagination } from "@/components/pagination"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { LoadingOverlay } from "@/components/ui/loading"
+
+import { toast } from "sonner"
+import { getErrorMessage } from "@/lib/toast-error"
+import { useDebounce } from "@/components/use-debounce"
+import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
+import { StockFormDialog } from "@/components/dialog/form-stock"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { AlertOctagon, BadgeCheck, TriangleAlert } from "lucide-react"
 
+const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
-export default function StockListPage() {
+const emptyForm: StockFormValue = {
+  name: "",
+  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
+  unit: "",
+  currentStock: 0,
+  minimumStock: 0,
+}
+
+export default function DiscountPage() {
   /** paging + search */
+  const [page, setPage] = React.useState(1)
+  const [perPage, setPerPage] = React.useState(10)
   const [search, setSearch] = React.useState("")
-  const [isLoading, setIsLoading] = React.useState(false)
   const debouncedSearch = useDebounce(search, 400)
-  const [activeTab, setActiveTab] = React.useState("inprogress")
+
+  /** confirm delete */
+  const [confirmOpen, setConfirmOpen] = React.useState(false)
+  const [selectedDiscount, setSelectedDiscount] = React.useState<StockItem | null>(null)
 
   /** data */
-  const { data } = useTransactionsQuery({
-    page: 1,
-    perPage: 10,
+  const { data, isLoading } = useStocksQuery({
+    page,
+    perPage,
     search: debouncedSearch,
-    status: "active",
-    paymentStatus: "completed"
   })
-  const { data : dataCompleted } = useTransactionsQuery({
-    page: 1,
-    perPage: 10,
-    search: debouncedSearch,
-    status: "completed"
-  })
+
+  const { data: countData } = useCountStocks()
+
+  React.useEffect(() => {
+    setPage(1)
+  }, [debouncedSearch])
 
   /** mutations */
-  const updateMut = useUpdateTransaction()
+  const createMut = useCreateStock()
+  const updateMut = useUpdateStock()
+  const deleteMut = useDeleteStock()
 
-  const transactions = data?.data?.transactions ?? []
-  const transactionsCompleted = dataCompleted?.data?.transactions ?? []
+  /** dialog form */
+  const [open, setOpen] = React.useState(false)
+  const [editing, setEditing] = React.useState<StockItem | null>(null)
+  const [form, setForm] = React.useState<StockFormValue>(emptyForm)
 
-  /** overlays */
-  const fullscreenLoading = updateMut.isPending || isLoading
+  const openCreate = () => {
+    setEditing(null)
+    setForm(emptyForm)
+    setOpen(true)
+  }
 
-  const handleUpdateStatus = async (
-    subTransactionId: string,
-    status: string
-  ) => {
+  const openEdit = (u: StockItem) => {
+    setEditing(u)
+
+    setForm({
+      name: u.name ?? "",
+      outletId: u.outletId ?? "",
+      unit: u.unit ?? "",
+      currentStock: u.currentStock ?? 0,
+      minimumStock: u.minimumStock ?? 0,
+    })
+    setOpen(true)
+  }
+
+  const onSubmit = async (data: StockFormValue) => {
     try {
-      await updateMut.mutateAsync({
-        id: subTransactionId,
-        input: {
-          status,
-        },
-      })
+      if (editing) {
+        const payload: Record<string, unknown> = {
+          name: data.name,
+          outletId: data.outletId,
+          unit: data.unit,
+          currentStock: data.currentStock,
+          minimumStock: data.minimumStock,
+        }
 
-      toast.success("Status updated")
+        await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateStockInput })
+        toast.success("Table berhasil diperbarui")
+      } else {
+        await createMut.mutateAsync(data)
+        toast.success("Table berhasil dibuat")
+      }
+
+      setOpen(false)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
   }
-  const [openBill, setOpenBill] = React.useState(false)
-  const [billItems, setBillItems] = React.useState<TransactionOrder>()
-  
+
+  const handleConfirmDelete = async () => {
+    if (!selectedDiscount) return
+
+    try {
+      await deleteMut.mutateAsync(selectedDiscount.id??"")
+      toast.success(`Table "${selectedDiscount.name}" dihapus`)
+      setConfirmOpen(false)
+      setSelectedDiscount(null)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
+
+  const discounts = data?.data ?? []
+  const total = data?.paginate?.total
+  const serverPerPage = data?.paginate?.perPage ?? perPage
+  const hasNext = data?.paginate?.next != null
+
+  /** overlays */
+  const tableLoading = isLoading
+  const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
+
+
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}
@@ -103,7 +157,7 @@ export default function StockListPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Activity</h1>
+          <h1 className="text-2xl font-semibold">Ingridients List</h1>
 
           <div className="flex gap-2">
             <Input
@@ -113,10 +167,11 @@ export default function StockListPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
+            <Button onClick={openCreate} disabled={fullscreenLoading}>
+              Create Ingridient
+            </Button>
           </div>
         </div>
-
-        <hr />
 
         {/* card */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -135,7 +190,7 @@ export default function StockListPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 items-end px-2">
-                <div className="text-xl font-bold">1</div>
+                <div className="text-xl font-bold">{countData?.data?.SAFE ??  0}</div>
                 <div className="text-sm font-medium text-muted-foreground">item</div>
               </div>
             </CardContent>
@@ -156,7 +211,7 @@ export default function StockListPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 items-end px-2">
-                <div className="text-xl font-bold">1</div>
+                <div className="text-xl font-bold">{countData?.data?.LOW ??  0}</div>
                 <div className="text-sm font-medium text-muted-foreground">item</div>
               </div>
             </CardContent>
@@ -177,52 +232,59 @@ export default function StockListPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 items-end px-2">
-                <div className="text-xl font-bold">1</div>
+                <div className="text-xl font-bold">{countData?.data?.OUT ??  0}</div>
                 <div className="text-sm font-medium text-muted-foreground">item</div>
               </div>
             </CardContent>
           </Card>
         </div>
-
-        {/* table */}
+        
+        {/* Table (overlay di area table saat load data) */}
         <div className="relative rounded-xl border bg-background overflow-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Ingredient</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Action By</TableHead>
-                <TableHead>Last Updated</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Current Stock</TableHead>
+                <TableHead>Min Stock</TableHead>
+                <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {transactionsCompleted.length === 0 ? (
+              {!tableLoading && discounts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center">
                     No data
                   </TableCell>
                 </TableRow>
               ) : (
-                transactionsCompleted.map((v) => (
+                discounts.map((v) => (
                   <TableRow key={v.id}>
-                    <TableCell className="font-medium">{v.table.name ?? 'No selected'}</TableCell>
-                    <TableCell className="font-medium">
-                      <div>{v.customerName}</div>
-                      <div className="text-muted-foreground">{v.paymentNumber}</div></TableCell>
-                    <TableCell className="font-medium">{v.subTransactions.length}</TableCell>
-                    <TableCell className="font-medium capitalize">
-                      <Badge
+                    <TableCell className="font-medium">{v.name}</TableCell>
+                    <TableCell className="font-medium">{v.currentStock} {v.unit}</TableCell>
+                    <TableCell className="font-medium">{v.minimumStock} {v.unit}</TableCell>
+                    <TableCell className="flex gap-2">
+                      <Button
+                        size="sm"
                         variant="outline"
-                        className={cn(
-                          "cursor-pointer capitalize",
-                          v.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-[#F3A93B]/10 text-primary"
-                        )}
+                        onClick={() => openEdit(v)}
+                        disabled={fullscreenLoading}
                       >
-                        {v.status}
-                      </Badge>
+                        Edit
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => {
+                          setSelectedDiscount(v)
+                          setConfirmOpen(true)
+                        }}
+                        disabled={fullscreenLoading}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -231,6 +293,67 @@ export default function StockListPage() {
           </Table>
         </div>
 
+        {/* Pagination + PerPage */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between w-full">
+          <div className="flex items-center gap-2 text-sm">
+            <Select
+              value={String(perPage)}
+              onValueChange={(v) => {
+                setPerPage(Number(v))
+                setPage(1)
+              }}
+              disabled={fullscreenLoading}
+            >
+              <SelectTrigger className="w-[90px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PER_PAGE_OPTIONS.map((n) => (
+                  <SelectItem key={n} value={String(n)}>
+                    {n}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <AppPagination
+            page={page}
+            pageSize={serverPerPage}
+            total={total}
+            hasNext={hasNext}
+            onPageChange={setPage}
+          />
+        </div>
+
+        {/* Form dialog */}
+        <StockFormDialog
+          open={open}
+          onOpenChange={setOpen}
+          editing={editing}
+          value={form}
+          onChange={setForm}
+          onSubmit={(data) => {
+            onSubmit(data)
+          }}
+          loading={createMut.isPending || updateMut.isPending}
+        />
+
+        {/* Confirm delete */}
+        <ConfirmDialog
+          open={confirmOpen}
+          onOpenChange={setConfirmOpen}
+          title="Delete discount?"
+          description={
+            <>
+              Discount <b>{selectedDiscount?.name}</b> akan dihapus permanen.
+            </>
+          }
+          confirmText="Delete"
+          confirmVariant="destructive"
+          loading={deleteMut.isPending}
+          onConfirm={handleConfirmDelete}
+        />
       </div>
     </DashboardLayout>
   )

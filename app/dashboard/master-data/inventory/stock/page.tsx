@@ -190,7 +190,7 @@ export default function DiscountPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 items-end px-2">
-                <div className="text-xl font-bold">{countData?.SAFE ??  0}</div>
+                <div className="text-xl font-bold">{countData?.data?.SAFE ??  0}</div>
                 <div className="text-sm font-medium text-muted-foreground">item</div>
               </div>
             </CardContent>
@@ -211,7 +211,7 @@ export default function DiscountPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 items-end px-2">
-                <div className="text-xl font-bold">{countData?.LOW ??  0}</div>
+                <div className="text-xl font-bold">{countData?.data?.LOW ??  0}</div>
                 <div className="text-sm font-medium text-muted-foreground">item</div>
               </div>
             </CardContent>
@@ -232,7 +232,7 @@ export default function DiscountPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 items-end px-2">
-                <div className="text-xl font-bold">{countData?.OUT ??  0}</div>
+                <div className="text-xl font-bold">{countData?.data?.OUT ??  0}</div>
                 <div className="text-sm font-medium text-muted-foreground">item</div>
               </div>
             </CardContent>

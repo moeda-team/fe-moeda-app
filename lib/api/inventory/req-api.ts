@@ -40,10 +40,12 @@ export type StockListResponse = {
 }
 
 export type StatusListResponse = {
-  SAFE: number
-  LOW: number
-  OUT: number
-  total: number
+  data : {
+    SAFE: number
+    LOW: number
+    OUT: number
+    total: number
+  }
 }
 
 export const uomOptions = [
@@ -90,6 +92,6 @@ export async function deleteStock(id: string) {
 }
 
 export async function getCountStatus() {
-  const res = await axiosClient.get<StatusListResponse>("/count-by-status")
+  const res = await axiosClient.get<StatusListResponse>("/inventories/count-by-status")
   return res.data
 }

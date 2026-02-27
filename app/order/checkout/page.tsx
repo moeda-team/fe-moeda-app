@@ -336,7 +336,7 @@ export default function CheckoutPage() {
             </div>
           ) : null}
 
-          {transactionData?.data.discount && voucher ? (
+          {transactionData?.data.discountVoucher && voucher ? (
             <div className="flex justify-between text-[#E35336]">
               <span>Voucher {voucher?.name}</span>
               <span>- Rp {transactionData?.data.discountVoucher.toLocaleString("id-ID")}</span>

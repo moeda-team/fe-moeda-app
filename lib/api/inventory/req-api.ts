@@ -1,20 +1,20 @@
 import { axiosClient } from "../axios-client"
 
 export type StockItem = {
-    id: string,
-    name: string,
-    stock: number,
-    minStock: number,
-    maxStock: number,
-    status: string //optional
+  id: string
+  outletId: string
+  name: string
+  unit: string
+  currentStock: number
+  minimumStock: number
 }
 
 export type StockFormValue = {
-    name: string,
-    stock: number,
-    minStock: number,
-    maxStock: number,
-    status: string //optional
+  outletId: string
+  name: string
+  unit: string
+  currentStock: number
+  minimumStock: number
 }
 
 export type StockQueryParams = {
@@ -39,6 +39,30 @@ export type StockListResponse = {
   paginate: Paginate
 }
 
+export type StatusListResponse = {
+  SAFE: number
+  LOW: number
+  OUT: number
+  total: number
+}
+
+export const uomOptions = [
+  { label: "Pieces", value: "pcs" },
+  { label: "Cup", value: "cup" },
+  { label: "Glass", value: "glass" },
+  { label: "Shot", value: "shot" },
+  { label: "Milliliter", value: "ml" },
+  { label: "Liter", value: "l" },
+  { label: "Gram", value: "g" },
+  { label: "Kilogram", value: "kg" },
+  { label: "Bottle", value: "bottle" },
+  { label: "Pack", value: "pack" },
+  { label: "Box", value: "box" },
+  { label: "Slice", value: "slice" },
+  { label: "Portion", value: "portion" },
+  { label: "Set", value: "set" },
+]
+
 export type CreateStockInput = StockFormValue
 
 export type UpdateStockInput = StockFormValue
@@ -46,21 +70,26 @@ export type UpdateStockInput = StockFormValue
 export async function getStocks(
   params?: StockQueryParams
 ): Promise<StockListResponse> {
-  const res = await axiosClient.get<StockListResponse>("/stocks", { params })
+  const res = await axiosClient.get<StockListResponse>("/inventories", { params })
   return res.data
 }
 
 export async function createStock (input: CreateStockInput) {
-  const res = await axiosClient.post("/stocks", input)
+  const res = await axiosClient.post("/inventories", input)
   return res.data
 }
 
 export async function updateStock(id: string, input: UpdateStockInput) {
-  const res = await axiosClient.put(`/stocks/${id}`, input)
+  const res = await axiosClient.put(`/inventories/${id}`, input)
   return res.data
 }
 
 export async function deleteStock(id: string) {
-  const res = await axiosClient.delete(`/stocks/${id}`)
+  const res = await axiosClient.delete(`/inventories/${id}`)
+  return res.data
+}
+
+export async function getCountStatus() {
+  const res = await axiosClient.get<StatusListResponse>("/count-by-status")
   return res.data
 }

@@ -178,7 +178,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
         tableId: table,
         paymentMethod,
         customerName: name,
-        discount: transactionData?.data.discountMenu ?? 0,
+        discount: transactionData?.data.discount ?? 0,
         additionalNote: "",
         voucher: code,
         cart:
@@ -394,10 +394,10 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
               <span>Rp {nSub.toLocaleString("id-ID")}</span>
             </div>
 
-            {transactionData?.data.discountMenu ? (
+            {transactionData?.data.discount ? (
               <div className="flex justify-between text-[#E35336]">
                 <span>Menu Discount</span>
-                <span>- Rp {transactionData?.data.discountMenu.toLocaleString("id-ID")}</span>
+                <span>- Rp {transactionData?.data.discount.toLocaleString("id-ID")}</span>
               </div>
             ) : null}
 

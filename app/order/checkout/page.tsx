@@ -136,7 +136,7 @@ export default function CheckoutPage() {
       tableId : table,
       paymentMethod : paymentMethod,
       customerName : name,
-      discount : transactionData?.data.discountMenu ?? 0,
+      discount : transactionData?.data.discount ?? 0,
       additionalNote : "",
       voucher : code,
       cart : items.map((item) => ({
@@ -179,7 +179,7 @@ export default function CheckoutPage() {
 
     return (parts[0][0] + parts[1][0]).toUpperCase()
   }
-
+  console.log(transactionData)
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
 
@@ -329,10 +329,10 @@ export default function CheckoutPage() {
             <span>Rp {nSub.toLocaleString("id-ID")}</span>
           </div>
 
-          {transactionData?.data.discountMenu ? (
+          {transactionData?.data.discount ? (
             <div className="flex justify-between text-[#E35336]">
               <span>Menu Discount</span>
-              <span>- Rp {transactionData?.data.discountMenu.toLocaleString("id-ID")}</span>
+              <span>- Rp {transactionData?.data.discount.toLocaleString("id-ID")}</span>
             </div>
           ) : null}
 

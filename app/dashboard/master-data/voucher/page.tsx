@@ -89,7 +89,6 @@ export default function VouchersPage() {
 
   const openEdit = (u: VouchersItem) => {
     setEditing(u)
-    console.log(u)
     setForm({
       name: u.name ?? "",
       type: u.type ?? "",

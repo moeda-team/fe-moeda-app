@@ -49,7 +49,7 @@ const emptyForm: ActivityFormValue = {
   notes: "",
 }
 
-export default function DiscountPage() {
+export default function ActivityPage() {
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
@@ -129,7 +129,7 @@ export default function DiscountPage() {
 
     try {
       await deleteMut.mutateAsync(selectedActivity.id??"")
-      toast.success(`Table "${selectedActivity.inventoryId}" dihapus`)
+      toast.success(`Activity "${selectedActivity.inventory.name}" deleted`)
       setConfirmOpen(false)
       setSelectedActivity(null)
     } catch (err) {

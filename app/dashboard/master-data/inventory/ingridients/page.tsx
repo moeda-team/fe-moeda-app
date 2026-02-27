@@ -114,10 +114,10 @@ export default function StockPage() {
         }
 
         await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateStockInput })
-        toast.success("Table berhasil diperbarui")
+        toast.success("Ingredient successfully updated")
       } else {
         await createMut.mutateAsync(data)
-        toast.success("Table berhasil dibuat")
+        toast.success("Ingredient successfully created")
       }
 
       setOpen(false)
@@ -131,7 +131,7 @@ export default function StockPage() {
 
     try {
       await deleteMut.mutateAsync(selectedStock.id??"")
-      toast.success(`Table "${selectedStock.name}" dihapus`)
+      toast.success(`Ingredient "${selectedStock.name}" deleted`)
       setConfirmOpen(false)
       setSelectedStock(null)
     } catch (err) {

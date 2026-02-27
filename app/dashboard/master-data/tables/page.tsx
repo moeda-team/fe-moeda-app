@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useForm } from "react-hook-form"
 import {
   useTablesQuery,
   useCreateTable,
@@ -44,7 +43,7 @@ const emptyForm: TableFormValue = {
   outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
 }
 
-export default function DiscountPage() {
+export default function TablesPage() {
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
@@ -53,7 +52,7 @@ export default function DiscountPage() {
 
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [selectedDiscount, setSelectedDiscount] = React.useState<TablesItem | null>(null)
+  const [selectedTable, setSelectedTable] = React.useState<TablesItem | null>(null)
 
   /** data */
   const { data, isLoading } = useTablesQuery({
@@ -114,19 +113,19 @@ export default function DiscountPage() {
   }
 
   const handleConfirmDelete = async () => {
-    if (!selectedDiscount) return
+    if (!selectedTable) return
 
     try {
-      await deleteMut.mutateAsync(selectedDiscount.id??"")
-      toast.success(`Table "${selectedDiscount.name}" dihapus`)
+      await deleteMut.mutateAsync(selectedTable.id??"")
+      toast.success(`Table "${selectedTable.name}" dihapus`)
       setConfirmOpen(false)
-      setSelectedDiscount(null)
+      setSelectedTable(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
   }
 
-  const discounts = data?.data ?? []
+  const tables = data?.data ?? []
   const total = data?.paginate?.total
   const serverPerPage = data?.paginate?.perPage ?? perPage
   const hasNext = data?.paginate?.next != null
@@ -171,14 +170,14 @@ export default function DiscountPage() {
             </TableHeader>
 
             <TableBody>
-              {!tableLoading && discounts.length === 0 ? (
+              {!tableLoading && tables.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center">
                     No data
                   </TableCell>
                 </TableRow>
               ) : (
-                discounts.map((v) => (
+                tables.map((v) => (
                   <TableRow key={v.id}>
                     <TableCell className="font-medium">{v.name}</TableCell>
                     <TableCell className="flex gap-2">
@@ -195,7 +194,7 @@ export default function DiscountPage() {
                         size="sm"
                         variant="destructive"
                         onClick={() => {
-                          setSelectedDiscount(v)
+                          setSelectedTable(v)
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
@@ -260,10 +259,10 @@ export default function DiscountPage() {
         <ConfirmDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Delete discount?"
+          title="Delete table?"
           description={
             <>
-              Discount <b>{selectedDiscount?.name}</b> akan dihapus permanen.
+              Table <b>{selectedTable?.name}</b> will be deleted permanently.
             </>
           }
           confirmText="Delete"

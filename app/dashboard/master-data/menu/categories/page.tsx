@@ -43,7 +43,7 @@ const emptyForm: CategoriesFormValue = {
   icon: "",
 }
 
-export default function DiscountPage() {
+export default function CategoriesPage() {
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
@@ -52,7 +52,7 @@ export default function DiscountPage() {
 
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [selectedDiscount, setSelectedDiscount] = React.useState<CategoriesItem | null>(null)
+  const [selectedCategory, setSelectedCategory] = React.useState<CategoriesItem | null>(null)
 
   /** data */
   const { data, isLoading } = useCategoriesQuery({
@@ -100,10 +100,10 @@ export default function DiscountPage() {
         }
 
         await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateCategoriesInput })
-        toast.success("Table berhasil diperbarui")
+        toast.success(`Category "${editing.name}" berhasil diperbarui`)
       } else {
         await createMut.mutateAsync(data)
-        toast.success("Table berhasil dibuat")
+        toast.success(`Category "${data.name}" berhasil dibuat`)
       }
 
       setOpen(false)
@@ -113,19 +113,19 @@ export default function DiscountPage() {
   }
 
   const handleConfirmDelete = async () => {
-    if (!selectedDiscount) return
+    if (!selectedCategory) return
 
     try {
-      await deleteMut.mutateAsync(selectedDiscount.id??"")
-      toast.success(`Table "${selectedDiscount.name}" dihapus`)
+      await deleteMut.mutateAsync(selectedCategory.id??"")
+      toast.success(`Category "${selectedCategory.name}" deleted`)
       setConfirmOpen(false)
-      setSelectedDiscount(null)
+      setSelectedCategory(null)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
   }
 
-  const discounts = data?.data ?? []
+  const categories = data?.data ?? []
   const total = data?.paginate?.total
   const serverPerPage = data?.paginate?.perPage ?? perPage
   const hasNext = data?.paginate?.next != null
@@ -154,7 +154,7 @@ export default function DiscountPage() {
               disabled={fullscreenLoading}
             />
             <Button onClick={openCreate} disabled={fullscreenLoading}>
-              Create Table
+              Create Category
             </Button>
           </div>
         </div>
@@ -170,14 +170,14 @@ export default function DiscountPage() {
             </TableHeader>
 
             <TableBody>
-              {!tableLoading && discounts.length === 0 ? (
+              {!tableLoading && categories.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center">
                     No data
                   </TableCell>
                 </TableRow>
               ) : (
-                discounts.map((v) => (
+                categories.map((v) => (
                   <TableRow key={v.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export default function DiscountPage() {
                         size="sm"
                         variant="destructive"
                         onClick={() => {
-                          setSelectedDiscount(v)
+                          setSelectedCategory(v)
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
@@ -264,10 +264,10 @@ export default function DiscountPage() {
         <ConfirmDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Delete discount?"
+          title="Delete category?"
           description={
             <>
-              Discount <b>{selectedDiscount?.name}</b> akan dihapus permanen.
+              Category <b>{selectedCategory?.name}</b> akan dihapus permanen.
             </>
           }
           confirmText="Delete"

@@ -179,7 +179,7 @@ export default function CheckoutPage() {
 
     return (parts[0][0] + parts[1][0]).toUpperCase()
   }
-  console.log(transactionData)
+
   return (
     <div className="min-h-screen bg-gray-100 max-w-lg mx-auto pb-28">
 
@@ -322,7 +322,7 @@ export default function CheckoutPage() {
         />
         
         {/* SUMMARY */}
-        <div className="bg-white rounded-xl p-4 shadow-sm space-y-1 text-sm">
+        <div className="bg-white rounded-xl p-4 shadow-sm space-y-1 text-sm font-medium">
 
           <div className="flex justify-between">
             <span>Subtotal</span>
@@ -336,12 +336,12 @@ export default function CheckoutPage() {
             </div>
           ) : null}
 
-          {voucher && (
+          {transactionData?.data.discount && voucher ? (
             <div className="flex justify-between text-[#E35336]">
-              <span>{voucher.name}</span>
-              <span>- Rp {discountAmount.toLocaleString("id-ID")}</span>
+              <span>Voucher {voucher?.name}</span>
+              <span>- Rp {transactionData?.data.discountVoucher.toLocaleString("id-ID")}</span>
             </div>
-          )}
+          ) : null}
 
           {transactionData?.data.tax && (
             <div className="flex justify-between">

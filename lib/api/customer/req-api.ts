@@ -286,6 +286,7 @@ export type TransactionCalculateResponse = {
   data: {
     subTotal : number,
     discount : number,
+    discountVoucher : number,
     tax : number,
     discountMenu : number,
     serviceCharge : number,

@@ -7,7 +7,7 @@ import {
   useUpdateStock,
   useDeleteStock,
   useCountStocks,
-} from "@/app/dashboard/master-data/inventory/stock/hooks/use"
+} from "@/app/dashboard/master-data/inventory/activity/hooks/use"
 import type { UpdateStockInput, StockFormValue, StockItem } from "@/lib/api/inventory/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"

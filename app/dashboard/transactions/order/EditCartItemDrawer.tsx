@@ -144,7 +144,7 @@ export function EditCartItemDrawer({ item }: Props) {
   const hasDiscount = item.menuItem.discountMenus.length > 0 && Number(item.menuItem.discountMenus[0].discount.discount) > 0
 
   // diskon
-  const discount = item.menuItem.discountMenus[0].discount.type === "percent" ? 
+  const discount = item.menuItem.discountMenus.length > 0 && item.menuItem.discountMenus[0].discount.type === "percent" ? 
                     originalPrice * (Number(item.menuItem.discountMenus[0].discount.discount) / 100) * qty : 
                     Number(item.menuItem.discountMenus[0].discount.discount) * qty
 

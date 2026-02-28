@@ -128,11 +128,14 @@ export function StockFormDialog({
           </div>
 
           <div className="grid gap-2">
-            <NumberInput
+            {/* <NumberInput
               control={control}
               name="currentStock"
               label="Current Stock"
-              required
+            /> */}
+            <Input
+              {...register("currentStock")}
+              readOnly
             />
           </div>
 

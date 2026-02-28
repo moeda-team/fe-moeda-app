@@ -89,7 +89,7 @@ function FeedbackPage() {
     // =========================
     // QR CODE SECTION
     // =========================
-    const qrBase64 = await generateQRBase64(`${process.env.AUTH_URL}/order/detail/${order.id}`)
+    const qrBase64 = await generateQRBase64(`${process.env.REACT_APP_URL}/order/detail/${order.id}`)
 
     doc.addImage(qrBase64, "PNG", 25, y, 30, 30)
 
@@ -217,7 +217,7 @@ function FeedbackPage() {
 
           <div className="flex justify-center mb-3">
             <QRCode
-              value={`${process.env.AUTH_URL}/order/detail/${order.id}`}
+              value={`${process.env.REACT_APP_URL}/order/detail/${order.id}`}
               size={120}
             />
           </div>

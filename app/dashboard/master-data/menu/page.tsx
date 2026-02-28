@@ -9,8 +9,9 @@ import {
   useUpdateMenuOption,
   useDeleteBestMenu,
   useCreateBestMenu,
+  useUpdateMenuIngredient,
 } from "@/app/dashboard/master-data/menu/hooks/use"
-import type { UpdateMenuInput,  Menuitem, MenuForm, BestSellerMenu } from "@/lib/api/menu/req-api"
+import type { UpdateMenuInput,  Menuitem, MenuForm, BestSellerMenu, MenuIngredient, MenuIngredientForm, IngredientForm } from "@/lib/api/menu/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
@@ -49,6 +50,8 @@ import { FormMenuDrawer } from "./FormMenuDrawer"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { BestSellerFormDialog } from "@/components/dialog/form-best"
+import { FormIngridientDrawer } from "./FormIngridientDrawer"
+import { useStocksQuery } from "../inventory/ingridients/hooks/use"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
@@ -78,6 +81,9 @@ export default function MenuPage() {
   const [openVariantDialog, setOpenVariantDialog] = useState(false)
   const [selectedVariant, setSelectedVariant] = useState<MenuOption[] | null>(null)
 
+  const [openIngredientDialog, setOpenIngredientDialog] = useState(false)
+  const [selectedIngredient, setSelectedIngredient] = useState<MenuIngredient[] | null>(null)
+
   /** data */
   const { data, isLoading } = useMenuQuery({
     page,
@@ -94,6 +100,7 @@ export default function MenuPage() {
   const updateMut = useUpdateMenu()
   const deleteMut = useDeleteMenu()
   const updateOptionMut = useUpdateMenuOption()
+  const updateIngredientMut = useUpdateMenuIngredient()
 
   const createBestMut = useCreateBestMenu()
   const deleteBestMut = useDeleteBestMenu()
@@ -153,7 +160,7 @@ export default function MenuPage() {
         }
 
         await updateMut.mutateAsync({ id: editing.id ?? "", input: payload as UpdateMenuInput })
-        toast.success("Menu berhasil diperbarui")
+        toast.success("Menu updated")
       } else {
         await createMut.mutateAsync(data)
         toast.success("Menu berhasil dibuat")
@@ -221,6 +228,15 @@ export default function MenuPage() {
     setSelected(row)
     setOpenVariantDialog(true)
   }
+  
+  const openIngredient = (row: Menuitem) => {
+    
+    const ingredient = row.menuIngredients.map((item) => item).flat()
+
+    setSelectedIngredient(ingredient as MenuIngredient[])
+    setSelected(row)
+    setOpenIngredientDialog(true)
+  }
     
   function normalizeOptions(options: MenuOption[]): MenuOption[] {
     return options.map((option) => ({
@@ -243,14 +259,31 @@ export default function MenuPage() {
       }
 
       await updateOptionMut.mutateAsync(payload)
-      toast.success("Options berhasil diperbarui")
+      toast.success("Options updated")
 
       setOpenVariantDialog(false)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
   }
+
+  const handlerIngredient = async (data: MenuIngredientForm) => {
+    try {
+      await updateIngredientMut.mutateAsync(data)
+      toast.success("Ingredient updated")
+
+      setOpenIngredientDialog(false)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    }
+  }
   
+  const { data : ingridientData, } = useStocksQuery({
+      page,
+      perPage,
+      search: debouncedSearch,
+    })
+    
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}
@@ -283,6 +316,7 @@ export default function MenuPage() {
                 <TableHead>Name</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Discount Menu</TableHead>
+                <TableHead>Ingredient</TableHead>
                 <TableHead>Variant</TableHead>
                 <TableHead>Best Seller</TableHead>
                 <TableHead>Status</TableHead>
@@ -314,7 +348,17 @@ export default function MenuPage() {
                     <TableCell className="font-medium">
                       <Badge
                         variant="outline"
-                        className="cursor-pointer"
+                        className="cursor-pointer border-primary text-primary"
+                        onClick={() => openIngredient(v)}
+                      >
+                        <Settings className="w-4 h-4 mr-1" />
+                        {v.menuIngredients.length > 0 ? `${v.menuIngredients.length} Ingredient` : "No Ingredient"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      <Badge
+                        variant="outline"
+                        className="cursor-pointer border-primary text-primary"
                         onClick={() => openVariant(v)}
                       >
                         <Settings className="w-4 h-4 mr-1" />
@@ -424,6 +468,17 @@ export default function MenuPage() {
           value={selectedVariant}
           onSubmit={(data) => {
             handlerVariant(data)
+          }}
+        />
+
+        <FormIngridientDrawer
+          open={openIngredientDialog}
+          onOpenChange={setOpenIngredientDialog}
+          value={selectedIngredient}
+          menuId={selected?.id ?? ""}
+          ingridientData={ingridientData?.data ?? []}
+          onSubmit={(data) => {
+            handlerIngredient(data)
           }}
         />
         

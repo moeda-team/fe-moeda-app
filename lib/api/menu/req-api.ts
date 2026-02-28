@@ -2,6 +2,7 @@ import { MenuFormValueOptions } from "@/lib/option-utils"
 import { axiosClient } from "../axios-client"
 import { MenuOption } from "../customer/req-api"
 import { Paginate } from "../users/req-api"
+import { StockItem } from "../inventory/req-api"
 
 // menu
 export type Menuitem = {
@@ -23,6 +24,26 @@ export type Menuitem = {
   vouchers: Voucher[],
   discountMenus: DiscountMenu[]
   bestSellerMenus : BestSellerMenu[]
+  menuIngredients :MenuIngredient[]
+}
+
+export type MenuIngredient = {
+  id: string,
+  menuId: string,
+  ingredientId: string,
+  quantity: number,
+  status: string,
+  unit: string,
+  ingredient: StockItem
+}
+
+export type MenuIngredientForm = {
+  menuId: string,
+  ingredients: IngredientForm[],
+}
+export type IngredientForm = {
+  ingredientId: string,
+  quantity: number,
 }
 
 export type BestSellerMenu = 
@@ -137,6 +158,11 @@ export async function deleteMenu(id: string) {
 
 export async function updateMenuOption (input: MenuFormValueOptions) {
   const res = await axiosClient.post("/menus/options", input)
+  return res.data
+}
+
+export async function updateMenuIngredient (input: MenuIngredientForm) {
+  const res = await axiosClient.put("/menus/main/ingredients", input)
   return res.data
 }
 

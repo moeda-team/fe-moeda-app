@@ -12,7 +12,6 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { createFile } from "@/lib/api/file/req-api"
 import Image from "next/image"
 import { NumberInput } from "@/components/input/NumberInput"

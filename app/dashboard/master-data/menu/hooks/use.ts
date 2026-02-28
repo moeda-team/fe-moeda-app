@@ -11,6 +11,8 @@ import {
   updateMenuOption,
   deleteBestMenu,
   createMenuBest,
+  updateMenuIngredient,
+  MenuIngredientForm,
 } from "@/lib/api/menu/req-api"
 import { MenuFormValueOptions } from "@/lib/option-utils"
 
@@ -59,6 +61,16 @@ export function useUpdateMenuOption() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: MenuFormValueOptions) => updateMenuOption(input),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["menu"] })
+    },
+  })
+}
+
+export function useUpdateMenuIngredient() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: MenuIngredientForm) => updateMenuIngredient(input),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["menu"] })
     },

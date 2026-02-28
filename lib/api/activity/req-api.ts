@@ -24,7 +24,7 @@ export type ActivityFormValue = {
 
 export type ActivityQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -41,7 +41,7 @@ export type ActivityListResponse = {
   statusCode: number
   additional: unknown
   data: ActivityItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type StatusListResponse = {

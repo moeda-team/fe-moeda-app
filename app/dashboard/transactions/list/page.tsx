@@ -232,15 +232,11 @@ export default function TransactionsListPage() {
 
   /** data */
   const { data } = useTransactionsQuery({
-    page: 1,
-    perPage: 10,
     search: debouncedSearch,
     status: "active",
     paymentStatus: "completed"
   })
   const { data : dataCompleted } = useTransactionsQuery({
-    page: 1,
-    perPage: 10,
     search: debouncedSearch,
     status: "completed"
   })

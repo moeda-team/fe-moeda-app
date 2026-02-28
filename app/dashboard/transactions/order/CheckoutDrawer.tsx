@@ -125,8 +125,6 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
   }, [statusData, onOpenChange, onSuccess])
 
   const { data: TABLE_OPTIONS } = useTablesQuery({
-    page: 1,
-    perPage: 1000,
     search: "",
   })
 

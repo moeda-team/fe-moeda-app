@@ -39,7 +39,7 @@ export type UserFormValue = {
 
 export type UsersQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -56,7 +56,7 @@ export type UsersListResponse = {
   statusCode: number
   additional: unknown
   data: UserItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateUserInput = UserFormValue

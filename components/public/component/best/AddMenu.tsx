@@ -171,7 +171,13 @@ export function AddMenuDrawer({ menu, order }: Props) {
     : originalPrice
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer
+      open={open}
+      onOpenChange={(val) => {
+        if (!menu.isAvailable) return
+        setOpen(val)
+      }}
+    >
       <DrawerTrigger asChild>
         <div className="bg-primary/10 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2 w-[150px]">
           <div className="relative h-28">
@@ -188,8 +194,12 @@ export function AddMenuDrawer({ menu, order }: Props) {
             <p className="text-sm font-medium line-clamp-1">
               {menu.name}
             </p>
+            {!menu.isAvailable ? (
+              <p className="text-xs font-semibold bg-[#E35336]/50 text-white rounded-full px-2 py-1">
+                Sold out
+              </p>
+            ) : ""}
           </div>
-
         </div>
       </DrawerTrigger>
 

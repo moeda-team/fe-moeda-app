@@ -7,7 +7,7 @@ import {
 
 import {
   MenuBestsellerResponse,
-  MenuListResponse,
+  ListResponse,
   MenuQueryParams,
   getBestseller,
   getMenus,
@@ -38,7 +38,7 @@ export function useCategoriesQuery(params?: CategoryQueryParams) {
 }
 
 export function useMenuQuery(params?: MenuQueryParams) {
-  return useQuery<MenuListResponse>({
+  return useQuery<ListResponse>({
     queryKey: menuKey(params),
     queryFn: () => getMenus(params),
   })

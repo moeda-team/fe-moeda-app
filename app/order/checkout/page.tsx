@@ -101,8 +101,6 @@ export default function CheckoutPage() {
   })
 
   const { data : TABLE_OPTIONS } = useTablesQuery({
-    page : 1,
-    perPage : 1000,
     search: "",
   })
   

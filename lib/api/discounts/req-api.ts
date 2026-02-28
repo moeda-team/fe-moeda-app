@@ -27,7 +27,7 @@ export type DiscountFormValue = {
 
 export type DiscountsQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -44,7 +44,7 @@ export type DiscountsListResponse = {
   statusCode: number
   additional: unknown
   data: DiscountsItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateDiscountsInput = DiscountFormValue

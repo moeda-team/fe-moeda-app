@@ -73,8 +73,9 @@ export function AppPagination({
 
     return result
   }, [page, totalPages])
-
-  if (!totalPages && !hasNext && page === 1) return null
+  console.log(pageSize)
+  console.log(total)
+  if (!totalPages) return null
 
   return (
     <Pagination>

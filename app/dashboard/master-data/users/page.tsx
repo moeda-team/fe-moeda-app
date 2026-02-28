@@ -38,7 +38,7 @@ import {
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: UserFormValue = {
   name: "",
@@ -68,7 +68,7 @@ export default function UsersPage() {
   /** data */
   const { data, isLoading } = useUsersQuery({
     page,
-    perPage,
+    limit : perPage,
     search: debouncedSearch,
   })
 
@@ -154,9 +154,9 @@ export default function UsersPage() {
   }
 
   const users = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  const total = data?.pagination?.total
+  
+  
 
   /** overlays */
   const tableLoading = isLoading
@@ -267,9 +267,8 @@ export default function UsersPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>

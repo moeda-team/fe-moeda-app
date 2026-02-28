@@ -40,7 +40,7 @@ import { useCountStocks, useStocksQuery } from "../ingridients/hooks/use"
 import { formatDate } from "date-fns"
 import { ActivityFormDialog } from "@/components/dialog/form-activity"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: ActivityFormValue = {
   inventoryId: "",
@@ -63,7 +63,7 @@ export default function ActivityPage() {
   /** data */
   const { data, isLoading } = useActivitiesQuery({
     page,
-    perPage,
+    limit : perPage,
     search: debouncedSearch,
   })
 
@@ -138,9 +138,9 @@ export default function ActivityPage() {
   }
 
   const discounts = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  const total = data?.pagination?.total
+  
+  
 
   /** overlays */
   const tableLoading = isLoading
@@ -148,7 +148,7 @@ export default function ActivityPage() {
 
   const { data : ingridientData, } = useStocksQuery({
       page,
-      perPage,
+      limit : perPage,
       search: debouncedSearch,
     })
 
@@ -344,9 +344,8 @@ export default function ActivityPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>

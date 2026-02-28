@@ -47,8 +47,6 @@ export default function FeedbackPage() {
 
 
   const { data : TABLE_OPTIONS } = useTablesQuery({
-    page : 1,
-    perPage : 1000,
     search: "",
   })
   

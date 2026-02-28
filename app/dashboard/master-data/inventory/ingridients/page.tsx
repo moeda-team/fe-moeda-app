@@ -39,7 +39,7 @@ import { StockFormDialog } from "@/components/dialog/form-stock"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertOctagon, Badge, BadgeCheck, TriangleAlert } from "lucide-react"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: StockFormValue = {
   name: "",
@@ -63,7 +63,7 @@ export default function StockPage() {
   /** data */
   const { data, isLoading } = useStocksQuery({
     page,
-    perPage,
+    limit : perPage,
     search: debouncedSearch,
   })
 
@@ -140,9 +140,9 @@ export default function StockPage() {
   }
 
   const Stocks = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  const total = data?.pagination?.total
+  
+  
 
   /** overlays */
   const tableLoading = isLoading
@@ -325,9 +325,8 @@ export default function StockPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>

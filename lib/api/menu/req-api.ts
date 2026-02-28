@@ -19,6 +19,7 @@ export type Menuitem = {
   isBest: boolean,
   quantity: number,
   isActive: boolean,
+  isAvailable: boolean,
   createdAt: string,
   updatedAt: string
   vouchers: Voucher[],
@@ -92,29 +93,29 @@ export type DiscountMenu =
 export type MenuQueryParams = {
   search?: string
   page?: number
-  perPage?: number
+  limit?: number
   category?: string
   best?: boolean
 }
 
-export type MenuListResponse = {
+export type ListResponse = {
   statusCode: number
   additional: unknown
   data: Menuitem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type MenuBestsellerResponse = {
   statusCode: number
   additional: unknown
   data: MenuitemBestseller[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export async function getMenus(
   params?: MenuQueryParams
-): Promise<MenuListResponse> {
-  const res = await axiosClient.get<MenuListResponse>(`/menus/main`, { params })
+): Promise<ListResponse> {
+  const res = await axiosClient.get<ListResponse>(`/menus/main`, { params })
   return res.data
 }
 
@@ -134,7 +135,7 @@ export type OptionsListResponse = {
   statusCode: number
   additional: unknown
   data: Menuitem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateMenuInput = MenuForm

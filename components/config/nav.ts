@@ -61,7 +61,7 @@ export const NAV: NavGroup[] = [
       },
       {
         title: "Tables",
-        icon: ListCheck,
+        icon: RockingChair,
         href: "/dashboard/master-data/tables",
         roles: ["ADMIN", "OWNER"],
       },
@@ -75,7 +75,7 @@ export const NAV: NavGroup[] = [
       },
       {
         title: "Voucer / Discount",
-        icon: RockingChair,
+        icon: TicketPercent,
         roles: ["ADMIN", "OWNER"],
         children: [
           { title: "Discount", href: "/dashboard/master-data/discount", roles: ["ADMIN", "OWNER"] },

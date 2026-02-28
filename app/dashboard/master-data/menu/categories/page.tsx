@@ -36,7 +36,7 @@ import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { CategoriesFormDialog } from "@/components/dialog/form-categories"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: CategoriesFormValue = {
   name: "",
@@ -57,7 +57,7 @@ export default function CategoriesPage() {
   /** data */
   const { data, isLoading } = useCategoriesQuery({
     page,
-    perPage,
+    limit: perPage,
     search: debouncedSearch,
   })
 
@@ -126,9 +126,7 @@ export default function CategoriesPage() {
   }
 
   const categories = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  const total = data?.pagination?.total
 
   /** overlays */
   const tableLoading = isLoading
@@ -240,9 +238,8 @@ export default function CategoriesPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>

@@ -13,7 +13,7 @@ export type TableFormValue = {
 
 export type TablesQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -30,7 +30,7 @@ export type TablesListResponse = {
   statusCode: number
   additional: unknown
   data: TablesItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateTablesInput = TableFormValue

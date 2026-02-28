@@ -20,7 +20,7 @@ export type StockFormValue = {
 
 export type StockQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -37,7 +37,7 @@ export type StockListResponse = {
   statusCode: number
   additional: unknown
   data: StockItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type StatusListResponse = {

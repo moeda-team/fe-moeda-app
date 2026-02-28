@@ -5,7 +5,7 @@ import {
   updateMenu,
   deleteMenu,
   type MenuQueryParams,
-  type MenuListResponse,
+  type ListResponse,
   type CreateMenuInput,
   type UpdateMenuInput,
   updateMenuOption,
@@ -19,7 +19,7 @@ import { MenuFormValueOptions } from "@/lib/option-utils"
 const MenuKey = (params?: MenuQueryParams) => ["menu", params ?? {}] as const
 
 export function useMenuQuery(params?: MenuQueryParams) {
-  return useQuery<MenuListResponse>({
+  return useQuery<ListResponse>({
     queryKey: MenuKey(params),
     queryFn: () => getMenus(params),
   })

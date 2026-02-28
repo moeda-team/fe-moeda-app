@@ -21,7 +21,7 @@ export type UserItem = {
 
 export type UsersQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -38,7 +38,7 @@ export type UsersListResponse = {
   statusCode: number
   additional: unknown
   data: UserItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateUserInput = {
@@ -69,7 +69,7 @@ export type CategoryListResponse = {
   statusCode: number
   additional: unknown
   data: CategoryItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type MenuQueryParams = {
@@ -78,11 +78,11 @@ export type MenuQueryParams = {
   best?: string
 }
 
-export type MenuListResponse = {
+export type ListResponse = {
   statusCode: number
   additional: unknown
   data: Menuitem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type Choice = {

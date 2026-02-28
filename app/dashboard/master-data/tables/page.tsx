@@ -36,7 +36,7 @@ import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { TablesFormDialog } from "@/components/dialog/form-tables"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: TableFormValue = {
   name: "",
@@ -57,7 +57,7 @@ export default function TablesPage() {
   /** data */
   const { data, isLoading } = useTablesQuery({
     page,
-    perPage,
+    limit : perPage,
     search: debouncedSearch,
   })
 
@@ -126,9 +126,9 @@ export default function TablesPage() {
   }
 
   const tables = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  const total = data?.pagination?.total
+  
+  
 
   /** overlays */
   const tableLoading = isLoading
@@ -235,9 +235,8 @@ export default function TablesPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>

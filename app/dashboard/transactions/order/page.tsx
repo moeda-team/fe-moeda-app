@@ -68,7 +68,7 @@ export default function TransactionsListPage() {
   const { data : categoriesData, isLoading : isLoadingCategories } = useCategoriesQuery()
   const { data : bestData, isLoading : isLoadingBest } = useBestsellerQuery()
   const { data : menuData, isLoading : isLoadingMenu } = useMenuQuery({ search : debouncedSearch, category : selectedCategory === 'All' ? "" : selectedCategory ? selectedCategory : undefined })
-  const { data : tableData } = useTablesQuery({page : 1, perPage : 1000, search: ""})
+  const { data : tableData } = useTablesQuery({ search: ""})
   
   useEffect(() => {
     const handler = setTimeout(() => {

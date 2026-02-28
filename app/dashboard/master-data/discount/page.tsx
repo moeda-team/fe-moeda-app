@@ -43,7 +43,7 @@ import { Badge } from "@/components/ui/badge"
 import { SelectMenuDialogPro } from "@/components/dialog/select-menu-dialog"
 import { getMenus } from "@/lib/api/menu/req-api"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: DiscountFormValue = {
   name: "",
@@ -78,7 +78,7 @@ export default function DiscountPage() {
   /** data */
   const { data, isLoading } = useDiscountsQuery({
     page,
-    perPage,
+    limit : perPage,
     search: debouncedSearch,
   })
 
@@ -156,9 +156,9 @@ export default function DiscountPage() {
   }
 
   const discounts = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  const total = data?.pagination?.total
+  
+  
 
   /** overlays */
   const tableLoading = isLoading
@@ -308,9 +308,8 @@ export default function DiscountPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>
@@ -350,10 +349,8 @@ export default function DiscountPage() {
           control={menuForm.control}
           name="menuIds"
           multiple
-          fetchData={async ({ page, search }) => {
+          fetchData={async ({ search }) => {
             const res = await getMenus({
-              page,
-              perPage: 10,
               search,
             })
 

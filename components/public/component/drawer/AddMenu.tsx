@@ -170,7 +170,14 @@ export function AddMenuDrawer({ menu }: Props) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button onClick={() => setOpen(true)}><ShoppingCart /> Add to Cart</Button>
+        <Button 
+          onClick={() => setOpen(true)}
+          className="w-full disabled:bg-red-500"
+          disabled={!menu.isAvailable}
+        >
+          {menu.isAvailable ? <ShoppingCart /> : <X />}
+          {menu.isAvailable ? "Add to Cart" : "Sold Out"}
+        </Button>
       </DrawerTrigger>
 
       <DrawerContent className="rounded-t-3xl px-4 pb-6 max-w-lg mx-auto ">

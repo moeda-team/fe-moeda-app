@@ -53,7 +53,7 @@ import { BestSellerFormDialog } from "@/components/dialog/form-best"
 import { FormIngridientDrawer } from "./FormIngridientDrawer"
 import { useStocksQuery } from "../inventory/ingridients/hooks/use"
 
-const PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: MenuForm = {
   name: "",
@@ -87,7 +87,7 @@ export default function MenuPage() {
   /** data */
   const { data, isLoading } = useMenuQuery({
     page,
-    perPage,
+    limit:perPage,
     search: debouncedSearch,
   })
 
@@ -212,9 +212,8 @@ export default function MenuPage() {
   }
 
   const s = data?.data ?? []
-  const total = data?.paginate?.total
-  const serverPerPage = data?.paginate?.perPage ?? perPage
-  const hasNext = data?.paginate?.next != null
+  
+  const total = data?.pagination?.total
 
   /** overlays */
   const tableLoading = isLoading
@@ -280,7 +279,7 @@ export default function MenuPage() {
   
   const { data : ingridientData, } = useStocksQuery({
       page,
-      perPage,
+      limit : perPage,
       search: debouncedSearch,
     })
     
@@ -438,9 +437,8 @@ export default function MenuPage() {
 
           <AppPagination
             page={page}
-            pageSize={serverPerPage}
+            pageSize={perPage}
             total={total}
-            hasNext={hasNext}
             onPageChange={setPage}
           />
         </div>

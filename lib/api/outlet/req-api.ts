@@ -25,7 +25,7 @@ export type OutletFormValue = {
 
 export type OutletQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -42,7 +42,7 @@ export type OutletListResponse = {
   statusCode: number
   additional: unknown
   data: OutletItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateOutletInput = OutletFormValue

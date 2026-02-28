@@ -13,7 +13,7 @@ export type CategoriesFormValue = {
 
 export type CategoriesQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -30,7 +30,7 @@ export type CategoriesListResponse = {
   statusCode: number
   additional: unknown
   data: CategoriesItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateCategoriesInput = CategoriesFormValue

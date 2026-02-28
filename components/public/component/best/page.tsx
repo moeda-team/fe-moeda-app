@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { MenuitemBestseller } from "@/lib/api/menu/req-api"
 import {
   Carousel,

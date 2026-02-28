@@ -21,7 +21,7 @@ export type VoucherFormValue = {
 
 export type VouchersQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -38,7 +38,7 @@ export type VouchersListResponse = {
   statusCode: number
   additional: unknown
   data: VouchersItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateVouchersInput = VoucherFormValue

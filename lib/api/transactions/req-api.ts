@@ -3,7 +3,7 @@ import { TransactionOrder } from "../customer/req-api"
 
 export type TransactionsQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
   status?: string
   paymentStatus?: string
@@ -22,7 +22,7 @@ export type TransactionsListResponse = {
   statusCode: number
   additional: unknown
   data: {transactions: TransactionOrder[]}
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type UpdateTransactionsInput = {

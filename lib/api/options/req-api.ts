@@ -13,7 +13,7 @@ export type OptionsFormValue = {
 
 export type OptionsQueryParams = {
   page?: number
-  perPage?: number
+  limit?: number
   search?: string
 }
 
@@ -30,7 +30,7 @@ export type OptionsListResponse = {
   statusCode: number
   additional: unknown
   data: OptionsItem[]
-  paginate: Paginate
+  pagination: Paginate
 }
 
 export type CreateOptionsInput = OptionsFormValue

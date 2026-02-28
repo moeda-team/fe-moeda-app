@@ -193,7 +193,7 @@ export default function VouchersPage() {
                 </TableRow>
               ) : (
                 vouchers.map((v) => (
-                  <TableRow key={v.id}>
+                  <TableRow key={v.id} className={v.expiredAt < new Date().toISOString() ? "hover:bg-accent" : ""}>
                     <TableCell className="font-medium">{v.name}</TableCell>
                     <TableCell>
                       {v.type === "fixed" ? formatCurrency(v.discount) : `${v.discount}%`}

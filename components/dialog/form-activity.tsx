@@ -156,7 +156,6 @@ export function ActivityFormDialog({
           <div className="grid gap-2">
             <Textarea
               {...register("notes", {
-                required: "Notes is required",
                 minLength: {
                   value: 3,
                   message: "Min 3 characters",

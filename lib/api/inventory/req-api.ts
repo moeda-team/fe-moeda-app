@@ -7,6 +7,7 @@ export type StockItem = {
   unit: string
   currentStock: number
   minimumStock: number
+  status: string
 }
 
 export type StockFormValue = {

@@ -41,6 +41,8 @@ export default function FeedbackPage() {
     queryKey: ["transaction-order", orderId],
     queryFn: () => getOrderList([orderId!]),
     enabled: !!orderId, // ⬅️ ini cukup
+    refetchInterval: 15000,
+    refetchOnWindowFocus: false,
   })
 
 
@@ -69,17 +71,7 @@ export default function FeedbackPage() {
    * =========================
    */
   if (isError || !orderList?.data?.length) {
-    return (
-      <div className="p-6 text-center">
-        <p>Order not found</p>
-        <button
-          onClick={() => router.push("/")}
-          className="mt-4 text-primary underline"
-        >
-          Back to Home
-        </button>
-      </div>
-    )
+    return router.push(`/order/detail/${orderId}`)
   }
 
   const transaction = orderList.data[0]

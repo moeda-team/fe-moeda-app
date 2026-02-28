@@ -51,12 +51,20 @@ function FeedbackPage() {
   }
 
   const details = order.details
+  const generateQRBase64 = async (value: string) => {
+    const QRCodeLib = await import("qrcode")
 
-  const generatePDF = () => {
+    return await QRCodeLib.toDataURL(value, {
+      width: 200,
+      margin: 1,
+    })
+  }
+
+  const generatePDF = async () => {
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
-      format: [80, 200], // thermal style width
+      format: [80, 200],
     })
 
     let y = 10
@@ -76,7 +84,16 @@ function FeedbackPage() {
       { align: "center" }
     )
 
-    y += 10
+    y += 5
+
+    // =========================
+    // QR CODE SECTION
+    // =========================
+    const qrBase64 = await generateQRBase64(`${process.env.AUTH_URL}/order/detail/${order.id}`)
+
+    doc.addImage(qrBase64, "PNG", 25, y, 30, 30)
+
+    y += 35
 
     doc.setFontSize(9)
     doc.text(`Order ID: ${details.number}`, 5, y)
@@ -92,11 +109,7 @@ function FeedbackPage() {
     y += 6
 
     details.subTransactions.forEach((item) => {
-      doc.text(
-        `${item.quantity}x ${item.menuName}`,
-        5,
-        y
-      )
+      doc.text(`${item.quantity}x ${item.menuName}`, 5, y)
 
       doc.text(
         `Rp ${Number(item.subTotal).toLocaleString("id-ID")}`,
@@ -204,7 +217,7 @@ function FeedbackPage() {
 
           <div className="flex justify-center mb-3">
             <QRCode
-              value={`ORDER-${order.id}`}
+              value={`${process.env.AUTH_URL}/order/detail/${order.id}`}
               size={120}
             />
           </div>

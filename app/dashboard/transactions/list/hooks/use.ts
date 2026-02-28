@@ -13,6 +13,8 @@ export function useTransactionsQuery(params?: TransactionsQueryParams) {
   return useQuery<TransactionsListResponse>({
     queryKey: transactionsKey(params),
     queryFn: () => getTransactionsActive(params),
+    refetchInterval: 15000,
+    refetchOnWindowFocus: false,
   })
 }
 export function useUpdateTransaction() {

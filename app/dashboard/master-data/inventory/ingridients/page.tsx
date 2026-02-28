@@ -37,7 +37,7 @@ import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { StockFormDialog } from "@/components/dialog/form-stock"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertOctagon, BadgeCheck, TriangleAlert } from "lucide-react"
+import { AlertOctagon, Badge, BadgeCheck, TriangleAlert } from "lucide-react"
 
 const PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
@@ -247,6 +247,7 @@ export default function StockPage() {
                 <TableHead>Name</TableHead>
                 <TableHead>Current Stock</TableHead>
                 <TableHead>Min Stock</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -264,6 +265,11 @@ export default function StockPage() {
                     <TableCell className="font-medium">{v.name}</TableCell>
                     <TableCell className="font-medium">{v.currentStock} {v.unit}</TableCell>
                     <TableCell className="font-medium">{v.minimumStock} {v.unit}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className={`w-16 text-center text-white rounded-full px-2 py-1 ${v.status === "SAFE" ? "bg-green-500" : v.status === "LOW" ? "bg-amber-500" : "bg-red-500"}`}>
+                        {v.status === "SAFE" ? "Safe" : v.status === "LOW" ? "Low" : "Out"}
+                      </div>
+                    </TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"

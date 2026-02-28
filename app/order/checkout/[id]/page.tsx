@@ -9,6 +9,15 @@ import { id as localeID } from "date-fns/locale"
 import QRCode from "react-qr-code"
 import { HeaderWithBackground } from "@/components/public/component/HeaderWithBackground"
 import jsPDF from "jspdf"
+import { headers } from "next/headers"
+
+export async function getBaseUrl() {
+  const headersList = await headers()
+  const host = headersList.get("host")
+  const protocol = headersList.get("x-forwarded-proto") ?? "http"
+
+  return `${protocol}://${host}`
+}
 
 function FeedbackPage() {
   const [mounted, setMounted] = useState(false)
@@ -89,7 +98,7 @@ function FeedbackPage() {
     // =========================
     // QR CODE SECTION
     // =========================
-    const qrBase64 = await generateQRBase64(`${process.env.NEXTAUTH_URL}/order/detail/${order.id}`)
+    const qrBase64 = await generateQRBase64(`${await getBaseUrl()}/order/detail/${order.id}`)
 
     doc.addImage(qrBase64, "PNG", 25, y, 30, 30)
 
@@ -217,7 +226,7 @@ function FeedbackPage() {
 
           <div className="flex justify-center mb-3">
             <QRCode
-              value={`${process.env.NEXTAUTH_URL}/order/detail/${order.id}`}
+              value={`${getBaseUrl()}/order/detail/${order.id}`}
               size={120}
             />
           </div>

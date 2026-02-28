@@ -46,11 +46,15 @@ import BillDrawer from "../BillDrawer"
 function TransactionCard({
   transaction,
   handleUpdateStatus,
-  type
+  type,
+  setOpenBill,
+  setBillItems
 }: {
   transaction: TransactionOrder
   handleUpdateStatus: (subTransactionId: string, status: string) => void
   type? : string
+  setOpenBill: React.Dispatch<React.SetStateAction<boolean>>
+  setBillItems: React.Dispatch<React.SetStateAction<TransactionOrder | undefined>>
 }) {
   const timeAgo = useLiveTimeAgo(transaction.createdAt)
   const [showAll, setShowAll] = useState(false)
@@ -209,14 +213,25 @@ function TransactionCard({
         </div>
       </div>
       
-      <div className="relative">
+      <div className="grid lg:flex gap-2">
         <Button 
           size="sm"
-          className={`w-full ${type === "completed" ? 'bg-gray-500' :""}`}
+          className={`lg:w-10/12 w-full ${type === "completed" ? 'bg-gray-500' :""}`}
           disabled={type === "completed"}
           onClick={handleCompleteAll}
         >
           {type === "completed" ? `Selesai ${formatTime(transaction.updatedAt)}` : "Selesaikan semua pesanan"}
+        </Button>
+        <Button   
+          variant="outline"  
+          size="icon"
+          className="lg:w-2/12 w-full"
+          onClick={() => {
+            setOpenBill(true)
+            setBillItems(transaction)
+          }}
+        >
+          <PrinterCheck />
         </Button>
       </div>
     </div>
@@ -334,7 +349,7 @@ export default function TransactionsListPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {transactions.map((transaction) => (
-                    <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} />
+                    <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} setOpenBill={setOpenBill} setBillItems={setBillItems}/>
                   ))}
                 </div>
 
@@ -360,7 +375,7 @@ export default function TransactionsListPage() {
                 </div>
                 <div className="grid grid-cols-1 gap-4">
                   {transactionsCompleted.map((transaction) => (
-                    <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} type="completed" />
+                    <TransactionCard key={transaction.id} transaction={transaction} handleUpdateStatus={handleUpdateStatus} type="completed" setOpenBill={setOpenBill} setBillItems={setBillItems}/>
                   ))}
                 </div>
 

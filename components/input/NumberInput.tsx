@@ -113,7 +113,7 @@ export function NumberInput<TFieldValues extends FieldValues>({
                   field.onChange(digits ? Number(digits) : "")
                 }}
                 onBlur={field.onBlur}
-                className={suffix ? "pr-16" : ""}
+                className={`disabled:bg-gray-200 ${suffix ? "pr-16" : ""}`}
               />
 
               {suffix && (

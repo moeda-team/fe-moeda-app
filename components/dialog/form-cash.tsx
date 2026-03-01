@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { uomOptions, type StockItem } from "@/lib/api/inventory/req-api"
+import { type CashBalanceItem } from "@/lib/api/cash-balance/req-api"
 import { Switch } from "@/components/ui/switch"
 
 import { Button } from "@/components/ui/button"
@@ -15,21 +15,22 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { SelectSearch } from "../input/SelectSearch"
-import type { StockFormValue } from "@/lib/api/inventory/req-api"
+import type { CashBalanceFormValue } from "@/lib/api/cash-balance/req-api"
 import { NumberInput } from "../input/NumberInput"
+import { Textarea } from "../ui/textarea"
+import { SelectSearch } from "../input/SelectSearch"
 
 type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  editing: StockItem | null
+  editing: CashBalanceItem | null
   loading?: boolean
-  value: StockFormValue
-  onChange: (value: StockFormValue) => void
-  onSubmit: (data: StockFormValue) => void
+  value: CashBalanceFormValue
+  onChange: (value: CashBalanceFormValue) => void
+  onSubmit: (data: CashBalanceFormValue) => void
 }
 
-export function StockFormDialog({
+export function CashBalanceFormDialog({
   open,
   onOpenChange,
   editing,
@@ -45,10 +46,8 @@ export function StockFormDialog({
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    setValue,
     control,
-    watch,
-  } = useForm<StockFormValue>({
+  } = useForm<CashBalanceFormValue>({
     mode: "onChange",
     reValidateMode: "onChange",
     defaultValues: value,
@@ -82,70 +81,91 @@ export function StockFormDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Ingredient" : "Create Ingredient"}</DialogTitle>
+          <DialogTitle>{isEdit ? "Cancel Cash / Balance" : "New Cash / Balance"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={submit} className="grid gap-4">
-          <Input
-            type="hidden"
-            {...register("outletId", {
-              required: "Outlet ID is required",
-            })}
-          />
           <div className="grid gap-2">
-            <Label>Name</Label>
-            <Input
-              {...register("name", {
-                required: "Name is required",
-                minLength: { value: 3, message: "Min 3 characters" },
-              })}
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Unit</Label>
+            <Label>Type</Label>
 
             <Controller
               control={control}
-              name="unit"
-              rules={{ required: "Unit is required" }}
+              name="type"
+              rules={{ required: "Type is required" }}
               render={({ field }) => (
                 <SelectSearch
-                  options={uomOptions}
+                  options={[
+                    { value: "ADD", label: "Add" },
+                    { value: "REDUCE", label: "Reduce" },
+                  ]}
                   value={field.value}
+                  className={isEdit ? "bg-gray-200" : ""}
                   onChange={(v) => field.onChange(v)}
-                  placeholder="Pilih unit"
+                  placeholder="Select type"
+                  disabled={isEdit}
                 />
               )}
             />
 
-            {errors.unit && (
-              <p className="text-sm text-red-500">{errors.unit.message}</p>
+            {errors.type && (
+              <p className="text-sm text-red-500">{errors.type.message}</p>
             )}
           </div>
-
-            {isEdit && (
-              <div className="grid gap-2">
-                <Input
-                  {...register("currentStock")}
-                  readOnly
-                  className="bg-gray-100"
-                />
-              </div>
-            )}
-
           <div className="grid gap-2">
             <NumberInput
               control={control}
-              name="minimumStock"
-              label="Min Stock"
+              name="amount"
+              label="Amount"
               required
-              min={1}
+              min={1000}
+              currency
+              disabled={isEdit}
             />
           </div>
+
+          <div className="grid gap-2">
+            <Label>Description</Label>
+            <Textarea
+              {...register("description", {
+                minLength: {
+                  value: 3,
+                  message: "Min 3 characters",
+                },
+                required: "Description is required",
+              })}
+              className={isEdit ? "bg-gray-200" : ""}
+              rows={3}
+              placeholder="Description .."
+              disabled={isEdit}
+            />
+            {errors.description && (
+              <p className="text-sm text-red-500">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+          
+          {isEdit && 
+            <div className="grid gap-2">
+              <Label>Cancel Notes</Label>
+              <Textarea
+                {...register("cancelNote", {
+                  minLength: {
+                    value: 3,
+                    message: "Min 3 characters",
+                  },
+                  required: "Cancel note is required",
+                })}
+                rows={3}
+                placeholder="Cancel note .."
+              />
+              {errors.cancelNote && (
+                <p className="text-sm text-red-500">
+                  {errors.cancelNote.message}
+                </p>
+              )}
+            </div>
+          }
 
           <DialogFooter className="mt-4">
             <Button

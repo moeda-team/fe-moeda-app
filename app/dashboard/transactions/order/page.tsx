@@ -223,7 +223,7 @@ export default function TransactionsListPage() {
                       />
                     ))}
                     </div> : 
-                  <CardMenu data={menuData?.data ?? []} />
+                  <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 lg:grid-cols-3 gap-4" />
                 }
       
                 {menuData?.data?.length === 0 && (

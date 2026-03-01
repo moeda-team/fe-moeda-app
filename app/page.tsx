@@ -169,7 +169,7 @@ export default function Home() {
                 />
               ))}
               </div> : 
-            <CardMenu data={menuData?.data ?? []} />
+            <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 gap-4" />
           }
 
           {menuData?.data?.length === 0 && (

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { Minus, Plus, ShoppingCart, X } from "lucide-react"
+import { Minus, Plus, ShoppingCart, TicketPercent, X } from "lucide-react"
 import {
   Drawer,
   DrawerContent,
@@ -170,14 +170,87 @@ export function AddMenuDrawer({ menu }: Props) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button 
-          onClick={() => setOpen(true)}
-          className="w-full disabled:bg-red-500"
-          disabled={!menu.isAvailable}
-        >
-          {menu.isAvailable ? <ShoppingCart /> : <X />}
-          {menu.isAvailable ? "Add to Cart" : "Sold Out"}
-        </Button>
+        <div className="bg-card rounded-xl cursor-pointer shadow-soft overflow-hidden p-3 flex flex-col space-y-1 justify-between relative shadow-sm border">
+          <div className="relative h-44 w-full">
+            <Image
+              src={menu.img}
+              alt={menu.name}
+              fill
+              className="object-cover object-top rounded-sm"
+            />
+            
+            {menu.discountMenus.length > 0 && (
+              <div className="absolute top-1 left-1 bg-green-100/90 text-[10px] px-2 py-1 rounded-sm text-green-900 flex items-center">
+                <TicketPercent size={15}/>
+                {menu.discountMenus[0].discount.type === "fixed" ? (
+                  <div className="text-[10px] ml-1">Rp.{menu.discountMenus[0].discount.discount.toLocaleString()}</div>
+                ) : (
+                  <div className="text-[10px] ml-1">{menu.discountMenus[0].discount.discount}%</div>
+                )}
+              </div>
+            )}
+          </div>
+          
+          {/* price */}
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col mt-1">
+              <div className="flex items-center justify-between">
+                {menu.discountMenus.length > 0 && (
+                  <div className="bg-[#E35336] text-[10px] px-2 py-0.5 rounded-sm text-white">{menu.discountMenus[0].discount.name}</div>
+                )}
+              </div>
+
+              <p className="text-base font-medium line-clamp-1">
+                {menu.name}
+              </p>
+
+              {menu.discountMenus.length > 0 && menu.discountMenus[0].discount.type === "fixed" && (
+                <div className="flex items-start justify-between gap-2">
+                  <p className={menu.discountMenus[0].discount.type === "fixed" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                    Rp {menu.price.toLocaleString()}
+                  </p>
+                  
+                  {menu.discountMenus[0].discount.type === "fixed" && (
+                    <p className="text-xs font-semibold ">
+                      Rp. {(Number(menu.price) - Number(menu.discountMenus[0].discount.discount)).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {menu.discountMenus.length > 0 && menu.discountMenus[0].discount.type === "percent" && (
+                <div className="flex items-start justify-between gap-2">
+                  <p className={menu.discountMenus[0].discount.type === "percent" ? "text-xs font-semibold line-through text-[#E35336]" : "text-xs font-semibold"}>
+                    Rp {menu.price.toLocaleString()}
+                  </p>
+                  
+                  {menu.discountMenus[0].discount.type === "percent" && (
+                    <p className="text-sm font-semibold ">
+                      Rp. {(Number(menu.price) - (Number(menu.price) * Number(menu.discountMenus[0].discount.discount) / 100)).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              )}
+              {
+                menu.discountMenus.length === 0 && (
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold">
+                      Rp. {menu.price.toLocaleString()}
+                    </p>
+                  </div>
+                )
+              }
+            </div>
+          </div>
+          <Button 
+            onClick={() => setOpen(true)}
+            className="w-full disabled:bg-red-500"
+            disabled={!menu.isAvailable}
+          >
+            {menu.isAvailable ? <ShoppingCart /> : <X />}
+            {menu.isAvailable ? "Add to Cart" : "Sold Out"}
+          </Button>
+        </div>
       </DrawerTrigger>
 
       <DrawerContent className="rounded-t-3xl px-4 pb-6 max-w-lg mx-auto ">

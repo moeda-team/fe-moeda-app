@@ -20,7 +20,7 @@ export function StickyBottomCart() {
 
   // order store
   const completedOrders = useOrderStore((s) => s.completedOrders)
-  
+  console.log(completedOrders)
   // array order id
   const orderId = Object.keys(completedOrders)
   const { data: orderList } = useQuery({

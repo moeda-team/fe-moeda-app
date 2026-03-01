@@ -9,7 +9,7 @@ import { ChevronDown, List, TicketPercent } from "lucide-react"
 import { useVoucher } from "./hooks/useVoucher"
 import { PaymentMethodSelector } from "./PaymentMethodSelector"
 import { useCreateTransaction } from "./hooks/useTransactions"
-import { CreateTransactionInput, getTransactionCalculate } from "@/lib/api/customer/req-api"
+import { checkTransactionStatus, CreateTransactionInput, getTransactionCalculate } from "@/lib/api/customer/req-api"
 import { toast } from "sonner"
 import axios from "axios"
 import { TransactionQrDrawer } from "./TransactionQrDrawer"
@@ -17,9 +17,11 @@ import LoadingScreen from "@/components/loading"
 import { useQuery } from "@tanstack/react-query"
 import { useTablesQuery } from "@/app/dashboard/master-data/tables/hooks/use"
 import { mappingOption } from "@/lib/option-utils"
+import { useRouter } from "next/navigation"
+import { useOrderStore } from "@/store/order.store"
 
 export default function CheckoutPage() {
-
+  const router = useRouter()
   /**
    * =========================
    * ZUSTAND
@@ -58,6 +60,8 @@ export default function CheckoutPage() {
   const cartDiscount = totalDiscountFn()
   const { mutate, isPending } = useCreateTransaction()
   const [isBlocking, setIsBlocking] = useState(true)
+  const clearCart = useCartStore((s) => s.clearCart)
+  const addCompletedOrder = useOrderStore((s) => s.addCompletedOrder)
   
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -151,18 +155,55 @@ export default function CheckoutPage() {
     }
 
     mutate(payload, {
-      onSuccess: (data) => {
-        if(data){
-          setQrOpen(true)
-          setPaymentMethod(data.data.paymentMethod)
-          localStorage.setItem("transactionId", data.data.paymentNumber)
+      onSuccess: async (response) => {
+        if (!response?.data) return
+
+        const { total, paymentNumber, id, paymentMethod } = response.data
+
+        // =============================
+        // CASE: TOTAL 0 (FREE ORDER)
+        // =============================
+        if (Number(total) === 0) {
+          if (paymentNumber) {
+            const statusData = await checkTransactionStatus(paymentNumber)
+            addCompletedOrder({
+              id: statusData.data.details.id,
+              paidAt: Date.now(),
+              total: Number(statusData.data.details.total),
+              customerName: statusData.data.details.customerName,
+              details: statusData.data.details,
+            })
+          }
+
+          clearCart()
+
+          localStorage.removeItem("transactionId")
+          localStorage.removeItem("qrGenerated")
+          localStorage.removeItem("paymentExpiredAt")
+
+          setTimeout(() => {
+            router.replace(`/order/checkout/${id}`)
+          }, 500)
+
+          return
+        }
+
+        // =============================
+        // CASE: PAID ORDER
+        // =============================
+        setQrOpen(true)
+        setPaymentMethod(paymentMethod)
+
+        if (paymentNumber) {
+          localStorage.setItem("transactionId", paymentNumber)
         }
       },
+
       onError: (error) => {
-        if(axios.isAxiosError(error)){
-          toast.error(error?.response?.data?.message)
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data?.message)
         }
-      }
+      },
     })
   }
 
@@ -341,26 +382,26 @@ export default function CheckoutPage() {
             </div>
           ) : null}
 
-          {transactionData?.data.tax && (
+          {transactionData?.data.tax ?
             <div className="flex justify-between">
               <span>Tax</span>
               <span>Rp {transactionData?.data.tax.toLocaleString("id-ID")}</span>
             </div>
-          )}
+          :null}
 
-          {transactionData?.data.serviceCharge && (
+          {transactionData?.data.serviceCharge ?
             <div className="flex justify-between">
               <span>Service Fee</span>
               <span>Rp {transactionData?.data.serviceCharge.toLocaleString("id-ID")}</span>
             </div>
-          )}
+          :null}
           
-          {transactionData?.data.rounding && (
+          {transactionData?.data.rounding ?
             <div className="flex justify-between">
               <span>Round</span>
               <span>Rp {transactionData?.data.rounding.toLocaleString("id-ID")}</span>
             </div>
-          )}
+          :null}
 
           <div className="border-t pt-2 flex justify-between font-semibold text-base">
             <span>Total to Pay</span>
@@ -371,13 +412,23 @@ export default function CheckoutPage() {
 
       {/* STICKY BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white px-4 py-4 shadow-[0_-8px_20px_rgba(0,0,0,0.05)]">
-        <button 
-          className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={handlePayment}
-          disabled={isPending || !table }
-        >
-          {isPending ? "Loading..." : "Payment Rp " + (transactionData?.data.total ? transactionData?.data.total.toLocaleString("id-ID") : "0")}
-        </button>
+        {transactionData?.data.total !== 0 ?
+          <button 
+            className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handlePayment}
+            disabled={isPending || !table }
+          >
+            {isPending ? "Loading..." : "Payment Rp " + (transactionData?.data.total ? transactionData?.data.total.toLocaleString("id-ID") : "0")}
+          </button>
+        :
+          <button 
+            className="w-full bg-[#B87333] text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handlePayment}
+            disabled={!table }
+          >
+            Free
+          </button>
+        }
       </div>
       
       <TransactionQrDrawer

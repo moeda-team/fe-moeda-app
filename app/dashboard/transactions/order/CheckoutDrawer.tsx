@@ -194,20 +194,24 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
       },
       {
         onSuccess: async (data) => {
-          const paymentNumber = data.data.paymentNumber
+          if(transactionData?.data.total ===0 ){
+            onSuccess?.(data.data.id)
+          }else{
+            const paymentNumber = data.data.paymentNumber
 
-          const transaction = await getTransactionByPaymentNumber(
-            paymentNumber,
-            paymentMethod
-          )
+            const transaction = await getTransactionByPaymentNumber(
+              paymentNumber,
+              paymentMethod
+            )
 
-          const qrUrl = transaction.data.actions?.[0]?.url || ""
+            const qrUrl = transaction.data.actions?.[0]?.url || ""
 
-          setQr(qrUrl)
-          setActiveTransactionId(paymentNumber)
+            setQr(qrUrl)
+            setActiveTransactionId(paymentNumber)
 
-          const FIVE_MINUTES = 5 * 60 * 1000
-          setExpiredAt(Date.now() + FIVE_MINUTES)
+            const FIVE_MINUTES = 5 * 60 * 1000
+            setExpiredAt(Date.now() + FIVE_MINUTES)
+          }
         },
         onError: (error) => {
           if (axios.isAxiosError(error)) {
@@ -399,33 +403,37 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
               </div>
             ) : null}
 
-            {voucher && (
+            {voucher ? (
               <div className="flex justify-between text-[#E35336]">
                 <span>{voucher.name}</span>
                 <span>- Rp {discountAmount.toLocaleString("id-ID")}</span>
               </div>
-            )}
+            ) : null}
+            
 
-            {transactionData?.data.tax && (
+            {transactionData?.data.tax ? (
               <div className="flex justify-between">
                 <span>Tax</span>
                 <span>Rp {transactionData?.data.tax.toLocaleString("id-ID")}</span>
               </div>
-            )}
+            ) : null}
+            
 
-            {transactionData?.data.serviceCharge && (
+            {transactionData?.data.serviceCharge ? (
               <div className="flex justify-between">
                 <span>Service Fee</span>
                 <span>Rp {transactionData?.data.serviceCharge.toLocaleString("id-ID")}</span>
               </div>
-            )}
+            ) : null}
             
-            {transactionData?.data.rounding && (
+            
+            {transactionData?.data.rounding ? (
               <div className="flex justify-between">
                 <span>Round</span>
                 <span>Rp {transactionData?.data.rounding.toLocaleString("id-ID")}</span>
               </div>
-            )}
+            ) : null}
+            
 
             <div className="border-t pt-2 flex justify-between font-semibold text-base">
               <span>Total to Pay</span>
@@ -435,21 +443,31 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
         </div>
 
         {/* FOOTER */}
-        <div className="flex gap-2 p-4 border-t bg-white">
-          <Button
-            className="w-9/12"
-            onClick={handlePayment}
-            disabled={isPending || !table || !!qr}
-          >
-            {isPending
-              ? "Loading..."
-              : "Payment Rp " +
-                (transactionData?.data.total
-                  ? transactionData.data.total.toLocaleString("id-ID")
-                  : "0")}
-          </Button>
-          <Button className="w-3/12" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-        </div>
+          <div className="flex gap-2 p-4 border-t bg-white">
+            {transactionData?.data.total !== 0 ?
+              <Button
+                className="w-9/12"
+                onClick={handlePayment}
+                disabled={isPending || !table || !!qr}
+              >
+                {isPending
+                  ? "Loading..."
+                  : "Payment Rp " +
+                    (transactionData?.data.total
+                      ? transactionData.data.total.toLocaleString("id-ID")
+                      : "0")}
+              </Button>
+            :
+              <Button
+                className="w-9/12"
+                onClick={handlePayment}
+                disabled={!table}
+              >
+                Free
+              </Button>
+            }
+            <Button className="w-3/12" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          </div>
       </DrawerContent>
     </Drawer>
   )

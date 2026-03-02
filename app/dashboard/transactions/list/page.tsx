@@ -84,7 +84,7 @@ function TransactionCard({
   }
 
   return (
-    <div className="bg-gray-100 p-3 rounded-xl shadow-sm border border-primary/20 flex flex-col gap-2 justify-between">
+    <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-xl shadow-sm border border-primary/20 flex flex-col gap-2 justify-between">
       <div className="space-y-2">
         {/* HEADER */}
         <div>
@@ -216,7 +216,7 @@ function TransactionCard({
       <div className="grid lg:flex gap-2">
         <Button 
           size="sm"
-          className={`lg:w-10/12 w-full ${type === "completed" ? 'bg-gray-500' :""}`}
+          className={`lg:w-10/12 w-full dark:text-white ${type === "completed" ? 'bg-gray-500' :""}`}
           disabled={type === "completed"}
           onClick={handleCompleteAll}
         >

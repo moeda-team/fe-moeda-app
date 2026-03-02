@@ -180,7 +180,7 @@ export default function UsersPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className="dark:text-white">
               Create User
             </Button>
           </div>

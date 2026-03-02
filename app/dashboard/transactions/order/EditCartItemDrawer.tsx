@@ -262,7 +262,7 @@ export function EditCartItemDrawer({ item }: Props) {
 
           <DrawerFooter>
             <Button
-              className="w-full"
+              className="w-full dark:text-white"
               onClick={handleSave}
             >
               Save Changes

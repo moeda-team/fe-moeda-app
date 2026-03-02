@@ -171,7 +171,7 @@ export default function DiscountPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className=" dark:text-white">
               Create
             </Button>
           </div>

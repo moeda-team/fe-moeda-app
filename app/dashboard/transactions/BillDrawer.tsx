@@ -172,7 +172,7 @@ export default function BillDrawer({
 
         <div className="flex gap-4 px-6 pb-6">
           <Button
-            className="w-2/3"
+            className="w-2/3 dark:text-white"
             onClick={handlePrint}
             disabled={!item}
           >

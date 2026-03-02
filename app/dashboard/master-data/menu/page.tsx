@@ -301,7 +301,7 @@ export default function MenuPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className=" dark:text-white">
               Create Menu
             </Button>
           </div>
@@ -386,6 +386,7 @@ export default function MenuPage() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="dark:text-white"
                         onClick={() => openEdit(v)}
                         disabled={fullscreenLoading}
                       >
@@ -395,6 +396,7 @@ export default function MenuPage() {
                       <Button
                         size="sm"
                         variant="destructive"
+                        className="dark:text-white"
                         onClick={() => {
                           setSelected(v)
                           setConfirmOpen(true)

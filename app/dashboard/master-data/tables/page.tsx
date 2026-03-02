@@ -153,7 +153,7 @@ export default function TablesPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className="dark:text-white">
               Create Table
             </Button>
           </div>

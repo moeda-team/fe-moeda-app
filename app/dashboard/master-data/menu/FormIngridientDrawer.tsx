@@ -147,6 +147,7 @@ export function FormIngridientDrawer({
                     type="button"
                     variant="destructive"
                     onClick={() => remove(index)}
+                    className="dark:text-white"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -158,13 +159,14 @@ export function FormIngridientDrawer({
               type="button"
               variant="secondary"
               onClick={handleAdd}
+              className="dark:text-white"
             >
               + Add Ingredient
             </Button>
           </div>
 
           <div className="p-4 border-t">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full dark:text-white">
               Save Ingredients
             </Button>
           </div>

@@ -67,6 +67,7 @@ export function ConfirmDialog({
             variant={confirmVariant}
             onClick={onConfirm}
             disabled={loading}
+            className="dark:text-white"
           >
             {loading ? "Processing..." : confirmText}
           </Button>

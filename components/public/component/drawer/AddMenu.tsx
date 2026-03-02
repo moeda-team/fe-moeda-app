@@ -244,7 +244,7 @@ export function AddMenuDrawer({ menu }: Props) {
           </div>
           <Button 
             onClick={() => setOpen(true)}
-            className="w-full disabled:bg-red-500"
+            className="w-full disabled:bg-red-500 dark:text-white"
             disabled={!menu.isAvailable}
           >
             {menu.isAvailable ? <ShoppingCart /> : <X />}

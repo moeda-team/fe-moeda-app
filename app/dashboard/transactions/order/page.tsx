@@ -116,7 +116,7 @@ export default function TransactionsListPage() {
           <h1 className="text-2xl font-semibold">Order</h1>
 
           <div className="flex gap-2">
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button className="dark:text-white" onClick={openCreate} disabled={fullscreenLoading}>
               Create Menu
             </Button>
           </div>
@@ -129,7 +129,7 @@ export default function TransactionsListPage() {
             {/* product list */}
             <div className="col-span-1 lg:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
               {/* Header */}
-              <div className="sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4 bg-white">
+              <div className="sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4  dark:bg-gray-900">
                 <div className="w-full">
                   <InputGroup className="w-full">
                     <InputGroupInput placeholder="Search product..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
@@ -238,7 +238,7 @@ export default function TransactionsListPage() {
             {/* cart */}
             <div className="relative scol-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
               {/* customer info */}
-              <div className="bg-white rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
+              <div className=" dark:bg-gray-900 rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <div className="rounded-full bg-[#F3A93B] text-lg text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">
@@ -266,7 +266,7 @@ export default function TransactionsListPage() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-lg shadow-sm p-2 relative"
+                    className=" dark:bg-gray-900 rounded-lg shadow-sm p-2 relative"
                   >
                     <div className="flex gap-4">
                       {/* INFO */}
@@ -327,7 +327,7 @@ export default function TransactionsListPage() {
                     {/* BOTTOM ACTION */}
                     <div className="flex justify-between items-center mt-2 bg-primary/10 rounded-lg border border-primary">
                       {/* QTY */}
-                      <div className="flex items-center gap-2 text-xs bg-white rounded-l-lg h-8 px-2">
+                      <div className="flex items-center gap-2 text-xs  rounded-l-lg h-8 px-2">
                         <button
                           onClick={() =>{
                             updateQty(item.id, item.qty - 1)
@@ -375,10 +375,10 @@ export default function TransactionsListPage() {
               </div>
 
               {/* payment button */}
-              <div className="bg-white rounded-t-sm p-3 py-4 shadow-sm sticky bottom-0 z-10 mx-auto">
+              <div className=" rounded-t-sm p-3 py-4 shadow-sm sticky bottom-0 z-10 mx-auto">
                 <Button 
                   onClick={() => setCheckoutOpen(true)}
-                  className="text-center w-full"
+                  className="text-center w-full dark:text-white"
                   disabled={fullscreenLoading}
                 >
                   Checkout {formatCurrency(items.map(item => item.finalPrice).reduce((a, b) => a + b, 0))}

@@ -240,7 +240,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
 
         <div className="flex-1 overflow-y-auto px-4 space-y-4">
           {/* CUSTOMER INFO */}
-          <div className="bg-white rounded-sm p-3 shadow-sm border relative">
+          <div className=" rounded-sm p-3 shadow-sm border relative">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-[#F3A93B] text-lg text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">
@@ -264,7 +264,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
           </div>
         
           {/* PAYMENT DETAILS */}
-          <div className="bg-white rounded-sm p-3 shadow-sm border flex flex-col gap-2">
+          <div className=" rounded-sm p-3 shadow-sm border flex flex-col gap-2">
             {/* PAYMENT DETAILS */}
             <div>
               <div className="flex items-center gap-2 text-base font-semibold">
@@ -331,7 +331,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
           </div>
 
           {/* VOUCHER */}
-          <div className="bg-white rounded-sm p-3 shadow-sm border flex flex-col gap-2">
+          <div className=" rounded-sm p-3 shadow-sm border flex flex-col gap-2">
             <div className="flex items-center gap-2 text-base font-semibold">
               <TicketPercent className="w-6 h-6 text-white bg-primary rounded-sm p-1" />
               Voucher
@@ -389,7 +389,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
           )}
           
           {/* SUMMARY */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border space-y-1 text-sm">
+          <div className=" rounded-xl p-4 shadow-sm border space-y-1 text-sm">
 
             <div className="flex justify-between">
               <span>Subtotal</span>
@@ -443,7 +443,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
         </div>
 
         {/* FOOTER */}
-          <div className="flex gap-2 p-4 border-t bg-white">
+          <div className="flex gap-2 p-4 border-t  ">
             {transactionData?.data.total !== 0 ?
               <Button
                 className="w-9/12"

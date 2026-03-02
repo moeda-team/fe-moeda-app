@@ -267,6 +267,7 @@ export function FormMenuDrawer({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              className="dark:text-white"
               disabled={busy}
             >
               Cancel
@@ -275,6 +276,7 @@ export function FormMenuDrawer({
             <Button
               type="submit"
               onClick={submit}
+              className="dark:text-white"
               disabled={busy}
             >
               {value ? "Save" : "Create"}

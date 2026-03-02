@@ -167,7 +167,7 @@ export default function StockPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className="dark:text-white">
               Create Ingredient
             </Button>
           </div>
@@ -276,6 +276,7 @@ export default function StockPage() {
                         variant="outline"
                         onClick={() => openEdit(v)}
                         disabled={fullscreenLoading}
+                        className="dark:text-white"
                       >
                         Edit
                       </Button>
@@ -288,6 +289,7 @@ export default function StockPage() {
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
+                        className="dark:text-white"
                       >
                         Delete
                       </Button>

@@ -171,7 +171,7 @@ export default function CashBalancePage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className="dark:text-white">
               New Cash / Balance
             </Button>
           </div>
@@ -212,7 +212,7 @@ export default function CashBalancePage() {
                         variant="destructive"
                         onClick={() => openEdit(v)}
                         title="Cancel"
-                       className={`${v.status === "cancelled" ? "hidden" : "block"}`}
+                        className={`${v.status === "cancelled" ? "hidden" : "block"} dark:text-white`}
                         disabled={fullscreenLoading}
                       >
                         <X />

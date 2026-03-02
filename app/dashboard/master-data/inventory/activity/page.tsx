@@ -170,7 +170,7 @@ export default function ActivityPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className="dark:text-white">
               Create Activity
             </Button>
           </div>
@@ -295,6 +295,7 @@ export default function ActivityPage() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="dark:text-white"
                         onClick={() => {
                           if(v.type==="ADJUST"){
                             toast.error(

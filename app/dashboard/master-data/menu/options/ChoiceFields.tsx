@@ -126,6 +126,7 @@ export function ChoiceFields({
           variant="ghost"
           size="sm"
           onClick={remove}
+          className="dark:text-white"
         >
           ✕
         </Button>
@@ -154,7 +155,7 @@ export function ChoiceFields({
           type="button"
           variant="ghost"
           size="sm"
-          className="text-muted-foreground"
+          className="text-muted-foreground dark:text-white"
           onClick={() =>
             append({
               id: crypto.randomUUID(),

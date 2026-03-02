@@ -179,7 +179,7 @@ export function AddMenuDrawer({ menu, order }: Props) {
       }}
     >
       <DrawerTrigger asChild>
-        <div className="bg-primary/10 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2 w-[150px]">
+        <div className="bg-primary/10 dark:bg-gray-900 rounded-xl shadow-soft overflow-hidden flex flex-col gap-2 w-[150px]">
           <div className="relative h-28">
             <Image
               src={menu.img}

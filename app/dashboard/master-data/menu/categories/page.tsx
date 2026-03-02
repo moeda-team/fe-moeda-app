@@ -151,7 +151,7 @@ export default function CategoriesPage() {
               className="w-full sm:w-80"
               disabled={fullscreenLoading}
             />
-            <Button onClick={openCreate} disabled={fullscreenLoading}>
+            <Button onClick={openCreate} disabled={fullscreenLoading} className="dark:text-white">
               Create Category
             </Button>
           </div>
@@ -189,6 +189,7 @@ export default function CategoriesPage() {
                         variant="outline"
                         onClick={() => openEdit(v)}
                         disabled={fullscreenLoading}
+                        className="dark:text-white"
                       >
                         Edit
                       </Button>
@@ -201,6 +202,7 @@ export default function CategoriesPage() {
                           setConfirmOpen(true)
                         }}
                         disabled={fullscreenLoading}
+                        className="dark:text-white"
                       >
                         Delete
                       </Button>

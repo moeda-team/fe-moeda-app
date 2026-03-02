@@ -176,7 +176,7 @@ export function CashBalanceFormDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy} className="dark:text-white">
               {isEdit ? "Save" : "Create"}
             </Button>
           </DialogFooter>

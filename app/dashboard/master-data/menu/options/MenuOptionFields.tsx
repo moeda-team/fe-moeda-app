@@ -62,6 +62,7 @@ export function MenuOptionFields({
         <Button
           type="button"
           variant="ghost"
+          className="dark:text-white"
           size="sm"
           onClick={remove}
         >
@@ -91,6 +92,7 @@ export function MenuOptionFields({
         <Button
           type="button"
           variant="outline"
+          className="dark:text-white"
           size="sm"
           onClick={() =>
             append({

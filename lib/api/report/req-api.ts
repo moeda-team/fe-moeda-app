@@ -1,0 +1,81 @@
+import { axiosClient } from "../axios-client"
+
+export type ReportItem = {
+  id?: string,
+  orderId: string,
+  orderName: string,
+  description: string,
+  qty: number,
+  total: number,
+  paymentMethod: string,
+  status: string,
+  createdAt: string
+}
+
+export type ReportFormValue = {
+  amount: number,
+  type: "ADD" | "REDUCE",
+  description: string,
+  cancelNote?: string,
+}
+
+export type ReportQueryParams = {
+  page?: number
+  limit?: number
+  search?: string
+  date?: string
+}
+
+export type Paginate = {
+  page: number
+  perPage: number
+  total: number
+  lastPage: number
+  prev: number | null
+  next: number | null
+}
+
+export type ReportListResponse = {
+  data : {
+    statusCode: number
+    additional: unknown
+    details: ReportItem[]
+    summary : {
+      date : string,
+      yesterdayDate : string,
+      totalRevenue : number,
+      totalTransactions : number,
+      avgOrder : number,
+      revenueGrowth : number,
+      transactionGrowth : number,
+      avgOrderGrowth : number
+    }
+    pagination: Paginate
+  }
+}
+
+export type CreateReportInput = ReportFormValue
+
+export type UpdateReportInput = ReportFormValue
+
+export async function getReport(
+  params?: ReportQueryParams
+): Promise<ReportListResponse> {
+  const res = await axiosClient.get<ReportListResponse>("/reports/daily", { params })
+  return res.data
+}
+
+export async function createReport (input: CreateReportInput) {
+  const res = await axiosClient.post("/reports/daily", input)
+  return res.data
+}
+
+export async function updateReport(id: string, input: UpdateReportInput) {
+  const res = await axiosClient.put(`/reports/daily/${id}`, input)
+  return res.data
+}
+
+export async function deleteReport(id: string) {
+  const res = await axiosClient.delete(`/reports/daily/${id}`)
+  return res.data
+}

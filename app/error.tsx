@@ -16,7 +16,7 @@ export default function GlobalError({
         <p className="text-sm text-muted-foreground">
           Terjadi kesalahan tidak terduga
         </p>
-        <Button onClick={reset}>Coba lagi</Button>
+        <Button onClick={reset} className="dark:text-white">Coba lagi</Button>
       </div>
     </div>
   )

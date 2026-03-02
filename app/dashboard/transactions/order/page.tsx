@@ -129,7 +129,7 @@ export default function TransactionsListPage() {
             {/* product list */}
             <div className="col-span-1 lg:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
               {/* Header */}
-              <div className="sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4  dark:bg-gray-900">
+              <div className="bg-white sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4  dark:bg-gray-900">
                 <div className="w-full">
                   <InputGroup className="w-full">
                     <InputGroupInput placeholder="Search product..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
@@ -238,7 +238,7 @@ export default function TransactionsListPage() {
             {/* cart */}
             <div className="relative scol-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
               {/* customer info */}
-              <div className=" dark:bg-gray-900 rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
+              <div className="bg-white dark:bg-gray-900 rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <div className="rounded-full bg-[#F3A93B] text-lg text-white font-semibold p-2 h-10 w-10 flex items-center justify-center">

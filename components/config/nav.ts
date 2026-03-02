@@ -31,7 +31,7 @@ export const NAV: NavGroup[] = [
         ],
       },
       { title: "Cash / Balance", href: "/dashboard/cash", icon: Wallet },
-      { title: "Laporan", href: "/dashboard/report", icon: StickyNote },
+      { title: "Report", href: "/dashboard/report", icon: StickyNote },
     ],
   },
   {
@@ -76,7 +76,7 @@ export const NAV: NavGroup[] = [
         ],
       },
       {
-        title: "Vouhcer / Discount",
+        title: "Voucher / Discount",
         icon: TicketPercent,
         roles: ["ADMIN", "OWNER"],
         children: [

@@ -226,8 +226,8 @@ export default function ReportPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                listData.map((v) => (
-                  <TableRow key={v.id}>
+                listData.map((v, index) => (
+                  <TableRow key={index}>
                     <TableCell className="font-medium">{v.orderName ?? "-"}</TableCell>
                     <TableCell className="font-medium">{v.description ?? "-"}</TableCell>
                     <TableCell className="font-medium">{v.qty ?? "-"}</TableCell>

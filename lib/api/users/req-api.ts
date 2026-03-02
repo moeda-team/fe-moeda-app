@@ -91,3 +91,13 @@ export async function deleteUser(id: string) {
   const res = await axiosClient.delete(`/users/${id}`)
   return res.data
 }
+
+export async function checkAttendance() {
+  const res = await axiosClient.get(`/attendances/check-today`)
+  return res.data
+}
+
+export async function createAttendance(payload: { fileUrl: string }) {
+  const res = await axiosClient.post("/attendances", payload)
+  return res.data
+}

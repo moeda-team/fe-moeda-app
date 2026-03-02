@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Attendance } from "./attendance"
 
 type Props = {
   onOpenSidebarMobile: () => void
@@ -90,6 +91,7 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
       {/* ================= Right Section ================= */}
       <div className="flex items-center gap-2 md:gap-4">
 
+        <Attendance />
         <ModeToggle />
 
         {status !== "loading" && (

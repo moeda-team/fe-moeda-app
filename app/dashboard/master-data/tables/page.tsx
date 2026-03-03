@@ -127,13 +127,10 @@ export default function TablesPage() {
 
   const tables = data?.data ?? []
   const total = data?.pagination?.total
-  
-  
 
   /** overlays */
   const tableLoading = isLoading
   const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
-
 
   return (
     <DashboardLayout>
@@ -185,7 +182,7 @@ export default function TablesPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => openEdit(v)}
-                        disabled={fullscreenLoading}
+                        disabled={fullscreenLoading || v.status !== 'available'}
                       >
                         Edit
                       </Button>
@@ -197,7 +194,7 @@ export default function TablesPage() {
                           setSelectedTable(v)
                           setConfirmOpen(true)
                         }}
-                        disabled={fullscreenLoading}
+                        disabled={fullscreenLoading || v.status !== 'available'}
                       >
                         Delete
                       </Button>

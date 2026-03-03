@@ -27,6 +27,7 @@ export function useCreateActivity() {
     mutationFn: (input: CreateActivityInput) => createActivity(input),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["activities"] })
+      await qc.invalidateQueries({ queryKey: ["countActivities"] })
     },
   })
 }
@@ -38,6 +39,7 @@ export function useUpdateActivity() {
       updateActivity(id, input),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["activities"] })
+      await qc.invalidateQueries({ queryKey: ["countActivities"] })
     },
   })
 }
@@ -48,6 +50,7 @@ export function useDeleteActivity() {
     mutationFn: (id: string) => deleteActivity(id),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["activities"] })
+      await qc.invalidateQueries({ queryKey: ["countActivities"] })
     },
   })
 }

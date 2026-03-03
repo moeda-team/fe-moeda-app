@@ -252,7 +252,7 @@ export default function ActivityPage() {
                 <TableHead>Notes</TableHead>
                 <TableHead>Action By</TableHead>
                 <TableHead>Last Update</TableHead>
-                <TableHead className="w-[180px]">Action</TableHead>
+                {/* <TableHead className="w-[180px]">Action</TableHead> */}
               </TableRow>
             </TableHeader>
 
@@ -291,7 +291,7 @@ export default function ActivityPage() {
                     <TableCell className="font-medium">{v?.note}</TableCell>
                     <TableCell className="font-medium">{v?.user?.name ?? ""}</TableCell>
                     <TableCell className="font-medium">{formatDate(v?.updatedAt, "dd MMMM yyyy HH:mm") ?? ""}</TableCell>
-                    <TableCell className="flex gap-2">
+                    {/* <TableCell className="flex gap-2">
                       <Button
                         size="sm"
                         variant="outline"
@@ -311,7 +311,7 @@ export default function ActivityPage() {
                       >
                         <Trash color="red" />
                       </Button>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               )}

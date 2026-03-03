@@ -42,7 +42,7 @@ export const NAV: NavGroup[] = [
         icon: Folder,
         roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
         children: [
-          { title: "Ingredients", href: "/dashboard/master-data/inventory/ingridients", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+          { title: "Ingredients & Stock", href: "/dashboard/master-data/inventory/ingridients", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
           { title: "Activity / Stock", href: "/dashboard/master-data/inventory/activity", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
         ],
       },

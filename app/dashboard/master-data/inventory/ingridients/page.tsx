@@ -37,7 +37,7 @@ import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { StockFormDialog } from "@/components/dialog/form-stock"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertOctagon, Badge, BadgeCheck, TriangleAlert } from "lucide-react"
+import { AlertOctagon, BadgeCheck, TriangleAlert } from "lucide-react"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
@@ -157,7 +157,7 @@ export default function StockPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Ingredients List</h1>
+          <h1 className="text-2xl font-semibold">Ingredients & Stock</h1>
 
           <div className="flex gap-2">
             <Input

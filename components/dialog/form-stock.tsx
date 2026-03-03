@@ -129,6 +129,7 @@ export function StockFormDialog({
 
             {isEdit && (
               <div className="grid gap-2">
+                <Label>Current Stock</Label>
                 <Input
                   {...register("currentStock")}
                   readOnly

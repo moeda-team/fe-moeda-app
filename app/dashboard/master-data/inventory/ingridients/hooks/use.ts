@@ -11,50 +11,72 @@ import {
   type UpdateStockInput,
 } from "@/lib/api/inventory/req-api"
 
-const stockKey = (params?: StockQueryParams) => ["stocks", params ?? {}] as const
+/* ======================================================
+   Query Key Factory
+====================================================== */
+
+export const stockKeys = {
+  all: ["stocks"] as const,
+  lists: (params?: StockQueryParams) =>
+    ["stocks", params ?? {}] as const,
+  count: ["stock-count"] as const,
+}
+
+/* ======================================================
+   Queries
+====================================================== */
+
+export function useCountStocks() {
+  return useQuery({
+    queryKey: stockKeys.count,
+    queryFn: getCountStatus,
+  })
+}
 
 export function useStocksQuery(params?: StockQueryParams) {
   return useQuery<StockListResponse>({
-    queryKey: stockKey(params),
+    queryKey: stockKeys.lists(params),
     queryFn: () => getStocks(params),
   })
 }
 
-// create/update/delete tetap sama (invalidate ["vouchers"])
+/* ======================================================
+   Mutations
+====================================================== */
+
 export function useCreateStock() {
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: (input: CreateStockInput) => createStock(input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["stocks"] })
+      await qc.invalidateQueries({ queryKey: stockKeys.all })
+      await qc.invalidateQueries({ queryKey: stockKeys.count })
     },
   })
 }
 
 export function useUpdateStock() {
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateStockInput }) =>
       updateStock(id, input),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["stocks"] })
+      await qc.invalidateQueries({ queryKey: stockKeys.all })
+      await qc.invalidateQueries({ queryKey: stockKeys.count })
     },
   })
 }
 
 export function useDeleteStock() {
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: (id: string) => deleteStock(id),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["stocks"] })
+      await qc.invalidateQueries({ queryKey: stockKeys.all })
+      await qc.invalidateQueries({ queryKey: stockKeys.count })
     },
-  })
-}
-
-export function useCountStocks() {
-  return useQuery({
-    queryKey: ["countStocks"],
-    queryFn: () => getCountStatus(),
   })
 }

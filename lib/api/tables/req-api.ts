@@ -3,6 +3,7 @@ import { axiosClient } from "../axios-client"
 export type TablesItem = {
   id?: string,
   name: string,
+  status: string,
   outletId: string,
 }
 

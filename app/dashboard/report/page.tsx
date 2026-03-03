@@ -111,15 +111,15 @@ export default function ReportPage() {
               disabled={fullscreenLoading}
             />
             <Input
-                type="date"
-                className="w-full sm:w-80"
-                disabled={fullscreenLoading}
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value)
-                  setPage(1)
-                }}
-              />
+              type="date"
+              className="w-full sm:w-80"
+              disabled={fullscreenLoading}
+              value={date}
+              onChange={(e) => {
+                setDate(e.target.value)
+                setPage(1)
+              }}
+            />
           </div>
         </div>
 

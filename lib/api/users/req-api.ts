@@ -41,6 +41,7 @@ export type UsersQueryParams = {
   page?: number
   limit?: number
   search?: string
+  date?: string
 }
 
 export type Paginate = {
@@ -99,5 +100,38 @@ export async function checkAttendance() {
 
 export async function createAttendance(payload: { fileUrl: string }) {
   const res = await axiosClient.post("/attendances", payload)
+  return res.data
+}
+
+export type AttendanceItem = {
+  id :string;
+  userId :string;
+  outletId :string;
+  fileName :string;
+  fileUrl :string;
+  note :string;
+  createdAt :string;
+  updatedAt :string;
+  user :{
+      id :string;
+      name :string;
+      email :string;
+  }
+}
+
+export type AttendanceListResponse = {
+  data :{
+    statusCode: number
+    additional: unknown
+    data: AttendanceItem[]
+    pagination: Paginate
+  }
+}
+
+
+export async function getAttendance(
+  params?: UsersQueryParams
+): Promise<AttendanceListResponse> {
+  const res = await axiosClient.get<AttendanceListResponse>("/attendances", { params })
   return res.data
 }

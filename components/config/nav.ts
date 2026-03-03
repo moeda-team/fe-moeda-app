@@ -1,6 +1,6 @@
 import { Roles } from "@/lib/api/users/req-api"
 import type { LucideIcon } from "lucide-react"
-import { LayoutDashboard, Users, TicketPercent, ListCheck, List, Menu, Folder, RockingChair, StickyNote, Wallet } from "lucide-react"
+import { LayoutDashboard, Users, TicketPercent, ListCheck, List, Menu, Folder, RockingChair, StickyNote, Wallet, User2 } from "lucide-react"
 
 
 export type NavItem = {
@@ -82,6 +82,14 @@ export const NAV: NavGroup[] = [
         children: [
           { title: "Discount", href: "/dashboard/master-data/discount", roles: ["ADMIN", "OWNER"] },
           { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER"] },
+        ],
+      },
+      {
+        title: "Attendance",
+        icon: User2,
+        roles: ["ADMIN", "OWNER"],
+        children: [
+          { title: "List", href: "/dashboard/attendance", roles: ["ADMIN", "OWNER"] },
         ],
       },
     ],

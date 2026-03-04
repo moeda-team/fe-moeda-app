@@ -94,3 +94,63 @@ export async function closeSession () {
   const res = await axiosClient.patch("/reports/cash-books/close")
   return res.data
 }
+
+export type ReportSessionItem = {
+  id: string,
+  openAt: string,
+  closeAt: string,
+  totalTransactions: number,
+  totalRevenue: number,
+  status: string,
+  user: {
+    id: string,
+    name: string
+  }
+}
+
+export type ReportSessionListResponse = {
+  statusCode: number
+  additional: unknown
+  data: ReportSessionItem[]
+  pagination: Paginate
+}
+
+export async function getReportSession(
+  params?: ReportQueryParams
+): Promise<ReportSessionListResponse> {
+  const res = await axiosClient.get<ReportSessionListResponse>("/reports/cash-books", { params })
+  return res.data
+}
+
+export type ReportSessionDetailResponse = {
+  statusCode: number
+  additional: unknown
+  data: {
+    summary : {
+      date : string,
+      yesterdayDate : string,
+      totalRevenue : number,
+      totalTransactions : number,
+      avgOrder : number,
+      revenueGrowth : number,
+      transactionGrowth : number,
+      avgOrderGrowth : number
+    },
+    transactions :{
+        id: string,
+        number: string,
+        transactionType: string,
+        paymentMethod: string,
+        customerName: string,
+        total: number,
+        status: string,
+        createdAt: string
+    }[]
+  }
+  pagination: Paginate
+}
+
+export async function getDetailReportSession(id:string): Promise<ReportSessionDetailResponse> {
+  const res = await axiosClient.get<ReportSessionDetailResponse>(`/reports/cash-books/${id}`)
+  return res.data
+}

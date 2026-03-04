@@ -60,7 +60,7 @@ export default function ReportPage() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-semibold">Report Daily</h1>
+          <h1 className="text-2xl font-semibold">Cashier</h1>
 
           <div className="flex gap-2">
             <Input

@@ -6,7 +6,7 @@ import {
   useCreateReport,
   useUpdateReport,
   useDeleteReport,
-} from "@/app/dashboard/report/hooks/use"
+} from "@/app/dashboard/report/cashier/hooks/use"
 import type { ReportItem } from "@/lib/api/report/req-api"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"

@@ -16,6 +16,9 @@ type Props = {
 
   /** kalau overlay dipakai di container, parent harus punya class "relative" */
   className?: string
+  
+  /** icon spinner */
+  icon?: React.ReactNode
 }
 
 export function LoadingOverlay({
@@ -23,6 +26,7 @@ export function LoadingOverlay({
   label = "Loading...",
   fullscreen = false,
   className,
+  icon = <Loader2 className="h-5 w-5 animate-spin" />
 }: Props) {
   if (!show) return null
 
@@ -43,7 +47,7 @@ export function LoadingOverlay({
 
       {/* content */}
       <div className="relative flex flex-col items-center gap-2 rounded-xl border bg-background px-4 py-3 shadow">
-        <Loader2 className="h-5 w-5 animate-spin" />
+        {icon}
         {label ? (
           <div className="text-sm text-muted-foreground">{label}</div>
         ) : null}

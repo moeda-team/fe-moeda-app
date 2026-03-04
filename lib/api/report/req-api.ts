@@ -79,3 +79,18 @@ export async function deleteReport(id: string) {
   const res = await axiosClient.delete(`/reports/daily/${id}`)
   return res.data
 }
+
+export async function checkSession() {
+  const res = await axiosClient.get(`/reports/cash-books/check`)
+  return res.data
+}
+
+export async function openSession () {
+  const res = await axiosClient.post("/reports/cash-books")
+  return res.data
+}
+
+export async function closeSession () {
+  const res = await axiosClient.patch("/reports/cash-books/close")
+  return res.data
+}

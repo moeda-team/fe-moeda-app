@@ -21,9 +21,10 @@ import { OptionRenderer } from "../drawer/OptionRender"
 type Props = {
   menu: Menuitem,
   order : number
+  alreadyOpen?: boolean
 }
 
-export function AddMenuDrawer({ menu, order }: Props) {
+export function AddMenuDrawer({ menu, order, alreadyOpen }: Props) {
   if (menu.options?.length > 0) {
     menu.options.forEach((option) => {
       menu = {
@@ -174,7 +175,7 @@ export function AddMenuDrawer({ menu, order }: Props) {
     <Drawer
       open={open}
       onOpenChange={(val) => {
-        if (!menu.isAvailable) return
+        if (!menu.isAvailable || !alreadyOpen) return
         setOpen(val)
       }}
     >

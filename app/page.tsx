@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { InputGroup } from "@/components/ui/input-group"
 import { InputGroupInput } from "@/components/ui/input-group"
 import { InputGroupAddon } from "@/components/ui/input-group"
-import { SearchIcon } from "lucide-react"
+import { AlertCircle, BlocksIcon, SearchIcon } from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
@@ -15,8 +15,19 @@ import { CardMenu } from "@/components/public/component/menu/page"
 import { CardBest } from "@/components/public/component/best/page"
 import { XIcon } from "lucide-react"
 import { StickyBottomCart } from "@/components/public/component/StickyCart"
+import { useQuery } from "@tanstack/react-query"
+import { checkSession } from "@/lib/api/report/req-api"
+import { LoadingOverlay } from "@/components/ui/loading"
+import { Alert } from "@/components/ui/alert"
 
 export default function Home() {
+
+  const { data: sessionStore } = useQuery({
+    queryKey: ["check-session"],
+    queryFn: checkSession,
+  })
+  const alreadyOpen = sessionStore?.data ?? false
+  
   const [showSticky, setShowSticky] = useState(false)
   const [searchInput, setSearchInput] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -132,7 +143,7 @@ export default function Home() {
           setSearchInput={setSearchInput}
         />
         {/* HERO */}
-        
+        <div className="w-full px-4"><div className="w-full bg-primary/10 text-red-500 p-4 rounded-lg flex gap-2 font-semibold"> <AlertCircle /> Store Still Closed.</div></div>
         {/* BEST */}
         {bestData && bestData?.data.length >0 && (
           <div className="space-y-3 px-4">
@@ -149,7 +160,7 @@ export default function Home() {
                   />
                 ))}
                 </div> : 
-              <CardBest data={bestData?.data ?? []} />
+              <CardBest data={bestData?.data ?? []} alreadyOpen={alreadyOpen}/>
             }
           </div>
         )}
@@ -169,7 +180,7 @@ export default function Home() {
                 />
               ))}
               </div> : 
-            <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 gap-4" />
+            <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 gap-4" alreadyOpen={alreadyOpen}/>
           }
 
           {menuData?.data?.length === 0 && (

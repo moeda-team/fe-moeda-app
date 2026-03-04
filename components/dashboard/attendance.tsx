@@ -18,6 +18,8 @@ import {
 } from "@/lib/api/users/req-api"
 import { createFile } from "@/lib/api/file/req-api"
 import { toast } from "sonner"
+import { checkSession, closeSession, openSession } from "@/lib/api/report/req-api"
+import { formatDateTime } from "@/lib/helpers"
 
 export function Attendance() {
   const queryClient = useQueryClient()
@@ -37,6 +39,19 @@ export function Attendance() {
     queryFn: checkAttendance,
   })
 
+  // Check session
+  const { data: sessionStore } = useQuery({
+    queryKey: ["check-session"],
+    queryFn: checkSession,
+  })
+  // 🔥 Mutation check session
+  const openSessionMut = useMutation({mutationFn: openSession})
+  const closeSessionMut = useMutation({mutationFn: closeSession})
+  const alreadyOpen = sessionStore?.data ?? false
+
+  const [openStore, setOpenStore] = React.useState(false)
+
+  
   // 🔥 Mutation upload file
   const uploadFileMut = useMutation({
     mutationFn: createFile,
@@ -100,12 +115,57 @@ export function Attendance() {
       toast.error("Upload gagal")
     }
   }
+  
+  const handleStoreSubmit = async () => {
+    try {
+      if (alreadyOpen) {
+        await closeSessionMut.mutateAsync();
+        toast.success("Open Store closed successfully");
+      } else {
+        await openSessionMut.mutateAsync();
+        toast.success("Open Store opened successfully");
+      }
+      
 
-  const isSubmitting =
-    uploadFileMut.isPending || attendanceMut.isPending
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch {
+      toast.error("Failed to update session");
+    }
+  };
+
+  const isSubmitting = uploadFileMut.isPending || attendanceMut.isPending
 
   return (
     <>
+      <Button
+        variant={alreadyOpen ? "secondary" : "default"}
+        size="sm"
+        disabled={isLoading }
+        className={alreadyOpen ? "bg-green-300 text-green-500 border border-green-500" : ""}
+        onClick={() => {
+            setOpenStore(true)
+        }}
+      >
+        {isLoading ? (
+          <>
+            <Clock className="h-4 w-4 animate-spin" />
+            Checking...
+          </>
+        ) : alreadyOpen ? (
+          <>
+            <CheckCircle className="h-4 w-4 text-green-500" />
+            Close Store
+          </>
+        ) : (
+          <>
+            <Clock className="h-4 w-4" />
+            Open Store
+          </>
+        )}
+      </Button>
+
       <Button
         variant={alreadyCheckIn ? "secondary" : "default"}
         size="sm"
@@ -250,6 +310,48 @@ export function Attendance() {
           <DialogFooter>
             <Button onClick={() => setDetailOpen(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={openStore} onOpenChange={setOpenStore}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Information</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {
+              alreadyOpen ? (
+                <div>
+                  Close store at {formatDateTime(new Date(), "DD MMMM yyyy HH:mm")}
+                </div>
+              ) : (
+                <div>
+                  Open store at {formatDateTime(new Date(), "DD MMMM yyyy HH:mm")}
+                </div>
+              )
+            }
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setOpenStore(false)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleStoreSubmit}
+              disabled={isSubmitting}
+              className="gap-2"
+            >
+              {isSubmitting && (
+                <Clock className="h-4 w-4 animate-spin" />
+              )}
+              {alreadyOpen ? "Close Order" : "Open"}
             </Button>
           </DialogFooter>
         </DialogContent>

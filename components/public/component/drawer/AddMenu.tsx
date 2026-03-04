@@ -20,9 +20,10 @@ import { MenuOption } from "@/lib/api/customer/req-api"
 
 type Props = {
   menu: Menuitem
+  alreadyOpen?: boolean
 }
 
-export function AddMenuDrawer({ menu }: Props) {
+export function AddMenuDrawer({ menu, alreadyOpen }: Props) {
   if (menu.options?.length > 0) {
     menu = {
       ...menu,
@@ -168,7 +169,12 @@ export function AddMenuDrawer({ menu }: Props) {
     : originalPrice
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} 
+      onOpenChange={(val) => {
+        if (!menu.isAvailable || !alreadyOpen) return
+        setOpen(val)
+      }}
+    >
       <DrawerTrigger asChild>
         <div className="bg-card rounded-xl cursor-pointer shadow-soft overflow-hidden p-3 flex flex-col space-y-1 justify-between relative shadow-sm border">
           <div className="relative h-44 w-full">
@@ -245,7 +251,7 @@ export function AddMenuDrawer({ menu }: Props) {
           <Button 
             onClick={() => setOpen(true)}
             className="w-full disabled:bg-red-500 dark:text-white"
-            disabled={!menu.isAvailable}
+            disabled={!menu.isAvailable || !alreadyOpen}
           >
             {menu.isAvailable ? <ShoppingCart /> : <X />}
             {menu.isAvailable ? "Add to Cart" : "Sold Out"}

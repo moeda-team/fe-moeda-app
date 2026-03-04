@@ -15,7 +15,7 @@ import { useBestsellerQuery, useCategoriesQuery } from "@/components/public/hook
 import { useMenuQuery } from "@/components/public/hooks/use"
 import { useEffect, useState } from "react"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
-import { Minus, Plus, SearchIcon, ShoppingCart, TicketPercent, Trash2, XIcon } from "lucide-react"
+import { BlocksIcon, Minus, Plus, SearchIcon, ShoppingCart, Store, TicketPercent, Trash2, XIcon } from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CardBest } from "@/components/public/component/best/page"
@@ -29,6 +29,8 @@ import { EditCartItemDrawer } from "./EditCartItemDrawer"
 import { formatCurrency } from "@/lib/helpers"
 import { CheckoutDrawer } from "./CheckoutDrawer"
 import BillDrawer from "../BillDrawer"
+import { useQuery } from "@tanstack/react-query"
+import { checkSession } from "@/lib/api/report/req-api"
 
 const emptyForm: MenuForm = {
   name: "",
@@ -40,6 +42,12 @@ const emptyForm: MenuForm = {
 
 export default function TransactionsListPage() {
   //!! Menu
+  const { data: sessionStore } = useQuery({
+    queryKey: ["check-session"],
+    queryFn: checkSession,
+  })
+  const alreadyOpen = sessionStore?.data ?? false
+
   const [open, setOpen] = React.useState(false)
   const [form, setForm] = React.useState<MenuForm>(emptyForm)
   const createMut = useCreateMenu()
@@ -125,6 +133,11 @@ export default function TransactionsListPage() {
         <hr />
 
         <div className="relative rounded-xl">
+          <LoadingOverlay 
+            show={!alreadyOpen}  
+            label="The shop is still closed. Click the Open Store button to open the shop." 
+            icon={<BlocksIcon className="h-20 w-20" />}          
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {/* product list */}
             <div className="col-span-1 lg:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">

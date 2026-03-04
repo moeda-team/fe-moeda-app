@@ -10,9 +10,10 @@ import { AddMenuDrawer } from "./AddMenu"
 
 interface CardBestProps {
   data: MenuitemBestseller[]
+  alreadyOpen?: boolean
 }
 
-export function CardBest({ data }: CardBestProps) {
+export function CardBest({ data, alreadyOpen }: CardBestProps) {
   return (
     <Carousel opts={{ align: "start" }}>
       <CarouselContent>
@@ -21,7 +22,7 @@ export function CardBest({ data }: CardBestProps) {
             key={item.id}
             className="basis-auto cursor-pointer"
           >
-            <AddMenuDrawer menu={item.menu} order={item.order ??0} />
+            <AddMenuDrawer menu={item.menu} order={item.order ??0} alreadyOpen={alreadyOpen} />
           </CarouselItem>
         ))}
       </CarouselContent>

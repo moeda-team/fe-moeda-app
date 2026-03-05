@@ -154,3 +154,40 @@ export async function getDetailReportSession(id:string): Promise<ReportSessionDe
   const res = await axiosClient.get<ReportSessionDetailResponse>(`/reports/cash-books/${id}`)
   return res.data
 }
+
+export type TopSellingResponse = {
+  data: {
+    menu_name:string
+    quantity_sold:number
+  }[]
+  additional: unknown
+  details: ReportItem[]
+  pagination: Paginate
+}
+
+export async function getTopSelling(
+  params?: ReportQueryParams
+): Promise<TopSellingResponse> {
+  const res = await axiosClient.get<TopSellingResponse>("/reports/top-selling", { params })
+  return res.data
+}
+
+export type SalesItem = {
+  date: string
+  transactions_amount: number
+  transactions_count: number
+  cash_count: number
+  qris_count: number
+}
+
+export type SalesResponse = {
+  data: SalesItem[]
+  additional: unknown
+  pagination: Paginate
+}
+export async function getTopSales(
+  params?: ReportQueryParams
+): Promise<SalesResponse> {
+  const res = await axiosClient.get<SalesResponse>("/reports/sales", { params })
+  return res.data
+}

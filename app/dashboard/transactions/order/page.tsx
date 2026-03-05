@@ -15,7 +15,7 @@ import { useBestsellerQuery, useCategoriesQuery } from "@/components/public/hook
 import { useMenuQuery } from "@/components/public/hooks/use"
 import { useEffect, useState } from "react"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
-import { BlocksIcon, Minus, Plus, SearchIcon, ShoppingCart, Store, TicketPercent, Trash2, XIcon } from "lucide-react"
+import { BlocksIcon, Minus, Plus, SearchIcon, ShoppingCart, TicketPercent, Trash2, XIcon } from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CardBest } from "@/components/public/component/best/page"
@@ -214,7 +214,7 @@ export default function TransactionsListPage() {
                           />
                         ))}
                         </div> : 
-                      <CardBest data={bestData?.data ?? []} />
+                      <CardBest data={bestData?.data ?? []} alreadyOpen={alreadyOpen}/>
                     }
                   </div>
                 )}
@@ -236,7 +236,7 @@ export default function TransactionsListPage() {
                       />
                     ))}
                     </div> : 
-                  <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 lg:grid-cols-3 gap-4" />
+                  <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 lg:grid-cols-3 gap-4" alreadyOpen={alreadyOpen}/>
                 }
       
                 {menuData?.data?.length === 0 && (

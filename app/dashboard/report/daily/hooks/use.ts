@@ -8,6 +8,10 @@ import {
   type ReportListResponse,
   type CreateReportInput,
   type UpdateReportInput,
+  getTopSelling,
+  TopSellingResponse,
+  getTopSales,
+  SalesResponse,
 } from "@/lib/api/report/req-api"
 
 const ReportKey = (params?: ReportQueryParams) => ["report", params ?? {}] as const
@@ -48,5 +52,19 @@ export function useDeleteReport() {
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["report"] })
     },
+  })
+}
+
+export function useTopSelling(params?: ReportQueryParams) {
+  return useQuery<TopSellingResponse>({
+    queryKey: ["top-selling"],
+    queryFn: () => getTopSelling(params),
+  })
+}
+
+export function useSales(params?: ReportQueryParams) {
+  return useQuery<SalesResponse>({
+    queryKey: ["sales"],
+    queryFn: () => getTopSales(params),
   })
 }

@@ -103,6 +103,7 @@ export function EditCustomerDrawer({ tableOptions }: EditCustomerDrawerProps) {
             <Button
               className="w-full bg-[#B87333] text-white"
               onClick={handleSave}
+              disabled={!localName || !localTable}
             >
               Save
             </Button>

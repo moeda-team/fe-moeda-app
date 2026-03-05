@@ -211,13 +211,13 @@ export default function DashboardPage() {
                       <TableCell className="font-medium">{v.orderName ?? "-"}</TableCell>
                       <TableCell className="font-medium">{v.description ?? "-"}</TableCell>
                       <TableCell className="font-medium capitalize">
-                        <div className={`${v.statusOrder === "cancelled" ? "text-red-500" : v.statusOrder === "pending" ? "text-yellow-500" : "text-green-500"}`}>{v.statusOrder}</div>
+                        <div className={`${v.statusOrder === "pending" ? "text-yellow-500" : v.statusOrder === "completed" ? "text-green-500" :"text-red-500"}`}>{v.statusOrder}</div>
                       </TableCell>
                       <TableCell className="font-medium">{v.qty ?? "-"}</TableCell>
                       <TableCell className="font-medium">{formatCurrency(v.total)}</TableCell>
                       <TableCell className="font-medium">{v.paymentMethod ?? "-"}</TableCell>
                       <TableCell className="font-medium capitalize">
-                        <div className={`${v.status === "cancelled" ? "text-red-500" : "text-green-500"}`}>{v.status}</div>
+                        <div className={`${v.status === "pending" ? "text-yellow-500" : v.status === "completed" ? "text-green-500" :"text-red-500"}`}>{v.status}</div>
                       </TableCell>
                     </TableRow>
                   ))

@@ -156,10 +156,10 @@ export default function DashboardPage() {
           <div className=" p-2 bg-secondary shadow-sm rounded-lg border lg:col-span-1">
             <Card className=" shadow-sm rounded-lg border ">
               <CardHeader className="font-bold text-lg border-b [.border-b]:pb-2">Top Selling Menu</CardHeader>
-              <CardContent className="flex flex-col gap-3 text-primary">
+              <CardContent className="flex flex-col gap-3 text-primary dark:text-white">
                 {topSellingData?.data?.map((item) => (
                   <div key={item.menu_name} className="flex items-center gap-3">
-                    <div className="flex-1 bg-gray-100 h-6 rounded relative">
+                    <div className="flex-1 bg-gray-100 dark:bg-neutral-600 h-6 rounded relative">
                       <div
                         className="bg-[#d9cec6] h-6 rounded"
                         style={{

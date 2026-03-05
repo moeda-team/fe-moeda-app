@@ -205,42 +205,80 @@ export default function ReportPage() {
         </div>
 
         {/* Table (overlay di area table saat load data) */}
-        <div className="relative rounded-xl border bg-background overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Qty</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Paymnent</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {!tableLoading && listData.length === 0 ? (
+        <div className="relative overflow-auto p-4 bg-secondary shadow-sm rounded-lg border space-y-2">
+          <h1 className="text-xl font-bold">Recent Orders</h1>
+          <div className="p-2 shadow-sm rounded-lg border">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">
-                    No data
-                  </TableCell>
+                  <TableHead>Order Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Status Order</TableHead>
+                  <TableHead>Qty</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Paymnent</TableHead>
+                  <TableHead>Status Payment</TableHead>
                 </TableRow>
-              ) : (
-                listData.map((v, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{v.orderName ?? "-"}</TableCell>
-                    <TableCell className="font-medium">{v.description ?? "-"}</TableCell>
-                    <TableCell className="font-medium">{v.qty ?? "-"}</TableCell>
-                    <TableCell className="font-medium">{formatCurrency(v.total)}</TableCell>
-                    <TableCell className="font-medium">{v.paymentMethod ?? "-"}</TableCell>
-                    <TableCell className="font-medium capitalize">
-                      <div className={`${v.status === "cancelled" ? "text-red-500" : "text-green-500"}`}>{v.status}</div>
+              </TableHeader>
+
+              <TableBody>
+                {!isLoading && listData.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      No data
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  listData.map((v, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{v.orderName ?? "-"}</TableCell>
+                      <TableCell className="font-medium">{v.description ?? "-"}</TableCell>
+                      <TableCell className="font-medium capitalize">
+                        <div className={`${v.statusOrder === "cancelled" ? "text-red-500" : v.statusOrder === "pending" ? "text-yellow-500" : "text-green-500"}`}>{v.statusOrder}</div>
+                      </TableCell>
+                      <TableCell className="font-medium">{v.qty ?? "-"}</TableCell>
+                      <TableCell className="font-medium">{formatCurrency(v.total)}</TableCell>
+                      <TableCell className="font-medium">{v.paymentMethod ?? "-"}</TableCell>
+                      <TableCell className="font-medium capitalize">
+                        <div className={`${v.status === "cancelled" ? "text-red-500" : "text-green-500"}`}>{v.status}</div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination + PerPage */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between w-full">
+            <div className="flex items-center gap-2 text-sm">
+              <Select
+                value={String(perPage)}
+                onValueChange={(v) => {
+                  setPerPage(Number(v))
+                  setPage(1)
+                }}
+              >
+                <SelectTrigger className="w-[90px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PER_PAGE_OPTIONS.map((n) => (
+                    <SelectItem key={n} value={String(n)}>
+                      {n}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <AppPagination
+              page={page}
+              pageSize={perPage}
+              total={total}
+              onPageChange={setPage}
+            />
+          </div>
         </div>
 
         {/* Pagination + PerPage */}

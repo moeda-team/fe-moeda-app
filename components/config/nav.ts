@@ -16,11 +16,13 @@ export type NavGroup = {
   items: NavItem[]
 }
 
+// , "STORE_MANAGER", "EMPLOYEE"
+
 export const NAV: NavGroup[] = [
   {
     label: "Main",
     items: [
-      { title: "Dashboard", href: "/", icon: LayoutDashboard },
+      { title: "Dashboard", href: "/", icon: LayoutDashboard, roles: ["ADMIN", "OWNER"] },
       {
         title: "Transactions",
         icon: List,
@@ -30,14 +32,14 @@ export const NAV: NavGroup[] = [
           { title: "Order", href: "/dashboard/transactions/order", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
         ],
       },
-      { title: "Cash / Balance", href: "/dashboard/cash", icon: Wallet },
+      { title: "Cash / Balance", href: "/dashboard/cash", icon: Wallet, roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
       {
         title: "Report",
         icon: StickyNote,
-        roles: ["ADMIN", "OWNER"],
+        roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
         children: [
-          { title: "Daily", href: "/dashboard/report/daily", roles: ["ADMIN", "OWNER"] },
-          { title: "Cashier", href: "/dashboard/report/cashier", roles: ["ADMIN", "OWNER"] },
+          { title: "Daily", href: "/dashboard/report/daily", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+          { title: "Cashier", href: "/dashboard/report/cashier", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
         ],
       },
     ],
@@ -48,19 +50,19 @@ export const NAV: NavGroup[] = [
       {
         title: "Inventory",
         icon: Folder,
-        roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
+        roles: ["ADMIN", "OWNER"],
         children: [
-          { title: "Ingredients & Stock", href: "/dashboard/master-data/inventory/ingridients", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
-          { title: "Activity / Stock", href: "/dashboard/master-data/inventory/activity", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+          { title: "Ingredients & Stock", href: "/dashboard/master-data/inventory/ingridients", roles: ["ADMIN", "OWNER"] },
+          { title: "Activity / Stock", href: "/dashboard/master-data/inventory/activity", roles: ["ADMIN", "OWNER"] },
         ],
       },
       {
         title: "Menu",
         icon: Menu,
-        roles: ["ADMIN", "OWNER"],
+        roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
         children: [
-          { title: "List", href: "/dashboard/master-data/menu", roles: ["ADMIN", "OWNER"] },
-          { title: "Category", href: "/dashboard/master-data/menu/categories", roles: ["ADMIN", "OWNER"] },
+          { title: "List", href: "/dashboard/master-data/menu", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+          { title: "Category", href: "/dashboard/master-data/menu/categories", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
         ],
       },
       {
@@ -86,10 +88,10 @@ export const NAV: NavGroup[] = [
       {
         title: "Voucher / Discount",
         icon: TicketPercent,
-        roles: ["ADMIN", "OWNER"],
+        roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"],
         children: [
-          { title: "Discount", href: "/dashboard/master-data/discount", roles: ["ADMIN", "OWNER"] },
-          { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER"] },
+          { title: "Discount", href: "/dashboard/master-data/discount", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
+          { title: "Voucher", href: "/dashboard/master-data/voucher", roles: ["ADMIN", "OWNER", "STORE_MANAGER", "EMPLOYEE"] },
         ],
       },
       {

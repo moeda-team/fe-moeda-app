@@ -30,14 +30,17 @@ import { formatCurrency, formatDate } from "@/lib/helpers"
 import { DollarSign, ShoppingBasket, Sparkles } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import SalesAnalyticsChart from "@/components/dashboard/SalesAnalyticsChart"
+import { useSession } from "next-auth/react"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 export default function DashboardPage() {
+  const { data: session } = useSession()
+
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
-  
+
   const today = new Date().toISOString().split("T")[0]
 
   /** data */
@@ -52,6 +55,11 @@ export default function DashboardPage() {
     ...(topSellingData?.data?.map((i) => i.quantity_sold + 5) ?? [1])
   );
 
+  if(session?.user?.role === "EMPLOYEE") {
+    window.location.replace("/dashboard/transactions/order")
+    return
+  }
+  
   return (
     <DashboardLayout>
       {/* Fullscreen overlay saat create/edit/delete */}

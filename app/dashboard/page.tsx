@@ -154,7 +154,7 @@ export default function DashboardPage() {
             </Card>
           </div>
           <div className=" p-2 bg-secondary shadow-sm rounded-lg border lg:col-span-1">
-            <Card className="bg-white shadow-sm rounded-lg border">
+            <Card className="bg-white shadow-sm rounded-lg border text-primary">
               <CardHeader className="font-bold text-lg border-b [.border-b]:pb-2">Top Selling Menu</CardHeader>
               <CardContent className="flex flex-col gap-3">
                 {topSellingData?.data?.map((item) => (

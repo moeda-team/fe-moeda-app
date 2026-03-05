@@ -17,8 +17,6 @@ import { XIcon } from "lucide-react"
 import { StickyBottomCart } from "@/components/public/component/StickyCart"
 import { useQuery } from "@tanstack/react-query"
 import { checkSession } from "@/lib/api/report/req-api"
-import { LoadingOverlay } from "@/components/ui/loading"
-import { Alert } from "@/components/ui/alert"
 
 export default function Home() {
 
@@ -142,8 +140,9 @@ export default function Home() {
           searchInput={searchInput}
           setSearchInput={setSearchInput}
         />
-        {/* HERO */}
-        <div className="w-full px-4"><div className="w-full bg-primary/10 text-red-500 p-4 rounded-lg flex gap-2 font-semibold"> <AlertCircle /> Store Still Closed.</div></div>
+        {alreadyOpen && (
+          <div className="w-full px-4"><div className="w-full bg-primary/10 text-red-500 p-4 rounded-lg flex gap-2 font-semibold"> <AlertCircle /> Store Still Closed.</div></div>
+        )}
         {/* BEST */}
         {bestData && bestData?.data.length >0 && (
           <div className="space-y-3 px-4">

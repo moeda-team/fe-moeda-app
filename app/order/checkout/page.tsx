@@ -159,11 +159,11 @@ export default function CheckoutPage() {
         if (!response?.data) return
 
         const { total, paymentNumber, id, paymentMethod } = response.data
-
+        console.log(paymentNumber)
         // =============================
         // CASE: TOTAL 0 (FREE ORDER)
         // =============================
-        if (Number(total) === 0) {
+        if (Number(total) === 0 || paymentMethod === 'cash' || paymentMethod === 'debit') {
           if (paymentNumber) {
             const statusData = await checkTransactionStatus(paymentNumber)
             addCompletedOrder({

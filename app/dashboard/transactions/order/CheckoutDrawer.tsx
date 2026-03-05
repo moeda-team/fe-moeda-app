@@ -194,7 +194,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
       },
       {
         onSuccess: async (data) => {
-          if(transactionData?.data.total ===0 ){
+          if(transactionData?.data.total === 0 || paymentMethod === 'cash' || paymentMethod === 'debit'){
             onSuccess?.(data.data.id)
           }else{
             const paymentNumber = data.data.paymentNumber

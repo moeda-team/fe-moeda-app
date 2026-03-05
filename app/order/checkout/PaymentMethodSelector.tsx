@@ -13,6 +13,16 @@ const paymentMethods = [
     label: "QRIS",
     img: "/images/qris.png",
   },
+  {
+    id: "cash",
+    label: "Cash",
+    img: "/images/cash.png",
+  },
+  {
+    id: "debit",
+    label: "Debit",
+    img: "/images/debit.png",
+  },
 ]
 
 export function PaymentMethodSelector({ value, onChange }: Props) {

@@ -140,7 +140,7 @@ export default function Home() {
           searchInput={searchInput}
           setSearchInput={setSearchInput}
         />
-        {alreadyOpen && (
+        {!alreadyOpen && (
           <div className="w-full px-4"><div className="w-full bg-primary/10 text-red-500 p-4 rounded-lg flex gap-2 font-semibold"> <AlertCircle /> Store Still Closed.</div></div>
         )}
         {/* BEST */}

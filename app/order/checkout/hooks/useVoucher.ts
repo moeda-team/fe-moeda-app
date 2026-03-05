@@ -45,6 +45,11 @@ export function useVoucher(subtotal: number) {
           toast.error("Voucher tidak valid")
           return
         }
+        
+        if(data.data.expiredAt < new Date().toISOString()) {
+          toast.error("Voucher sudah kadaluarsa")
+          return
+        }
 
         setVoucher(data.data)
         toast.success("Voucher berhasil digunakan")

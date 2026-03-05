@@ -146,7 +146,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className=" p-2 bg-secondary shadow-sm rounded-lg border lg:col-span-2">
-            <Card className="bg-white shadow-sm rounded-lg">
+            <Card className=" shadow-sm rounded-lg">
               <CardHeader className="font-bold text-lg border-b [.border-b]:pb-2">Sales Analytics</CardHeader>
               <CardContent>
                 <SalesAnalyticsChart data={topSales?.data ?? []} />
@@ -154,9 +154,9 @@ export default function DashboardPage() {
             </Card>
           </div>
           <div className=" p-2 bg-secondary shadow-sm rounded-lg border lg:col-span-1">
-            <Card className="bg-white shadow-sm rounded-lg border text-primary">
+            <Card className=" shadow-sm rounded-lg border ">
               <CardHeader className="font-bold text-lg border-b [.border-b]:pb-2">Top Selling Menu</CardHeader>
-              <CardContent className="flex flex-col gap-3">
+              <CardContent className="flex flex-col gap-3 text-primary">
                 {topSellingData?.data?.map((item) => (
                   <div key={item.menu_name} className="flex items-center gap-3">
                     <div className="flex-1 bg-gray-100 h-6 rounded relative">
@@ -184,7 +184,7 @@ export default function DashboardPage() {
         {/* Table (overlay di area table saat load data) */}
         <div className="relative overflow-auto p-4 bg-secondary shadow-sm rounded-lg border space-y-2">
           <h1 className="text-xl font-bold">Recent Orders</h1>
-          <div className="p-2 bg-white shadow-sm rounded-lg border">
+          <div className="p-2 shadow-sm rounded-lg border">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -9,6 +9,7 @@ export type ReportItem = {
   total: number,
   paymentMethod: string,
   status: string,
+  statusOrder: string,
   createdAt: string
 }
 

@@ -190,10 +190,11 @@ export default function DashboardPage() {
                 <TableRow>
                   <TableHead>Order Name</TableHead>
                   <TableHead>Description</TableHead>
+                  <TableHead>Status Order</TableHead>
                   <TableHead>Qty</TableHead>
                   <TableHead>Total</TableHead>
                   <TableHead>Paymnent</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Status Payment</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -209,6 +210,9 @@ export default function DashboardPage() {
                     <TableRow key={index}>
                       <TableCell className="font-medium">{v.orderName ?? "-"}</TableCell>
                       <TableCell className="font-medium">{v.description ?? "-"}</TableCell>
+                      <TableCell className="font-medium capitalize">
+                        <div className={`${v.statusOrder === "cancelled" ? "text-red-500" : v.statusOrder === "pending" ? "text-yellow-500" : "text-green-500"}`}>{v.statusOrder}</div>
+                      </TableCell>
                       <TableCell className="font-medium">{v.qty ?? "-"}</TableCell>
                       <TableCell className="font-medium">{formatCurrency(v.total)}</TableCell>
                       <TableCell className="font-medium">{v.paymentMethod ?? "-"}</TableCell>

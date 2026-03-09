@@ -6,6 +6,7 @@ import {
   useCreateReport,
   useUpdateReport,
   useDeleteReport,
+  useDownloadReport,
 } from "@/app/dashboard/report/daily/hooks/use"
 import type { ReportItem } from "@/lib/api/report/req-api"
 
@@ -36,6 +37,7 @@ import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { formatCurrency, formatDate } from "@/lib/helpers"
 import { DollarSign, ShoppingBasket, Sparkles } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
@@ -52,6 +54,7 @@ export default function ReportPage() {
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)
   const [selectedReport, setSelectedReport] = React.useState<ReportItem | null>(null)
+  const { mutate: mutatedownloadReport, isPending } = useDownloadReport()
 
   /** data */
   const { data, isLoading } = useReportQuery({
@@ -88,9 +91,11 @@ export default function ReportPage() {
   const total = data?.data?.pagination?.total
   
   /** overlays */
-  const tableLoading = isLoading
-  const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending
+  const fullscreenLoading = createMut.isPending || updateMut.isPending || deleteMut.isPending || isPending
 
+  const downloadReport = () => {
+    mutatedownloadReport(formatDate(date, "yyyy-MM-DD"))
+  }
 
   return (
     <DashboardLayout>
@@ -120,6 +125,12 @@ export default function ReportPage() {
                 setPage(1)
               }}
             />
+            {/* download report */}
+            <Button 
+              onClick={downloadReport}
+            >
+              Download
+            </Button>
           </div>
         </div>
 
@@ -224,7 +235,7 @@ export default function ReportPage() {
               <TableBody>
                 {!isLoading && listData.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center">
+                    <TableCell colSpan={7} className="text-center">
                       No data
                     </TableCell>
                   </TableRow>

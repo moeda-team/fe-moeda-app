@@ -12,9 +12,11 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table"
-import { formatCurrency, formatDateTime } from "@/lib/helpers"
+import { formatCurrency, formatDate, formatDateTime } from "@/lib/helpers"
 import { ArrowLeft, DollarSign, ShoppingBasket, Sparkles } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { useDownloadDetailReport } from "../../daily/hooks/use"
 
 export default function DetailPage() {
   const params = useParams()
@@ -29,6 +31,16 @@ export default function DetailPage() {
   const { data, isLoading } = useDetailReportSessionQuery(orderId!)
   const listData = data?.data?.transactions ?? []
   const summaryData = data?.data?.summary
+
+  const { mutate: downloadDetailReport } = useDownloadDetailReport()
+
+  const downloadReport = () => {
+    downloadDetailReport( {
+      cashBookId: orderId!,
+      date: summaryData?.date || "",
+      filename: `${summaryData?.user?.name || "Report"} - ${formatDate(summaryData?.openAt, "yyyy-MM-DD") || ""}.xlsx`
+    })
+  }
 
   return (
     
@@ -48,6 +60,12 @@ export default function DetailPage() {
             </div>            
             <h1 className="text-2xl font-semibold">Detail Report</h1>
           </div>
+          
+          <Button
+            onClick={downloadReport}
+          >
+            Download
+          </Button>
         </div>
 
         {/* card */}
@@ -130,7 +148,7 @@ export default function DetailPage() {
                 <TableHead>Order Name</TableHead>
                 <TableHead>Transaction Date</TableHead>
                 <TableHead>Number</TableHead>
-                <TableHead>Paymnent Mehotd</TableHead>
+                <TableHead>Payment Method</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>

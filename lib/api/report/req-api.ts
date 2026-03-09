@@ -1,3 +1,4 @@
+import { Pragati_Narrow } from "next/font/google"
 import { axiosClient } from "../axios-client"
 
 export type ReportItem = {
@@ -136,6 +137,10 @@ export type ReportSessionDetailResponse = {
       revenueGrowth : number,
       transactionGrowth : number,
       avgOrderGrowth : number
+      openAt : string
+      user :{
+        name : string
+      }
     },
     transactions :{
         id: string,
@@ -190,5 +195,25 @@ export async function getTopSales(
   params?: ReportQueryParams
 ): Promise<SalesResponse> {
   const res = await axiosClient.get<SalesResponse>("/reports/sales", { params })
+  return res.data
+}
+
+export async function getReportDaily(
+  params?: ReportQueryParams
+): Promise<Blob> {
+  const res = await axiosClient.get(`/reports/daily/download?date=${params?.date}`, {
+    responseType: "blob",
+  })
+
+  return res.data
+}
+
+export async function getReportDetailDaily(
+  cashBookId: string
+): Promise<Blob> {
+  const res = await axiosClient.get(`reports/cash-books/${cashBookId}/download`, {
+    responseType: "blob",
+  })
+
   return res.data
 }

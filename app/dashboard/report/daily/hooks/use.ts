@@ -12,6 +12,8 @@ import {
   TopSellingResponse,
   getTopSales,
   SalesResponse,
+  getReportDaily,
+  getReportDetailDaily,
 } from "@/lib/api/report/req-api"
 
 const ReportKey = (params?: ReportQueryParams) => ["report", params ?? {}] as const
@@ -66,5 +68,42 @@ export function useSales(params?: ReportQueryParams) {
   return useQuery<SalesResponse>({
     queryKey: ["sales"],
     queryFn: () => getTopSales(params),
+  })
+}
+
+export function useDownloadReport() {
+  return useMutation({
+    mutationFn: (date: string) => getReportDaily({ date }),
+
+    onSuccess: (res, date) => {
+      const blob = new Blob([res])
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `Report Daily -${date}.xlsx`
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    },
+  })
+}
+export function useDownloadDetailReport() {
+  return useMutation({
+    mutationFn: (params: { cashBookId: string; date: string; filename: string }) => getReportDetailDaily(params.cashBookId),
+
+    onSuccess: (res, params) => {
+      const blob = new Blob([res])
+
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement("a")
+      a.href = url
+      a.download = params.filename
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+    },
   })
 }

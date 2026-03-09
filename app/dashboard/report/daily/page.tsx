@@ -281,38 +281,6 @@ export default function ReportPage() {
           </div>
         </div>
 
-        {/* Pagination + PerPage */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between w-full">
-          <div className="flex items-center gap-2 text-sm">
-            <Select
-              value={String(perPage)}
-              onValueChange={(v) => {
-                setPerPage(Number(v))
-                setPage(1)
-              }}
-              disabled={fullscreenLoading}
-            >
-              <SelectTrigger className="w-[90px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PER_PAGE_OPTIONS.map((n) => (
-                  <SelectItem key={n} value={String(n)}>
-                    {n}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <AppPagination
-            page={page}
-            pageSize={perPage}
-            total={total}
-            onPageChange={setPage}
-          />
-        </div>
-
         {/* Confirm delete */}
         <ConfirmDialog
           open={confirmOpen}

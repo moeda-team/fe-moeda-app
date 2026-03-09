@@ -304,7 +304,7 @@ export default function TransactionsListPage() {
               disabled={fullscreenLoading}
             />
 
-            <Tabs  
+            {/* <Tabs  
               defaultValue="inprogress" 
               value={activeTab}
               className="space-y-4"
@@ -329,7 +329,7 @@ export default function TransactionsListPage() {
                   History
                 </TabsTrigger>
               </TabsList>
-            </Tabs>
+            </Tabs> */}
           </div>
         </div>
 

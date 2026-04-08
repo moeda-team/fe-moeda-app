@@ -34,14 +34,16 @@ export default function Home() {
   }, [mutate]);
 
   return (
-    <div className="bg-neutral-50 min-h-screen pt-[110px]">
+    <div className="bg-neutral-50 min-h-screen">
       <Hero />
 
-      <BestSellerSlider onOpenPopupOrder={() => setOpenPopupOrder(true)} onSetProductDetail={setProductDetail} />
-      <div className="mt-8 px-4 text-lg font-semibold space-y-4">
+      <div className="p-4 text-lg font-semibold space-y-4">
         <SearchBar onSearch={handleSearch} />
       </div>
-      <div className="mt-8 px-4 text-lg font-semibold space-y-4">
+
+      <BestSellerSlider onOpenPopupOrder={() => setOpenPopupOrder(true)} onSetProductDetail={setProductDetail} />
+
+      <div className="p-4 text-lg font-semibold space-y-4">
         <h4>Menu</h4>
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4 pb-8">
           {Array.isArray(menu) &&

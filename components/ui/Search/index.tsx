@@ -24,7 +24,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   };
 
   return (
-    <div className="flex items-center border border-primary-500 rounded-full bg-neutral-50 px-4 py-2 w-full shadow-sm">
+    <div className="flex items-center border border-primary-500 rounded-lg bg-neutral-50 px-4 py-2 w-full shadow-sm">
       <FaSearch className="text-primary-500 mr-2" />
       <input
         type="text"

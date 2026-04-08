@@ -63,23 +63,15 @@ export default function Hero({ isCustomer = true }: HeroProps) {
 
   return (
     <>
-      <div className="fixed top-0 w-full bg-primary-500 py-4 px-4 flex items-center justify-end h-[92px] z-50">
-        <div className="text-white font-semibold text-xl ml-4 md:ml-0 absolute text-center w-full right-0">
-          <div className="flex flex-col items-center justify-center">
-            <Image
-              onClick={() => router.push("/")}
-              src="/logo.png"
-              alt="Moeda Coffee Logo"
-              width={44}
-              height={44}
-              className="object-contain relative z-50 cursor-pointer"
-              priority
-            />
-            <span>MOEDA COFFEE</span>
-          </div>
-        </div>
-
-        {isCustomer && (
+      <div 
+        className="w-full bg-primary-500 py-4 px-4 flex items-center justify-end h-[92px] z-50"
+        style={{
+          backgroundImage: "url('/bg-banner.svg')",
+          backgroundSize: "contain",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* {isCustomer && (
           <div className="flex gap-2">
             <motion.div
               whileTap={{ scale: 0.95 }}
@@ -94,7 +86,7 @@ export default function Hero({ isCustomer = true }: HeroProps) {
               )}
             </motion.div>
           </div>
-        )}
+        )} */}
 
         {isShowLogout && (
           <div ref={ref} className="flex gap-2 relative" onClick={() => setOpenLogout((prev) => !prev)}>

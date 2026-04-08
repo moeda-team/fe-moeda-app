@@ -17,7 +17,7 @@ export default function Category({ image, title, category }: CategoryProps) {
   const isActive = !Boolean(query.category) && query.category !== category ? true : query.category === category;
 
   return (
-    <div className="text-center flex items-center flex-col w-16 sm:w-20 md:w-24 relative h-[110px]">
+    <div className="text-center flex items-center flex-col w-18 sm:w-20 md:w-24 relative h-[110px]">
       <motion.div
         onClick={() => {
           if (title === "All") {

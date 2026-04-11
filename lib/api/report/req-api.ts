@@ -4,11 +4,14 @@ import { axiosClient } from "../axios-client"
 export type ReportItem = {
   id?: string,
   orderId: string,
+  date: string,
   orderName: string,
   description: string,
   qty: number,
   total: number,
   paymentMethod: string,
+  systemRevenue: number,
+  clientRevenue: number,
   status: string,
   statusOrder: string,
   createdAt: string
@@ -25,6 +28,8 @@ export type ReportQueryParams = {
   page?: number
   limit?: number
   search?: string
+  start_date?: string
+  end_date?: string
   date?: string
 }
 
@@ -50,8 +55,14 @@ export type ReportListResponse = {
       avgOrder : number,
       revenueGrowth : number,
       transactionGrowth : number,
-      avgOrderGrowth : number
+      avgOrderGrowth : number,
     }
+    totalRevenue : number,
+    clientPercentage : number,
+    totalTransactions : number,
+    clientRevenue : number,
+    systemPercentage: number,
+    systemRevenue: number,
     pagination: Paginate
   }
 }
@@ -215,5 +226,12 @@ export async function getReportDetailDaily(
     responseType: "blob",
   })
 
+  return res.data
+}
+
+export async function getRevenue(
+  params?: ReportQueryParams
+): Promise<ReportListResponse> {
+  const res = await axiosClient.get<ReportListResponse>("/reports/system-revenue", { params })
   return res.data
 }

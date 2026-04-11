@@ -2,7 +2,6 @@
 
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -165,6 +164,12 @@ export default function BillDrawer({
               <div className="flex justify-between font-semibold text-sm">
                 <span>Total</span>
                 <span>{formatCurrency(item.data.total)}</span>
+              </div>
+              <br />
+              <br />
+              <hr style={{color:'white'}}/>
+              <div className="flex justify-between font-semibold text-white">
+                a
               </div>
             </div>
           )}

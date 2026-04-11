@@ -177,7 +177,9 @@ button {
   html, body {
     width: 58mm;
     margin: 0 !important;
-    padding: 0 !important;
+    padding-right: 3mm !important;
+    padding-bottom: 3mm !important;
+    padding:0;
   }
 
   body * {
@@ -193,15 +195,17 @@ button {
     position: absolute;
     left: 0;
     top: 0;
-    width: 58mm;
-    padding: 0;
+    width: 60mm;
+    padding-right: 3mm !important;
+    padding-bottom: 20mm !important;
+    padding:0;
     margin: 0;
-    margin-bottom: 10mm;
+    margin-bottom: 20mm;
   }
 }
 .pdf-area {
   color: #000 !important;
-  background: #fff !important;
+  background: #f2f2f2 !important;
 }
 
 .pdf-area * {

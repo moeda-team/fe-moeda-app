@@ -52,7 +52,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
    * LOCAL STATE
    * =========================
    */
-  const [paymentMethod, setPaymentMethod] = useState("qris")
+  const [paymentMethod, setPaymentMethod] = useState("cash")
   const [qr, setQr] = useState("")
   const [expiredAt, setExpiredAt] = useState<number | null>(null)
   const [timeLeft, setTimeLeft] = useState(0)
@@ -79,7 +79,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
   } = useVoucher(sub)
 
   const { data: transactionData } = useQuery({
-    queryKey: ["transaction-calculate", discountAmount, sub],
+    queryKey: ["transaction-calculate", discountAmount, sub, paymentMethod],
     queryFn: () =>
       getTransactionCalculate(
         paymentMethod,
@@ -196,6 +196,9 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
         onSuccess: async (data) => {
           if(transactionData?.data.total === 0 || paymentMethod === 'cash' || paymentMethod === 'debit'){
             onSuccess?.(data.data.id)
+            clearCart()
+            setActiveTransactionId(null)
+            clearCustoemr()
           }else{
             const paymentNumber = data.data.paymentNumber
 

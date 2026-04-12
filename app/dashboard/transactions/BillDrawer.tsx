@@ -41,6 +41,63 @@ export default function BillDrawer({
     onAfterPrint: () => onClose(),
   })
 
+  const handleSilentPrint = () => {
+    if (!receiptRef.current) return
+    
+    // Check if running in Chrome tablet environment
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+    const isTablet = /Android|iPad|Tablet/.test(navigator.userAgent)
+    
+    if (isChrome && isTablet) {
+      // Silent print for Chrome tablet
+      const printWindow = window.open('', '_blank')
+      if (printWindow) {
+        const printContent = receiptRef.current.innerHTML
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>${item?.data?.paymentNumber || "Receipt"}</title>
+              <style>
+                body { font-family: monospace; font-size: 11px; margin: 0; padding: 10px; }
+                .receipt-print { width: 100%; max-width: 300px; margin: 0 auto; }
+                hr { border: none; border-top: 1px dashed #000; margin: 8px 0; }
+                .flex { display: flex; }
+                .justify-between { justify-content: space-between; }
+                .text-xs { font-size: 11px; }
+                .text-sm { font-size: 14px; }
+                .font-semibold { font-weight: 600; }
+                .text-center { text-align: center; }
+                .mb-1 { margin-bottom: 4px; }
+                .mb-2 { margin-bottom: 8px; }
+                .mb-3 { margin-bottom: 12px; }
+                .mt-2 { margin-top: 8px; }
+                .w-28 { width: 112px; }
+                .h-14 { height: 56px; }
+                .mx-auto { margin-left: auto; margin-right: auto; }
+              </style>
+            </head>
+            <body>
+              <div class="receipt-print">
+                ${printContent}
+              </div>
+            </body>
+          </html>
+        `)
+        printWindow.document.close()
+        
+        // Trigger silent print
+        setTimeout(() => {
+          printWindow.print()
+          printWindow.close()
+          onClose()
+        }, 250)
+      }
+    } else {
+      // Fallback to regular print
+      handlePrint()
+    }
+  }
+
   return (
     <Sheet
       open={open}
@@ -175,13 +232,22 @@ export default function BillDrawer({
           )}
         </div>
 
-        <div className="flex gap-4 px-6 pb-6">
+        <div className="flex gap-2 px-6 pb-6">
           <Button
-            className="w-2/3 dark:text-white"
+            className="w-1/3 dark:text-white"
+            onClick={handleSilentPrint}
+            disabled={!item}
+            variant="secondary"
+          >
+            Print (1)
+          </Button>
+          
+          <Button
+            className="w-1/3 dark:text-white"
             onClick={handlePrint}
             disabled={!item}
           >
-            Print Receipt
+            Print (2)
           </Button>
 
           <Button

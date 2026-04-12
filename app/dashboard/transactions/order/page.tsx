@@ -138,9 +138,9 @@ export default function TransactionsListPage() {
             label="The shop is still closed. Click the Open Store button to open the shop." 
             icon={<BlocksIcon className="h-20 w-20" />}          
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
             {/* product list */}
-            <div className="col-span-1 lg:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
+            <div className="col-span-1 lg:col-span-2 md:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
               {/* Header */}
               <div className="bg-white sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4  dark:bg-gray-900">
                 <div className="w-full">
@@ -236,7 +236,7 @@ export default function TransactionsListPage() {
                       />
                     ))}
                     </div> : 
-                  <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 lg:grid-cols-3 gap-4" alreadyOpen={alreadyOpen}/>
+                  <CardMenu data={menuData?.data ?? []} className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-3 gap-4" alreadyOpen={alreadyOpen}/>
                 }
       
                 {menuData?.data?.length === 0 && (
@@ -249,7 +249,7 @@ export default function TransactionsListPage() {
             </div>
 
             {/* cart */}
-            <div className="relative scol-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
+            <div className="relative col-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
               {/* customer info */}
               <div className="bg-white dark:bg-gray-900 rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
                 <div className="flex justify-between items-center">

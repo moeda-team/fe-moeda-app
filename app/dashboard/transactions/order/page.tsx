@@ -140,7 +140,7 @@ export default function TransactionsListPage() {
           />
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
             {/* product list */}
-            <div className="col-span-1 lg:col-span-2 md:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
+            <div className="col-span-1 lg:col-span-2 md:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(110vh-200px)] overflow-auto">
               {/* Header */}
               <div className="bg-white sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-2 px-4  dark:bg-gray-900">
                 <div className="w-full">
@@ -249,7 +249,7 @@ export default function TransactionsListPage() {
             </div>
 
             {/* cart */}
-            <div className="relative col-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(100vh-200px)] overflow-auto">
+            <div className="relative col-span-1 space-y-2 bg-transparent rounded-xl shadow-sm border border-primary/20  max-h-[calc(110vh-200px)] overflow-auto">
               {/* customer info */}
               <div className="bg-white dark:bg-gray-900 rounded-t-sm p-3 shadow-sm sticky top-0 z-10">
                 <div className="flex justify-between items-center">
@@ -275,7 +275,7 @@ export default function TransactionsListPage() {
               </div>
 
               {/* cart list */}
-              <div className="px-3 py-2 space-y-4 min-h-[calc(94vh-300px)]">
+              <div className="px-3 py-2 space-y-4 min-h-[calc(100vh-300px)]">
                 {items.map((item) => (
                   <div
                     key={item.id}

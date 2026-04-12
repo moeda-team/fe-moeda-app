@@ -118,12 +118,12 @@ export default function TransactionsListPage() {
       {/* Fullscreen overlay saat create/edit/delete */}
       <LoadingOverlay show={fullscreenLoading} fullscreen label="Processing..." />
 
-      <div className="space-y-4">
+      <div className="space-y-2 lg:space-y-4">
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-2xl font-semibold">Order</h1>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 text-base">
             <Button className="dark:text-white" onClick={openCreate} disabled={fullscreenLoading}>
               Create Menu
             </Button>

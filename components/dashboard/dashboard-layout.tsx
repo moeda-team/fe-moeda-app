@@ -80,7 +80,7 @@ export function DashboardLayout({ children }: Props) {
         <div className="flex flex-1 flex-col min-w-0">
           <Topbar onOpenSidebarMobile={() => setOpenMobile(true)} />
 
-          <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
+          <main className="flex-1 p-4 md:px-6 md:py-2 overflow-x-hidden">
             {children}
           </main>
         </div>

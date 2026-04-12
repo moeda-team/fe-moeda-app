@@ -142,7 +142,7 @@ export default function TransactionsListPage() {
             {/* product list */}
             <div className="col-span-1 lg:col-span-2 md:col-span-2 gap-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
               {/* Header */}
-              <div className="bg-white sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-4 px-4  dark:bg-gray-900">
+              <div className="bg-white sticky top-0 z-10 flex flex-col justify-end items-center gap-2  py-2 px-4  dark:bg-gray-900">
                 <div className="w-full">
                   <InputGroup className="w-full">
                     <InputGroupInput placeholder="Search product..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
@@ -198,7 +198,7 @@ export default function TransactionsListPage() {
               </div>
               
               {/* best */}
-              <div className="space-y-1 p-4 ">
+              <div className="space-y-1 p-4 py-2 ">
                 {bestData && bestData?.data.length >0 && (
                   <div className="space-y-3">
                     <h2 className="text-lg font-semibold">
@@ -222,7 +222,7 @@ export default function TransactionsListPage() {
               {/* end best */}
 
               {/* menu list */}
-              <div className="space-y-3 p-4 ">
+              <div className="space-y-2 p-4 py-2">
                 <h2 className="text-lg font-semibold">
                   Menu
                 </h2>

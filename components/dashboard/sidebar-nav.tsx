@@ -134,7 +134,7 @@ export function SidebarNav({
       <Separator />
 
       {/* ================= Navigation ================= */}
-      <ScrollArea className="flex-1 px-2 py-4">
+      <ScrollArea className="flex-1 px-2 py-4 overflow-auto">
         <div className="space-y-6">
           {filtered.map((g) => (
             <div key={g.label} className="space-y-2">

@@ -127,11 +127,11 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => router.push("/settings")}
               >
                 Settings
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
 
               <DropdownMenuSeparator />
 

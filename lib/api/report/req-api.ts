@@ -65,6 +65,7 @@ export type ReportListResponse = {
     systemRevenue: number,
     pagination: Paginate
   }
+  pagination: Paginate
 }
 
 export type CreateReportInput = ReportFormValue

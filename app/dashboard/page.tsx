@@ -72,11 +72,11 @@ export default function DashboardPage() {
         </div>
 
         {/* card */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 bg-secondary shadow-sm rounded-lg border">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 p-2 bg-secondary shadow-sm rounded-lg border">
           <Card>
             <CardHeader>
               <CardTitle>
-                <div className="flex items-start gap-2 justify-between">
+                <div className="flex items-center gap-2 justify-between">
                   <div className="flex items-center gap-2 rounded-full bg-green-200 px-2 py-2">
                     <DollarSign color="green"/>
                   </div>

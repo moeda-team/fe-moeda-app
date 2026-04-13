@@ -14,6 +14,7 @@ import { useRef } from "react"
 import { useReactToPrint } from "react-to-print"
 import { useQuery } from "@tanstack/react-query"
 import { getTransactionDetail  } from "@/lib/api/customer/req-api"
+import { useSession } from "next-auth/react"
 
 type Props = {
   open: boolean
@@ -27,6 +28,9 @@ export default function BillDrawer({
   transactionId,
 }: Props) {
   const receiptRef = useRef<HTMLDivElement>(null)
+  const { data: session, status } = useSession()
+  const user = session?.user
+  const name = user?.name ?? "User"
 
   // ✅ Fetch detail only when open & id exists
   const { data: item, isLoading } = useQuery({
@@ -41,62 +45,62 @@ export default function BillDrawer({
     onAfterPrint: () => onClose(),
   })
 
-  const handleSilentPrint = () => {
-    if (!receiptRef.current) return
+  // const handleSilentPrint = () => {
+  //   if (!receiptRef.current) return
     
-    // Check if running in Chrome tablet environment
-    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
-    const isTablet = /Android|iPad|Tablet/.test(navigator.userAgent)
+  //   // Check if running in Chrome tablet environment
+  //   const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+  //   const isTablet = /Android|iPad|Tablet/.test(navigator.userAgent)
     
-    if (isChrome && isTablet) {
-      // Silent print for Chrome tablet
-      const printWindow = window.open('', '_blank')
-      if (printWindow) {
-        const printContent = receiptRef.current.innerHTML
-        printWindow.document.write(`
-          <html>
-            <head>
-              <title>${item?.data?.paymentNumber || "Receipt"}</title>
-              <style>
-                body { font-family: monospace; font-size: 11px; margin: 0; padding: 10px; }
-                .receipt-print { width: 100%; max-width: 300px; margin: 0 auto; }
-                hr { border: none; border-top: 1px dashed #000; margin: 8px 0; }
-                .flex { display: flex; }
-                .justify-between { justify-content: space-between; }
-                .text-xs { font-size: 11px; }
-                .text-sm { font-size: 14px; }
-                .font-semibold { font-weight: 600; }
-                .text-center { text-align: center; }
-                .mb-1 { margin-bottom: 4px; }
-                .mb-2 { margin-bottom: 8px; }
-                .mb-3 { margin-bottom: 12px; }
-                .mt-2 { margin-top: 8px; }
-                .w-28 { width: 112px; }
-                .h-14 { height: 56px; }
-                .mx-auto { margin-left: auto; margin-right: auto; }
-              </style>
-            </head>
-            <body>
-              <div class="receipt-print">
-                ${printContent}
-              </div>
-            </body>
-          </html>
-        `)
-        printWindow.document.close()
+  //   if (isChrome && isTablet) {
+  //     // Silent print for Chrome tablet
+  //     const printWindow = window.open('', '_blank')
+  //     if (printWindow) {
+  //       const printContent = receiptRef.current.innerHTML
+  //       printWindow.document.write(`
+  //         <html>
+  //           <head>
+  //             <title>${item?.data?.paymentNumber || "Receipt"}</title>
+  //             <style>
+  //               body { font-family: monospace; font-size: 11px; margin: 0; padding: 10px; }
+  //               .receipt-print { width: 100%; max-width: 300px; margin: 0 auto; }
+  //               hr { border: none; border-top: 1px dashed #000; margin: 8px 0; }
+  //               .flex { display: flex; }
+  //               .justify-between { justify-content: space-between; }
+  //               .text-xs { font-size: 11px; }
+  //               .text-sm { font-size: 14px; }
+  //               .font-semibold { font-weight: 600; }
+  //               .text-center { text-align: center; }
+  //               .mb-1 { margin-bottom: 4px; }
+  //               .mb-2 { margin-bottom: 8px; }
+  //               .mb-3 { margin-bottom: 12px; }
+  //               .mt-2 { margin-top: 8px; }
+  //               .w-28 { width: 112px; }
+  //               .h-14 { height: 56px; }
+  //               .mx-auto { margin-left: auto; margin-right: auto; }
+  //             </style>
+  //           </head>
+  //           <body>
+  //             <div class="receipt-print">
+  //               ${printContent}
+  //             </div>
+  //           </body>
+  //         </html>
+  //       `)
+  //       printWindow.document.close()
         
-        // Trigger silent print
-        setTimeout(() => {
-          printWindow.print()
-          printWindow.close()
-          onClose()
-        }, 250)
-      }
-    } else {
-      // Fallback to regular print
-      handlePrint()
-    }
-  }
+  //       // Trigger silent print
+  //       setTimeout(() => {
+  //         printWindow.print()
+  //         printWindow.close()
+  //         onClose()
+  //       }, 250)
+  //     }
+  //   } else {
+  //     // Fallback to regular print
+  //     handlePrint()
+  //   }
+  // }
 
   return (
     <Sheet
@@ -164,7 +168,7 @@ export default function BillDrawer({
 
               {/* ITEMS */}
               {item.data.subTransactions?.map((menu, i) => (
-                <div key={i} className="text-xs mb-1">
+                <div key={i} className="text-xs mb-1 flex flex-col pb-1">
                   <div className="flex justify-between">
                     <span>
                       {menu.quantity}x {menu.menuName}
@@ -172,6 +176,28 @@ export default function BillDrawer({
                     <span>
                       {formatCurrency(Number(menu.subTotal))}
                     </span>
+                  </div>
+                  
+                  <div className="text-xs">
+                    Note : {menu.note || "-"}
+                  </div>
+                  <div className="text-xs">
+                    {menu?.addOn && (
+                      <div className="flex flex-wrap gap-1 capitalize">
+                        {menu.addOn.split(',').map((addOn, index) => {
+                          const [type, ...values] = addOn.trim().split('_')
+                          const value = values.join('_')
+                          return (
+                            <div
+                              key={index}
+                              className="text-xs border-r pr-1 border-black last:border-0"
+                            >
+                              {type} : {value.replaceAll("_", " ")}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -223,35 +249,107 @@ export default function BillDrawer({
                 <span>{formatCurrency(item.data.total)}</span>
               </div>
               <br />
+              <hr style={{color:'white'}}/>
               <br />
               <hr style={{color:'white'}}/>
-              <div className="flex justify-between font-semibold text-white">
-                a
+              <br />
+
+              <div className="flex flex-col ">
+                {/* ITEMS */}
+                <div className="flex justify-between">
+                  <span>Order ID</span>
+                  <span>{item.data.paymentNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Waktu</span>
+                  <span>{
+                    formatDate(
+                      item.data.createdAt,
+                      "DD MMMM YYYY HH:ss"
+                    )
+                  }</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Customer</span>
+                  <span>{item.data.customerName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Table</span>
+                  <span>{item.data.table?.name}</span>
+                </div>
+
+                <div className="border-dashed border border-gray-600 my-2"/>
+
+                {item.data.subTransactions?.map((menu, i) => (
+                  <div key={i} className="text-xs mb-1 flex flex-col pb-1">
+                    <div className="flex justify-between">
+                      <span>
+                        {menu.quantity}x {menu.menuName}
+                      </span>
+                    </div>
+                    
+                    <div className="text-xs">
+                      Note : {menu.note || "-"}
+                    </div>
+                    <div className="text-xs">
+                      {menu?.addOn && (
+                        <div className="flex flex-wrap gap-1 capitalize">
+                          {menu.addOn.split(',').map((addOn, index) => {
+                            const [type, ...values] = addOn.trim().split('_')
+                            const value = values.join('_')
+                            return (
+                              <div
+                                key={index}
+                                className="text-xs border-r pr-1 border-gray-700 last:border-0"
+                              >
+                                {type} : {value.replaceAll("_", " ")}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="border-dashed border border-gray-600 mb-2"/>
+                <div className="flex justify-center">
+                  <span>{
+                    formatDate(
+                      item.data.createdAt,
+                      "DD MMMM YYYY HH:ss"
+                    )
+                  }</span>
+                </div>
+                <div className="flex justify-center">
+                  <span>{name}</span>
+                </div>
+
               </div>
             </div>
           )}
         </div>
 
         <div className="flex gap-2 px-6 pb-6">
-          <Button
+          {/* <Button
             className="w-1/3 dark:text-white"
             onClick={handleSilentPrint}
             disabled={!item}
             variant="secondary"
           >
             Print (1)
-          </Button>
+          </Button> */}
           
           <Button
-            className="w-1/3 dark:text-white"
+            className="w-1/2 dark:text-white"
             onClick={handlePrint}
             disabled={!item}
           >
-            Print (2)
+            Print
           </Button>
 
           <Button
-            className="w-1/3"
+            className="w-1/2"
             variant="outline"
             onClick={onClose}
           >

@@ -147,76 +147,97 @@ function TransactionCard({
                 : "preparation"
 
             return (
-              <div
-                key={item.id}
-                className="flex justify-between items-center"
-              >
-                <span
-                  title={item.menu?.name}
-                  className="cursor-pointer"
-                >
-                  {item.menu?.name.length > 20
-                    ? item.menu?.name.slice(0, 20) + "..."
-                    : item.menu?.name}{" "}
-                  x{item.quantity}
-                </span>
-                {type !== 'completed' ? (
-                  <Popover
-                    open={openPopoverId === item.id}
-                    onOpenChange={(open) =>
-                      setOpenPopoverId(open ? item.id : null)
-                    }
+              <div key={item.id} className="flex flex-col border-b pb-1">
+                <div className="flex justify-between items-center">
+                  <span
+                    title={item.menu?.name}
+                    className="cursor-pointer"
                   >
-                    <PopoverTrigger asChild>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "cursor-pointer capitalize",
-                          item.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-[#F3A93B]/10 text-primary"
-                        )}
-                      >
-                        {item.status}
-                      </Badge>
-                    </PopoverTrigger>
+                    {item.menu?.name.length > 20
+                      ? item.menu?.name.slice(0, 20) + "..."
+                      : item.menu?.name}{" "}
+                    x{item.quantity}
+                  </span>
+                  {type !== 'completed' ? (
+                    <Popover
+                      open={openPopoverId === item.id}
+                      onOpenChange={(open) =>
+                        setOpenPopoverId(open ? item.id : null)
+                      }
+                    >
+                      <PopoverTrigger asChild>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "cursor-pointer capitalize",
+                            item.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-[#F3A93B]/10 text-primary"
+                          )}
+                        >
+                          {item.status}
+                        </Badge>
+                      </PopoverTrigger>
 
-                    <PopoverContent className={`w-32 p-0 text-center hover:text-primary hover:bg-gray-100 ${nextStatus === "completed" ? "bg-green-100 text-green-700 hover:bg-muted" : "bg-primary text-white"}`}>
-                      <button
-                        onClick={() =>{ 
-                          handleUpdateStatus(item.id, nextStatus)
-                          // 🔥 auto close
-                          setOpenPopoverId(null)
-                        }}
-                        className="w-full text-sm text-center  px-2 py-1 rounded-sm capitalize"
-                      >
-                        {nextStatus}
-                      </button>
-                    </PopoverContent>
-                  </Popover>
-                ) :
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "cursor-pointer capitalize",
-                      item.status === "completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-[#F3A93B]/10 text-primary"
-                    )}
-                  >
-                    {item.status}
-                  </Badge>
-                }
+                      <PopoverContent className={`w-32 p-0 text-center hover:text-primary hover:bg-gray-100 ${nextStatus === "completed" ? "bg-green-100 text-green-700 hover:bg-muted" : "bg-primary text-white"}`}>
+                        <button
+                          onClick={() =>{ 
+                            handleUpdateStatus(item.id, nextStatus)
+                            // 🔥 auto close
+                            setOpenPopoverId(null)
+                          }}
+                          className="w-full text-sm text-center  px-2 py-1 rounded-sm capitalize"
+                        >
+                          {nextStatus}
+                        </button>
+                      </PopoverContent>
+                    </Popover>
+                  ) :
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "cursor-pointer capitalize",
+                        item.status === "completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-[#F3A93B]/10 text-primary"
+                      )}
+                    >
+                      {item.status}
+                    </Badge>
+                  }
+                </div>
+                <div className="text-xs">
+                  Note : {item.note || "-"}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {item?.addOn && (
+                    <div className="flex flex-wrap gap-1 capitalize">
+                      {item.addOn.split(',').map((addOn, index) => {
+                        const [type, ...values] = addOn.trim().split('_')
+                        const value = values.join('_')
+                        return (
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs bg-orange-100 my-1"
+                          >
+                            {type}: {value.replaceAll("_", " ")}
+                          </Badge>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}
         </div>
       </div>
       
-      <div className="grid lg:flex gap-2">
+      <div className="grid sm:flex lg:flex gap-1">
         <Button 
           size="sm"
-          className={`lg:w-10/12 w-full dark:text-white ${type === "completed" ? 'bg-gray-500' :""}`}
+          className={`lg:w-10/12 sm:w-10/12 w-full dark:text-white ${type === "completed" ? 'bg-gray-500' :""}`}
           disabled={type === "completed"}
           onClick={handleCompleteAll}
         >
@@ -225,7 +246,7 @@ function TransactionCard({
         <Button   
           variant="outline"  
           size="icon"
-          className="lg:w-2/12 w-full"
+          className="lg:w-2/12 sm:w-2/12 w-full"
           onClick={() => {
             setOpenBill(true)
             setBillItems(transaction)
@@ -338,9 +359,9 @@ export default function TransactionsListPage() {
         {/* Tab List Traksaksi */}
         {activeTab === 'inprogress' && (
           <div className="relative rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
               {/* inprogress */}
-              <div className="col-span-1 lg:col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-2 space-y-2 p-4 bg-transparent rounded-xl shadow-sm border border-primary/20 max-h-[calc(100vh-200px)] overflow-auto">
                 <div className="flex justify-between items-center">
                   <div className="text-lg font-semibold">In progress</div>
                   <div className="text-sm text-muted-foreground">

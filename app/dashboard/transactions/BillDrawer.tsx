@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sheet"
 
 import { Button } from "@/components/ui/button"
-import { formatCurrencyNoDecimal, formatDate } from "@/lib/helpers"
+import { formatCurrency, formatCurrencySimple, formatDate } from "@/lib/helpers"
 
 import { useRef } from "react"
 import { useReactToPrint } from "react-to-print"
@@ -83,7 +83,7 @@ export default function BillDrawer({
     item.data.subTransactions?.forEach((menu) => {
       text += pad(
         `${menu.quantity}x ${menu.menuName}`,
-        formatCurrencyNoDecimal(Number(menu.subTotal))
+        formatCurrencySimple(Number(menu.subTotal))
       )
 
       text += `Note : ${menu.note || "-"}\n`
@@ -93,31 +93,31 @@ export default function BillDrawer({
 
     // ================= SUMMARY =================
     if (item.data.discount) {
-      text += pad("Discount", "-" + formatCurrencyNoDecimal(Number(item.data.discount)))
+      text += pad("Discount", "-" + formatCurrencySimple(Number(item.data.discount)))
     }
 
     if (item.data.subTotal && item.data.discount) {
       text += pad(
         "Sub Total",
-        formatCurrencyNoDecimal(Number(item.data.subTotal) - Number(item.data.discount))
+        formatCurrencySimple(Number(item.data.subTotal) - Number(item.data.discount))
       )
     }
 
     if (item.data.tax) {
-      text += pad("Tax", formatCurrencyNoDecimal(Number(item.data.tax)))
+      text += pad("Tax", formatCurrencySimple(Number(item.data.tax)))
     }
 
     if (item.data.serviceCharge) {
-      text += pad("Service", formatCurrencyNoDecimal(Number(item.data.serviceCharge)))
+      text += pad("Service", formatCurrencySimple(Number(item.data.serviceCharge)))
     }
 
     if (item.data.rounding) {
-      text += pad("Round", formatCurrencyNoDecimal(Number(item.data.rounding)))
+      text += pad("Round", formatCurrencySimple(Number(item.data.rounding)))
     }
 
     text += line()
 
-    text += pad("Total", formatCurrencyNoDecimal(item.data.total))
+    text += pad("Total", formatCurrencySimple(item.data.total))
 
     text += "\n\n"
 
@@ -240,7 +240,7 @@ export default function BillDrawer({
                       {menu.quantity}x {menu.menuName}
                     </span>
                     <span>
-                      {formatCurrencyNoDecimal(Number(menu.subTotal))}
+                      {formatCurrencySimple(Number(menu.subTotal))}
                     </span>
                   </div>
                   
@@ -271,7 +271,7 @@ export default function BillDrawer({
               {item.data.discount && (
                 <div className="flex justify-between text-xs">
                   <span>Discount</span>
-                  <span>- {formatCurrencyNoDecimal(Number(item.data.discount))}</span>
+                  <span>- {formatCurrencySimple(Number(item.data.discount))}</span>
                 </div>
               )}
 
@@ -280,7 +280,7 @@ export default function BillDrawer({
               {item.data.discount && (
                 <div className="flex justify-between text-xs">
                   <span>Sub Total</span>
-                  <span>{formatCurrencyNoDecimal(Number(item.data.subTotal) - Number(item.data.discount))}</span>
+                  <span>{formatCurrencySimple(Number(item.data.subTotal) - Number(item.data.discount))}</span>
                 </div>
               )}
 
@@ -290,21 +290,21 @@ export default function BillDrawer({
               {item.data.tax && (
                 <div className="flex justify-between text-xs">
                   <span>Tax</span>
-                  <span>{formatCurrencyNoDecimal(Number(item.data.tax))}</span>
+                  <span>{formatCurrencySimple(Number(item.data.tax))}</span>
                 </div>
               )}
 
               {item.data.serviceCharge && (
                 <div className="flex justify-between text-xs">
                   <span>Service</span>
-                  <span>{formatCurrencyNoDecimal(Number(item.data.serviceCharge))}</span>
+                  <span>{formatCurrencySimple(Number(item.data.serviceCharge))}</span>
                 </div>
               )}
 
               {item.data.rounding && (
                 <div className="flex justify-between text-xs">
                   <span>Round</span>
-                  <span>{formatCurrencyNoDecimal(Number(item.data.rounding))}</span>
+                  <span>{formatCurrencySimple(Number(item.data.rounding))}</span>
                 </div>
               )}
 
@@ -312,7 +312,7 @@ export default function BillDrawer({
 
               <div className="flex justify-between font-semibold text-sm">
                 <span>Total</span>
-                <span>{formatCurrencyNoDecimal(item.data.total)}</span>
+                <span>{formatCurrencySimple(item.data.total)}</span>
               </div>
               <br />
               <hr style={{color:'white'}}/>

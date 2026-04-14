@@ -132,6 +132,10 @@ export const formatCurrencyNoDecimal = (
   }).format(amount)
 }
 
+export const formatCurrencySimple = (amount: number): string => {
+  return "Rp " + Math.round(amount).toLocaleString('id-ID')
+}
+
 /* ======================================================
    GENERIC HELPERS
 ====================================================== */

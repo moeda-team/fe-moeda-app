@@ -48,47 +48,103 @@ export default function BillDrawer({
   const buildReceiptText = (): string => {
     if (!item) return ""
 
-    const pad = (left: string, right: string) => {
-      const width = 32
-      const space = width - left.length - right.length
-      return left + " ".repeat(Math.max(space, 1)) + right
+    const width = 32
+
+    const center = (text: string) => {
+      const space = Math.floor((width - text.length) / 2)
+      return " ".repeat(Math.max(space, 0)) + text + "\n"
     }
+
+    const pad = (left: string, right: string) => {
+      const space = width - left.length - right.length
+      return left + " ".repeat(Math.max(space, 1)) + right + "\n"
+    }
+
+    const line = () => "--------------------------------\n"
 
     let text = ""
 
-    text += "MOEDA COFFEE\n"
-    text += "------------------------------\n"
+    // ================= HEADER =================
+    text += center("MOEDA")
+    text += center("COFFEE & SPACE")
+    text += "\n"
+    text += center("Thank you for Order's")
+    text += center(formatDate(item.data.createdAt, "DD MMM YYYY"))
+    text += "\n"
 
-    text += `ID: ${item.data.paymentNumber}\n`
-    text += `Customer: ${item.data.customerName}\n`
-    text += `Table: ${item.data.table?.name}\n\n`
+    // ================= INFO =================
+    text += pad("ID", item.data.paymentNumber)
+    text += pad("Customer", item.data.customerName)
+    text += pad("Table", item.data.table?.name ?? "-")
 
+    text += line()
+
+    // ================= ITEMS =================
     item.data.subTransactions?.forEach((menu) => {
       text += pad(
         `${menu.quantity}x ${menu.menuName}`,
         formatCurrency(Number(menu.subTotal))
-      ) + "\n"
+      )
 
-      if (menu.note) text += `  Note: ${menu.note}\n`
+      text += `Note : ${menu.note || "-"}\n`
     })
 
-    text += "------------------------------\n"
+    text += line()
 
+    // ================= SUMMARY =================
     if (item.data.discount) {
-      text += pad("Discount", "-" + formatCurrency(Number(item.data.discount))) + "\n"
+      text += pad("Discount", "-" + formatCurrency(Number(item.data.discount)))
+    }
+
+    if (item.data.subTotal && item.data.discount) {
+      text += pad(
+        "Sub Total",
+        formatCurrency(Number(item.data.subTotal) - Number(item.data.discount))
+      )
     }
 
     if (item.data.tax) {
-      text += pad("Tax", formatCurrency(Number(item.data.tax))) + "\n"
+      text += pad("Tax", formatCurrency(Number(item.data.tax)))
     }
 
     if (item.data.serviceCharge) {
-      text += pad("Service", formatCurrency(Number(item.data.serviceCharge))) + "\n"
+      text += pad("Service", formatCurrency(Number(item.data.serviceCharge)))
     }
 
-    text += "------------------------------\n"
-    text += pad("TOTAL", formatCurrency(item.data.total)) + "\n\n"
-    text += "TERIMA KASIH\n\n\n"
+    if (item.data.rounding) {
+      text += pad("Round", formatCurrency(Number(item.data.rounding)))
+    }
+
+    text += line()
+
+    text += pad("Total", formatCurrency(item.data.total))
+
+    text += "\n\n"
+
+    // ================= DUPLICATE SECTION =================
+    text += line()
+
+    text += pad("Order ID", item.data.paymentNumber)
+    text += pad(
+      "Waktu",
+      formatDate(item.data.createdAt, "DD MMM YYYY HH:mm")
+    )
+    text += pad("Customer", item.data.customerName)
+    text += pad("Table", item.data.table?.name ?? "-")
+
+    text += line()
+
+    item.data.subTransactions?.forEach((menu) => {
+      text += `${menu.quantity}x ${menu.menuName}\n`
+      text += `Note : ${menu.note || "-"}\n`
+    })
+
+    text += line()
+
+    text += center(formatDate(item.data.createdAt, "DD MMM YYYY HH:mm"))
+    text += center(name)
+
+    text += "\n\n\n"
 
     return text
   }

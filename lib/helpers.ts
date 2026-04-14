@@ -119,6 +119,19 @@ export const formatCurrency = (
   }).format(amount)
 }
 
+export const formatCurrencyNoDecimal = (
+  amount: number,
+  locale: string = "id-ID",
+  currency: string = "IDR"
+) => {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount)
+}
+
 /* ======================================================
    GENERIC HELPERS
 ====================================================== */

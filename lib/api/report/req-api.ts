@@ -1,4 +1,3 @@
-import { Pragati_Narrow } from "next/font/google"
 import { axiosClient } from "../axios-client"
 
 export type ReportItem = {
@@ -67,6 +66,7 @@ export type ReportListResponse = {
   }
   pagination: Paginate
 }
+
 
 export type CreateReportInput = ReportFormValue
 
@@ -234,5 +234,63 @@ export async function getRevenue(
   params?: ReportQueryParams
 ): Promise<ReportListResponse> {
   const res = await axiosClient.get<ReportListResponse>("/reports/system-revenue", { params })
+  return res.data
+}
+
+// closing
+export type ReportClosingResponse ={
+  data : {
+      storeInfo: {
+      name: string
+      address: string
+    },
+    reportInfo: {
+        title: string
+        cashierName: string
+        openAt: string
+        closeAt: string
+    },
+    salesTransactionReport: {
+        title: string
+        initialCapital: number
+        paymentMethods: {
+            cash: number
+            transfer: number
+            transferDetails: {
+                DEBIT: number
+            }
+        },
+        totalRevenue: number
+        finalBalance: number
+        transactionCounts: {
+            completed: number
+            unpaid: number
+        },
+        adjustments: {
+            totalTax: number
+            totalServiceCharge: number,
+            totalRounding: number
+        }
+    },
+    menuSalesReport: {
+        title: string
+        items: {
+            menuName: string
+            quantity: number
+            totalAmount: number
+        }[]
+    },
+  },
+}
+
+export async function getTransactionDetailReport (
+  id: string
+): Promise<ReportClosingResponse> {
+  const res = await axiosClient.get<ReportClosingResponse>(`/reports/cash-books/${id}/closing`)
+
+  if (!res) {
+    throw new Error("Failed to fetch transaction")
+  }
+
   return res.data
 }

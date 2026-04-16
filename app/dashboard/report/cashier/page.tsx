@@ -27,6 +27,8 @@ import { useDebounce } from "@/components/use-debounce"
 import { formatCurrency, formatDateTime } from "@/lib/helpers"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { Printer } from "lucide-react"
+import PrintDrawer from "./PrintDrawer"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
@@ -37,6 +39,8 @@ export default function ReportPage() {
   const [perPage, setPerPage] = React.useState(10)
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebounce(search, 400)
+  const [printDrawer, setPrintDrawer] = React.useState(false)
+  const [selectedSessionId, setSelectedSessionId] = React.useState<string>("")
 
   /** data */
   const { data, isLoading } = useReportSessionQuery({
@@ -106,13 +110,23 @@ export default function ReportPage() {
                     <TableCell className="font-medium capitalize">
                       <div className={`${v.status === "closed" ? "text-red-500" : "text-green-500"}`}>{v.status}</div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="flex items-center gap-2">
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => router.push(`/dashboard/report/cashier/${v.id}`)}
                       >
                         Details
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setPrintDrawer(true)
+                          setSelectedSessionId(v.id)
+                        }}
+                      >
+                        <Printer />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -153,6 +167,11 @@ export default function ReportPage() {
           />
         </div>
 
+        <PrintDrawer
+          open={printDrawer}
+          onClose={() => setPrintDrawer(false)}
+          transactionId={selectedSessionId}
+        />
       </div>
     </DashboardLayout>
   )

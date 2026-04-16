@@ -181,7 +181,7 @@ export function Attendance() {
         variant={alreadyOpen ? "secondary" : "default"}
         size="sm"
         disabled={isLoading }
-        className={alreadyOpen ? "bg-green-300 text-green-500 border border-green-500" : ""}
+        className={alreadyOpen ? "bg-green-300 text-green-500 border border-green-500 hidden lg:block" : ""}
         onClick={() => {
             setOpenStore(true)
         }}

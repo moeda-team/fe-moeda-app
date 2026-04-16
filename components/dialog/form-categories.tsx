@@ -154,7 +154,7 @@ export function CategoriesFormDialog({
           </div>
 
           {/* ICON UPLOAD */}
-          <div className="grid gap-2">
+          <div className="grid gap-2 hidden lg:block">
             <Label>Icon</Label>
             <Input
               type="file"

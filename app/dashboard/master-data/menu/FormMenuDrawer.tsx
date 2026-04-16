@@ -35,6 +35,18 @@ export function FormMenuDrawer({
 }: Props) {
   const [uploadingImg, setUploadingImg] = useState(false)
   const [uploadingPdf, setUploadingPdf] = useState(false)
+  const [useWebViewFallback, setUseWebViewFallback] = useState(false)
+
+  // Detect WebView environment
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase()
+    const isWebView = (
+      /wv/.test(userAgent) || // Android WebView
+      /iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) === false // iOS WebView
+    )
+    setUseWebViewFallback(isWebView)
+  }, [])
+
   const {
     register,
     handleSubmit,
@@ -102,7 +114,7 @@ export function FormMenuDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="w-full flex flex-col min-w-[500px]">
+      <DrawerContent className="w-full flex flex-col lg:min-w-[500px] min-w-[300px]">
         <DrawerHeader>
           <DrawerTitle>
             {value?.name ? "Edit Menu" : "Create Menu"}
@@ -113,7 +125,7 @@ export function FormMenuDrawer({
           <form onSubmit={submit} className="grid gap-4">
 
             <div className="grid grid-cols-3 gap-4 items-center">
-              <div className="col-span-1 hidden lg:block">
+              <div className="col-span-1">
                 {/* IMAGE */}
                 <div className="grid gap-2">
                   <Input
@@ -122,6 +134,7 @@ export function FormMenuDrawer({
                     ref={fileInputRef}
                     onChange={handleImageUpload}
                     className="hidden"
+                    {...(useWebViewFallback && { capture: "environment" })}
                   />
 
                   {!imgValue && (

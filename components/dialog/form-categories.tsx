@@ -39,6 +39,17 @@ export function CategoriesFormDialog({
 }: Props) {
   const isEdit = !!editing
   const [uploading, setUploading] = useState(false)
+  const [useWebViewFallback, setUseWebViewFallback] = useState(false)
+
+  // Detect WebView environment
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase()
+    const isWebView = (
+      /wv/.test(userAgent) || // Android WebView
+      /iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) === false // iOS WebView
+    )
+    setUseWebViewFallback(isWebView)
+  }, [])
 
   const {
     register,
@@ -150,6 +161,7 @@ export function CategoriesFormDialog({
               accept="image/*"
               onChange={handleFileChange}
               disabled={uploading}
+              {...(useWebViewFallback && { capture: "environment" })}
             />
 
             {uploading && (

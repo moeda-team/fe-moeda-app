@@ -181,7 +181,7 @@ export function Attendance() {
         variant={alreadyOpen ? "secondary" : "default"}
         size="sm"
         disabled={isLoading }
-        className={alreadyOpen ? "bg-green-300 text-green-500 border border-green-500 hidden lg:block" : ""}
+        className={alreadyOpen ? "bg-green-300 text-green-500 border border-green-500" : "}
         onClick={() => {
             setOpenStore(true)
         }}
@@ -208,7 +208,7 @@ export function Attendance() {
         variant={alreadyCheckIn ? "secondary" : "default"}
         size="sm"
         disabled={isLoading }
-        className={alreadyCheckIn ? "bg-green-300 text-green-500 border border-green-500" : ""}
+        className={alreadyCheckIn ? "bg-green-300 text-green-500 border border-green-500 hidden lg:block" : "hidden lg:block"}
         onClick={() => {
           if (!alreadyCheckIn) {
             setOpen(true)

@@ -104,7 +104,8 @@ export default function BillDrawer({
     }
 
     if (item.data.tax) {
-      text += pad("Tax", formatCurrencySimple(Number(item.data.tax)))
+      // text += pad("Tax", formatCurrencySimple(Number(item.data.tax)))
+      text += pad("Tax", formatCurrencySimple(Number(0)))
     }
 
     if (item.data.serviceCharge) {
@@ -290,7 +291,8 @@ export default function BillDrawer({
               {item.data.tax && (
                 <div className="flex justify-between text-xs">
                   <span>Tax</span>
-                  <span>{formatCurrencySimple(Number(item.data.tax))}</span>
+                  {/* <span>{formatCurrencySimple(Number(item.data.tax))}</span> */}
+                  <span>{formatCurrencySimple(Number(0))}</span>
                 </div>
               )}
 

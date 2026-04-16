@@ -417,7 +417,8 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
             {transactionData?.data.tax ? (
               <div className="flex justify-between">
                 <span>Tax</span>
-                <span>Rp {transactionData?.data.tax.toLocaleString("id-ID")}</span>
+                <span>Rp {(0).toLocaleString("id-ID")}</span>
+                {/* <span>Rp {transactionData?.data.tax.toLocaleString("id-ID")}</span> */}
               </div>
             ) : null}
             

@@ -113,7 +113,7 @@ export function FormMenuDrawer({
           <form onSubmit={submit} className="grid gap-4">
 
             <div className="grid grid-cols-3 gap-4 items-center">
-              <div className="col-span-1">
+              <div className="col-span-1 hidden lg:block">
                 {/* IMAGE */}
                 <div className="grid gap-2">
                   <Input

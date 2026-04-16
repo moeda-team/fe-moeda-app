@@ -291,8 +291,7 @@ export default function BillDrawer({
               {item.data.tax && (
                 <div className="flex justify-between text-xs">
                   <span>Tax</span>
-                  {/* <span>{formatCurrencySimple(Number(item.data.tax))}</span> */}
-                  <span>{formatCurrencySimple(Number(0))}</span>
+                  <span>{formatCurrencySimple(Number(item.data.tax))}</span>
                 </div>
               )}
 

@@ -24,14 +24,26 @@ import { formatDateTime } from "@/lib/helpers"
 export function Attendance() {
   const queryClient = useQueryClient()
   const webcamRef = React.useRef<Webcam>(null)
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const [mounted, setMounted] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [detailOpen, setDetailOpen] = React.useState(false)
   const [imageSrc, setImageSrc] = React.useState<string | null>(null)
+  const [useFallback, setUseFallback] = React.useState(false)
 
+  // Detect WebView environment
   React.useEffect(() => {
     setMounted(true)
+    
+    // Check if running in WebView
+    const userAgent = navigator.userAgent.toLowerCase()
+    const isWebView = (
+      /wv/.test(userAgent) || // Android WebView
+      /iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) === false // iOS WebView
+    )
+    
+    setUseFallback(isWebView)
   }, [])
 
   const { data, isLoading } = useQuery({
@@ -44,24 +56,23 @@ export function Attendance() {
     queryKey: ["check-session"],
     queryFn: checkSession,
   })
-  // 🔥 Mutation check session
+  // Mutation check session
   const openSessionMut = useMutation({mutationFn: openSession})
   const closeSessionMut = useMutation({mutationFn: closeSession})
   const alreadyOpen = sessionStore?.data ?? false
 
   const [openStore, setOpenStore] = React.useState(false)
 
-  
-  // 🔥 Mutation upload file
+  // Mutation upload file
   const uploadFileMut = useMutation({
     mutationFn: createFile,
   })
 
-  // 🔥 Mutation create attendance
+  // Mutation create attendance
   const attendanceMut = useMutation({
     mutationFn: createAttendance,
     onSuccess: () => {
-      toast.success("Check-in berhasil 🎉")
+      toast.success("Check-in berhasil")
       setOpen(false)
       setImageSrc(null)
       queryClient.invalidateQueries({ queryKey: ["check-attendance"] })
@@ -81,6 +92,17 @@ export function Attendance() {
     if (image) setImageSrc(image)
   }
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImageSrc(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleSubmit = async () => {
     try {
       if (!imageSrc) {
@@ -88,7 +110,7 @@ export function Attendance() {
         return
       }
 
-      // 1️⃣ Convert base64 → File
+      // Convert base64 -> File
       const blob = await fetch(imageSrc).then((res) => res.blob())
       const file = new File([blob], "attendance.jpg", {
         type: "image/jpeg",
@@ -98,14 +120,14 @@ export function Attendance() {
       formData.append("file", file)
       formData.append("category", "attendance")
 
-      // 2️⃣ Upload ke /files
+      // Upload ke /files
       const fileRes = await uploadFileMut.mutateAsync(formData)
 
-      // 3️⃣ Ambil fileUrl dari response
+      // Ambil fileUrl dari response
       const fileUrl = fileRes?.data.fileUrl
       if (!fileUrl) throw new Error("File URL tidak ditemukan")
 
-      // 4️⃣ Kirim ke attendances
+      // Kirim ke attendances
       await attendanceMut.mutateAsync({ fileUrl })
       setTimeout(() => {
         window.location.reload()
@@ -125,7 +147,6 @@ export function Attendance() {
         await openSessionMut.mutateAsync();
         toast.success("Open Store opened successfully");
       }
-      
 
       setTimeout(() => {
         window.location.reload();
@@ -205,12 +226,38 @@ export function Attendance() {
 
           <div className="space-y-4">
             {!imageSrc ? (
-              <Webcam
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                videoConstraints={{ facingMode: "user" }}
-                className="rounded-lg w-full"
-              />
+              useFallback ? (
+                // WebView Fallback - File Input
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <Camera className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                  <p className="text-sm text-gray-600 mb-4">
+                    Klik untuk memilih foto atau ambil dari kamera
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  <Button 
+                    onClick={() => fileInputRef.current?.click()} 
+                    className="w-full gap-2"
+                  >
+                    <Camera className="h-4 w-4" />
+                    Pilih Foto
+                  </Button>
+                </div>
+              ) : (
+                // Normal Browser - React Webcam
+                <Webcam
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  videoConstraints={{ facingMode: "user" }}
+                  className="rounded-lg w-full"
+                />
+              )
             ) : (
               <img
                 src={imageSrc}
@@ -220,10 +267,16 @@ export function Attendance() {
             )}
 
             {!imageSrc ? (
-              <Button onClick={capture} className="w-full gap-2">
-                <Camera className="h-4 w-4" />
-                Ambil Foto
-              </Button>
+              useFallback ? (
+                // WebView fallback - no capture button needed (handled by file input)
+                null
+              ) : (
+                // Normal Browser - capture button
+                <Button onClick={capture} className="w-full gap-2">
+                  <Camera className="h-4 w-4" />
+                  Ambil Foto
+                </Button>
+              )
             ) : (
               <Button
                 variant="outline"

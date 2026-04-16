@@ -40,8 +40,16 @@ export function Attendance() {
     const userAgent = navigator.userAgent.toLowerCase()
     const isWebView = (
       /wv/.test(userAgent) || // Android WebView
-      /iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) === false // iOS WebView
+      /iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) === false || // iOS WebView
+      /android/.test(userAgent) && !/chrome/.test(userAgent) || // Android non-Chrome (likely WebView)
+      /webview/i.test(userAgent) || // Explicit WebView
+      /version\/[\d.]+.*mobile/.test(userAgent) && !/safari/.test(userAgent) // iOS WebView alternative
     )
+    
+    // Debug logging
+    console.log('User Agent:', userAgent)
+    console.log('Is WebView:', isWebView)
+    console.log('Use Fallback:', isWebView)
     
     setUseFallback(isWebView)
   }, [])
@@ -93,13 +101,22 @@ export function Attendance() {
   }
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('File input triggered')
     const file = event.target.files?.[0]
+    console.log('Selected file:', file)
+    
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
+        console.log('File reader completed')
         setImageSrc(reader.result as string)
       }
+      reader.onerror = () => {
+        console.error('File reader error')
+      }
       reader.readAsDataURL(file)
+    } else {
+      console.log('No file selected')
     }
   }
 
@@ -227,12 +244,17 @@ export function Attendance() {
           <div className="space-y-4">
             {!imageSrc ? (
               useFallback ? (
-                // WebView Fallback - File Input
+                // WebView Fallback - Multiple Approaches
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                   <Camera className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <p className="text-sm text-gray-600 mb-4">
-                    Klik untuk memilih foto atau ambil dari kamera
+                  <p className="text-sm text-gray-600 mb-2">
+                    WebView Mode - Multiple Options
                   </p>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Debug: Fallback = {useFallback ? 'ON' : 'OFF'}
+                  </p>
+                  
+                  {/* Hidden file input with capture */}
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -240,13 +262,32 @@ export function Attendance() {
                     capture="environment"
                     onChange={handleFileSelect}
                     className="hidden"
+                    id="webview-file-input"
                   />
+                  
+                  {/* Primary button - tries camera first */}
                   <Button 
                     onClick={() => fileInputRef.current?.click()} 
-                    className="w-full gap-2"
+                    className="w-full gap-2 mb-2"
                   >
                     <Camera className="h-4 w-4" />
-                    Pilih Foto
+                    📷 Ambil dari Kamera
+                  </Button>
+                  
+                  {/* Fallback button - no capture attribute */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    id="webview-file-input-gallery"
+                  />
+                  <Button 
+                    variant="outline"
+                    onClick={() => document.getElementById('webview-file-input-gallery')?.click()} 
+                    className="w-full gap-2"
+                  >
+                    📁 Pilih dari Gallery
                   </Button>
                 </div>
               ) : (

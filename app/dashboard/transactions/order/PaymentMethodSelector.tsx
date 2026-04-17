@@ -8,11 +8,11 @@ type Props = {
 }
 
 const paymentMethods = [
-  {
-    id: "qris",
-    label: "QRIS",
-    img: "/qris.png",
-  },
+  // {
+  //   id: "qris",
+  //   label: "QRIS",
+  //   img: "/qris.png",
+  // },
   {
     id: "cash",
     label: "Cash",

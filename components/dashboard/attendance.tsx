@@ -208,7 +208,7 @@ export function Attendance() {
         variant={alreadyCheckIn ? "secondary" : "default"}
         size="sm"
         disabled={isLoading }
-        className={alreadyCheckIn ? "bg-green-300 text-green-500 border border-green-500 hidden lg:block" : "hidden lg:block"}
+        className={alreadyCheckIn ? "bg-green-300 text-green-500 border border-green-500 hidden lg:flex" : "hidden lg:flex"}
         onClick={() => {
           if (!alreadyCheckIn) {
             setOpen(true)

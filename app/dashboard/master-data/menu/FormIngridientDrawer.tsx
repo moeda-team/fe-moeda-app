@@ -89,7 +89,7 @@ export function FormIngridientDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="w-full flex flex-col min-w-[500px]">
+      <DrawerContent className="w-full flex flex-col">
         <DrawerHeader>
           <DrawerTitle>Ingredient Settings</DrawerTitle>
         </DrawerHeader>

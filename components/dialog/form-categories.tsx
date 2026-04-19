@@ -126,7 +126,7 @@ export function CategoriesFormDialog({
         }
       }}
     >
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Edit Category" : "Create Category"}

@@ -75,7 +75,7 @@ export function BestSellerFormDialog({
         }
       }}
     >
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle></DialogTitle>
         </DialogHeader>

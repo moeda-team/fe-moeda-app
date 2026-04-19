@@ -13,7 +13,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryProvider>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >

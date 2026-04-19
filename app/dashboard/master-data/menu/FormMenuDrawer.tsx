@@ -114,7 +114,7 @@ export function FormMenuDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="w-full flex flex-col min-w-[500px]">
+      <DrawerContent className="w-full flex flex-col">
         <DrawerHeader>
           <DrawerTitle>
             {value?.name ? "Edit Menu" : "Create Menu"}
@@ -125,7 +125,7 @@ export function FormMenuDrawer({
           <form onSubmit={submit} className="grid gap-4">
 
             <div className="grid grid-cols-3 gap-4 items-center">
-              <div className="col-span-1 hidden lg:block">
+              <div className="lg:col-span-1 hidden lg:block">
                 {/* IMAGE */}
                 <div className="grid gap-2">
                   <Input
@@ -168,7 +168,7 @@ export function FormMenuDrawer({
                   )}
                 </div>
               </div>
-              <div className="col-span-2 flex flex-col gap-2">
+              <div className="lg:col-span-2 col-span-3 flex flex-col gap-2">
                 {/* NAME */}
                 <div className="grid gap-2">
                   <Input

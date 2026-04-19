@@ -24,7 +24,7 @@ export function VariantSettingDrawer({
 }: Props) {
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="w-full flex flex-col min-w-[500px]">
+      <DrawerContent className="w-full flex flex-col">
         <DrawerHeader>
           <DrawerTitle>Variant Settings</DrawerTitle>
         </DrawerHeader>

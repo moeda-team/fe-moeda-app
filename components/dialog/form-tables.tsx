@@ -80,7 +80,7 @@ export function TablesFormDialog({
         }
       }}
     >
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Table" : "Create Table"}</DialogTitle>
         </DialogHeader>

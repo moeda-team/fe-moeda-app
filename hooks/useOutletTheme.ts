@@ -7,10 +7,8 @@ export function useOutletTheme() {
   const { data: session } = useSession()
 
   useEffect(() => {
-    if (!session?.outlet?.color) return
-
     const root = document.documentElement
-    const outletColor = session.outlet.color
+    const outletColor = session?.outlet?.color || "#FE770A" // Default orange color
 
     // Apply outlet color as primary color
     root.style.setProperty('--primary', outletColor)

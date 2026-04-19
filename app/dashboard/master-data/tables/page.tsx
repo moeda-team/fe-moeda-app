@@ -35,20 +35,24 @@ import { getErrorMessage } from "@/lib/toast-error"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
 import { TablesFormDialog } from "@/components/dialog/form-tables"
+import { useSession } from "next-auth/react"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
-const emptyForm: TableFormValue = {
-  name: "",
-  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
-}
-
 export default function TablesPage() {
+  /** session */
+  const { data: session } = useSession()
+  
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebounce(search, 400)
+
+  const emptyForm: TableFormValue = {
+    name: "",
+    outletId: session?.outlet?.id ?? "",
+  }
 
   /** confirm delete */
   const [confirmOpen, setConfirmOpen] = React.useState(false)

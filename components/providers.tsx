@@ -4,6 +4,8 @@ import * as React from "react"
 import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryProvider } from "@/components/query-provider"
+import { OutletThemeProvider } from "@/components/OutletThemeProvider"
+import { Toaster } from "@/components/ui/sonner"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +17,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <OutletThemeProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </OutletThemeProvider>
         </ThemeProvider>
       </QueryProvider>
     </SessionProvider>

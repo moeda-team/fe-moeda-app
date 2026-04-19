@@ -38,7 +38,7 @@ export default function Hero({
       {/* HERO IMAGE */}
       <div className="relative h-24 overflow-hidden rounded-t-lg">
         <Image
-          src="/images/hero.png"
+          src="/images/header.png"
           alt="MOEDA Cafe"
           fill
           priority

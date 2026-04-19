@@ -46,7 +46,7 @@ const emptyForm: OutletFormValue = {
   province:"",
   city:"",
   postalCode:"",
-  status:""
+  status:"active"
 }
 
 export default function DiscountPage() {
@@ -97,8 +97,10 @@ export default function DiscountPage() {
       number : u.number ?? "",
       province : u.province ?? "",
       city : u.city ?? "",
+      img : u.img ?? "",
+      color : u.color ?? "",
       postalCode : u.postalCode ?? "",
-      status : u.status ?? ""
+      status : "active"
     })
     setOpen(true)
   }
@@ -113,6 +115,8 @@ export default function DiscountPage() {
           number : data.number ?? "",
           province : data.province ?? "",
           city : data.city ?? "",
+          img : data.img ?? "",
+          color : data.color ?? "",
           postalCode : data.postalCode ?? "",
           status : data.status ?? ""
         }

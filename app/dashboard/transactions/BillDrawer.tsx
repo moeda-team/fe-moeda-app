@@ -13,8 +13,8 @@ import { formatCurrency, formatCurrencySimple, formatDate } from "@/lib/helpers"
 import { useRef } from "react"
 import { useReactToPrint } from "react-to-print"
 import { useQuery } from "@tanstack/react-query"
-import { getTransactionDetail  } from "@/lib/api/customer/req-api"
 import { useSession } from "next-auth/react"
+import { getTransactionDetail  } from "@/lib/api/customer/req-api"
 
 type Props = {
   open: boolean
@@ -31,6 +31,9 @@ export default function BillDrawer({
   const { data: session, status } = useSession()
   const user = session?.user
   const name = user?.name ?? "User"
+
+  // Get logo from session outlet with fallback
+  const logoSrc = session?.outlet?.img || "/images/default.png"
 
   // ✅ Fetch detail only when open & id exists
   const { data: item, isLoading } = useQuery({
@@ -198,7 +201,7 @@ export default function BillDrawer({
               {/* HEADER */}
               <div className="text-center mb-3">
                 <img
-                  src="/logo.png"
+                  src={logoSrc}
                   alt="Logo"
                   className="w-28 h-14 mx-auto"
                 />

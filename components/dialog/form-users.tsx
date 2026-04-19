@@ -18,6 +18,9 @@ import { Label } from "@/components/ui/label"
 import { PhoneInputGroup } from "../input/PhoneInputGroup"
 import { SelectSearch } from "../input/SelectSearch"
 import type { UserFormValue } from "@/lib/api/users/req-api"
+import { getOutlets } from "@/lib/api/outlet/req-api"
+import { useQuery } from "@tanstack/react-query"
+import { useSession } from "next-auth/react"
 
 type Props = {
   open: boolean
@@ -39,6 +42,17 @@ export function UserFormDialog({
   onSubmit,
 }: Props) {
   const isEdit = !!editing
+  const { data: session } = useSession()
+
+  // Fetch outlets data (only for admin)
+  const { data: outletsData, isLoading: outletsLoading } = useQuery({
+    queryKey: ["outlets"],
+    queryFn: () => getOutlets({ limit: 100 }), // Fetch all outlets
+    enabled: session?.user?.role === "ADMIN", // Only fetch for admin
+  })
+
+  // Check if current user is admin
+  const isAdmin = session?.user?.role === "ADMIN"
 
   const {
     register,
@@ -54,12 +68,19 @@ export function UserFormDialog({
     defaultValues: value,
   })
 
-  // ✅ Reset hanya saat dialog dibuka atau editing berubah (bukan setiap value berubah)
+  // Reset hanya saat dialog dibuka atau editing berubah (bukan setiap value berubah)
   useEffect(() => {
     if (!open) return
     reset(value)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing?.id, reset]) // penting: JANGAN depend ke `value`
+
+  // Set default outletId for non-admin users after reset
+  useEffect(() => {
+    if (!isAdmin && session?.outlet?.id && open) {
+      setValue("outletId", session.outlet.id)
+    }
+  }, [isAdmin, session?.outlet?.id, setValue, open])
 
   const busy = !!loading || isSubmitting
 
@@ -82,18 +103,12 @@ export function UserFormDialog({
         }
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit User" : "Create User"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={submit} className="grid gap-4">
-          <Input
-            type="hidden"
-            {...register("outletId", {
-              required: "Outlet ID is required",
-            })}
-          />
           <div className="grid gap-2">
             <Label>Name</Label>
             <Input
@@ -170,6 +185,55 @@ export function UserFormDialog({
               <p className="text-sm text-red-500">{errors.gender.message}</p>
             )}
           </div>
+
+          {/* Outlet Selection - Role Based */}
+          {isAdmin ? (
+            // Admin: Show outlet selection dropdown
+            <div className="grid gap-2">
+              <Label>Outlet</Label>
+              <Controller
+                control={control}
+                name="outletId"
+                rules={{ required: "Outlet is required" }}
+                render={({ field }) => (
+                  <SelectSearch
+                    options={outletsData?.data?.map((outlet) => ({
+                      label: outlet.name ?? "",
+                      value: outlet.id ?? "",
+                    })) || []}
+                    value={field.value}
+                    onChange={(v) => field.onChange(v)}
+                    placeholder="Pilih outlet"
+                    disabled={outletsLoading}
+                  />
+                )}
+              />
+              {errors.outletId && (
+                <p className="text-sm text-red-500">{errors.outletId.message}</p>
+              )}
+            </div>
+          ) : (
+            // Non-Admin: Show outlet info and set from session
+            <div className="grid gap-2">
+              <Label>Outlet</Label>
+              <Input
+                type="text"
+                value={session?.outlet?.name || "Tidak ada outlet"}
+                disabled
+                className="bg-gray-100"
+              />
+              <Input
+                type="hidden"
+                {...register("outletId", {
+                  required: "Outlet is required",
+                })}
+                value={session?.outlet?.id || ""}
+              />
+              {errors.outletId && (
+                <p className="text-sm text-red-500">{errors.outletId.message}</p>
+              )}
+            </div>
+          )}
 
           <div className="grid gap-2">
             <Label>Position </Label>

@@ -50,7 +50,7 @@ export default function SalesAnalyticsChart({
           <Line
             type="linear"
             dataKey={dataKey}
-            stroke="#b36b3f"
+            stroke="var(--primary)"
             strokeWidth={2}
             dot={true}
           />

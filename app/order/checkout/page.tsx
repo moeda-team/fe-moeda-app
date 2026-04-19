@@ -18,9 +18,11 @@ import { useQuery } from "@tanstack/react-query"
 import { useTablesQuery } from "@/app/dashboard/master-data/tables/hooks/use"
 import { mappingOption } from "@/lib/option-utils"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { useOrderStore } from "@/store/order.store"
 
 export default function CheckoutPage() {
+  const { data: session } = useSession()
   const router = useRouter()
   /**
    * =========================
@@ -133,7 +135,7 @@ export default function CheckoutPage() {
     localStorage.removeItem("expireTimestamp")
 
     const payload : CreateTransactionInput = {
-      outletId : process.env.NEXT_PUBLIC_OUTLET_ID ?? '',
+      outletId : session?.outlet?.id ?? '',
       transactionType : "dine-in",
       tableId : table,
       paymentMethod : paymentMethod,

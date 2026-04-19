@@ -79,7 +79,7 @@ export function CashBalanceFormDialog({
         }
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Cancel Cash / Balance" : "New Cash / Balance"}</DialogTitle>
         </DialogHeader>

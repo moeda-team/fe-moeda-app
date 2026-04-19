@@ -83,7 +83,7 @@ export function ActivityFormDialog({
         }
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Activity" : "Create Activity"}</DialogTitle>
         </DialogHeader>

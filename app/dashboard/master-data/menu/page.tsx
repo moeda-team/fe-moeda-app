@@ -326,7 +326,7 @@ export default function MenuPage() {
             <TableBody>
               {!tableLoading && s.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">
+                  <TableCell colSpan={8} className="text-center">
                     No data
                   </TableCell>
                 </TableRow>

@@ -1,5 +1,6 @@
 import "next-auth"
 import "next-auth/jwt"
+import { OutletItem } from "@/lib/api/outlet/req-api"
 
 declare module "next-auth" {
   interface Session {
@@ -11,11 +12,13 @@ declare module "next-auth" {
       role: AppRole
     }
     accessToken?: string
+    outlet?: OutletItem | null
   }
 
   interface User {
     role: AppRole
     accessToken?: string
+    outlet?: OutletItem | null
   }
 }
 
@@ -24,5 +27,6 @@ declare module "next-auth/jwt" {
     id?: string
     role?: string
     accessToken?: string
+    outlet?: OutletItem | null
   }
 }

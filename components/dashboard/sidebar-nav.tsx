@@ -84,6 +84,9 @@ export function SidebarNav({
   const pathname = usePathname()
   const { data: session } = useSession()
 
+  const user = session?.user
+  const logoSrc = session?.outlet?.img || "/images/default.png"
+
   const role: Roles = session?.user?.role ?? "ADMIN"
 
   const filtered = React.useMemo(
@@ -117,7 +120,7 @@ export function SidebarNav({
       <div className="flex h-14 items-center px-3 shrink-0">
         {!collapsed && (
           <div className="w-full text-lg font-semibold flex items-center justify-center gap-2 ml-6">
-            <img src="/logo.png" className="w-20" alt="Logo" />
+            <img src={logoSrc} className="w-20" alt="Logo" />
           </div>
         )}
 

@@ -80,7 +80,7 @@ export function StockFormDialog({
         }
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Ingredient" : "Create Ingredient"}</DialogTitle>
         </DialogHeader>

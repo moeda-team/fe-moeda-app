@@ -8,6 +8,8 @@ export type OutletItem = {
     number: string, //optional
     province: string, //optional
     city: string, //optional
+    img: string, //optional
+    color: string, //optional
     postalCode: string, //optional
     status: string //optional
 }
@@ -21,6 +23,8 @@ export type OutletFormValue = {
     city: string, //optional
     postalCode: string, //optional
     status: string //optional
+    img?: string, //optional
+    color?: string, //optional
 }
 
 export type OutletQueryParams = {

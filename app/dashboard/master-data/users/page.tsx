@@ -37,13 +37,14 @@ import {
 } from "@/components/dialog/form-users"
 import { useDebounce } from "@/components/use-debounce"
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
+import { useSession } from "next-auth/react"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
 const emptyForm: UserFormValue = {
   name: "",
   phoneNumber: "",
-  outletId: process.env.NEXT_PUBLIC_OUTLET_ID,
+  outletId: "",
   email: "",
   password: "",
   status: "active",
@@ -55,6 +56,9 @@ const emptyForm: UserFormValue = {
 }
 
 export default function UsersPage() {
+  /** session */
+  const { data: session } = useSession()
+  
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
@@ -97,7 +101,7 @@ export default function UsersPage() {
     setForm({
       name: u.name ?? "",
       phoneNumber: u.phoneNumber ?? "",
-      outletId: u.outletId ?? "",
+      outletId: session?.outlet?.id ?? "",
       email: u.email ?? "",
       status: u.status ?? "",
       role: u.role ?? "",
@@ -193,6 +197,7 @@ export default function UsersPage() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Position</TableHead>
                 <TableHead>Roles</TableHead>
                 <TableHead className="w-[180px]">Action</TableHead>
               </TableRow>
@@ -211,7 +216,7 @@ export default function UsersPage() {
                     <TableCell>{u.name}</TableCell>
                     <TableCell>{u.email}</TableCell>
                     <TableCell>{u.position}</TableCell>
-                    <TableCell>{u.role}</TableCell>
+                    <TableCell className="capitalize">{u.role.replaceAll("_", " ").toLowerCase()}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         size="sm"

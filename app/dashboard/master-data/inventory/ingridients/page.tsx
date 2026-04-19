@@ -12,6 +12,7 @@ import type { UpdateStockInput, StockFormValue, StockItem } from "@/lib/api/inve
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
+import { useSession } from "next-auth/react"
 import {
   Table,
   TableHeader,
@@ -41,29 +42,31 @@ import { AlertOctagon, BadgeCheck, TriangleAlert } from "lucide-react"
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100]
 
-const emptyForm: StockFormValue = {
-  name: "",
-  outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
-  unit: "",
-  currentStock: 0,
-  minimumStock: 0,
-}
-
 export default function StockPage() {
+  /** session */
+  const { data: session } = useSession()
+
   /** paging + search */
   const [page, setPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState(10)
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebounce(search, 400)
 
-  /** confirm delete */
+  const emptyForm: StockFormValue = {
+    name: "",
+    outletId: session?.outlet?.id ?? "",
+    unit: "",
+    currentStock: 0,
+    minimumStock: 0,
+  }
+
   const [confirmOpen, setConfirmOpen] = React.useState(false)
   const [selectedStock, setSelectedStock] = React.useState<StockItem | null>(null)
 
   /** data */
   const { data, isLoading } = useStocksQuery({
     page,
-    limit : perPage,
+    limit: perPage,
     search: debouncedSearch,
   })
 

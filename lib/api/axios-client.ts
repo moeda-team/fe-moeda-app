@@ -3,7 +3,7 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
 } from "axios"
-import { getSession } from "next-auth/react"
+import { getSession, useSession } from "next-auth/react"
 import { signOut } from "next-auth/react"
 
 type RetryConfig = AxiosRequestConfig & {
@@ -15,7 +15,6 @@ type RetryConfig = AxiosRequestConfig & {
  */
 const username = process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME || ""
 const password = process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD || ""
-const outletId = process.env.NEXT_PUBLIC_OUTLET_ID || ""
 
 const basicAuth =
   typeof window !== "undefined"
@@ -29,7 +28,6 @@ export const axiosClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   headers: {
     "Content-Type": "application/json",
-    "outletId": outletId
   },
   withCredentials: false,
 })
@@ -53,12 +51,15 @@ axiosClient.interceptors.request.use(
 
       const session = await getSession()
       const token = session?.accessToken
+      const outletId = session?.outlet?.id ?? ""
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
         config.headers["X-Basic-Auth"] = basicAuth
+        config.headers["outletId"] = outletId
       } else {
         config.headers.Authorization = basicAuth
+        config.headers["outletId"] = outletId
       }
 
       return config

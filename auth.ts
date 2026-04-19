@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import { OutletItem } from "./lib/api/outlet/req-api"
 
 type LoginResponse = {
   token?: string
@@ -14,7 +15,8 @@ type LoginResponse = {
     expires_in?: number,
     ext_expires_in?: number,
     access_token?: string,
-    expires_on?: string
+    expires_on?: string,
+    outlet?: OutletItem
   }
 }
 
@@ -82,7 +84,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const loginJson = (await loginRes.json()) as LoginResponse
         const accessToken = loginJson.data?.access_token
-
+        
         if (!accessToken) return null
          return {
             id: loginJson.data?.email,
@@ -90,6 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             email: loginJson.data?.email,
             image: null,
             role: loginJson.data?.role ?? "",
+            outlet: loginJson.data?.outlet ?? null,
             accessToken,
           }
 
@@ -129,6 +132,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.name = user.name
         token.email = user.email
         token.picture = user.image
+        token.outlet = user.outlet
         token.role = (user as { role: string }).role
         token.accessToken = (user as { accessToken?: string }).accessToken
       }
@@ -146,6 +150,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       session.accessToken =
         typeof token.accessToken === "string" ? token.accessToken : undefined
+
+      // Add outlet to session
+      session.outlet = token.outlet as OutletItem | null
 
       return session
     },

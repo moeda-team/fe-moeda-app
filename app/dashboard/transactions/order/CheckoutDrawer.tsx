@@ -18,6 +18,7 @@ import { toast } from "sonner"
 import axios from "axios"
 import { useQuery } from "@tanstack/react-query"
 import { useTablesQuery } from "@/app/dashboard/master-data/tables/hooks/use"
+import { useSession } from "next-auth/react"
 import { mappingOption } from "@/lib/option-utils"
 import { useCreateTransaction } from "@/app/order/checkout/hooks/useTransactions"
 import { useVoucher } from "@/app/order/checkout/hooks/useVoucher"
@@ -33,6 +34,13 @@ type Props = {
 }
 
 export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
+  /**
+   * =========================
+   * SESSION
+   * =========================
+   */
+  const { data: session } = useSession()
+
   /**
    * =========================
    * STORE
@@ -171,7 +179,7 @@ export function CheckoutDrawer({ open, onOpenChange, onSuccess }: Props) {
   const handlePayment = () => {
     mutate(
       {
-        outletId: process.env.NEXT_PUBLIC_OUTLET_ID ?? "",
+        outletId: session?.outlet?.id ?? "",
         transactionType: "dine-in",
         tableId: table,
         paymentMethod,

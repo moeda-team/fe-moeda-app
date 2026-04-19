@@ -13,9 +13,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-export const metadata: Metadata = {
-  title: "Moeda - Coffee & Space",
-  description: "Author by Al",
+// Dynamic metadata function
+export async function generateMetadata(): Promise<Metadata> {
+  // This is a server-side function, so we can't use useSession here directly
+  // We'll use a default title and let client-side components handle dynamic updates
+  return {
+    title: {
+      default: " - Coffee & Space",
+      template: "%s | XPOS - Coffee & Space"
+    },
+    description: "Author by Al",
+  }
 }
 
 export default function RootLayout({

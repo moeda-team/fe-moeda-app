@@ -241,7 +241,7 @@ function TransactionCard({
           disabled={type === "completed"}
           onClick={handleCompleteAll}
         >
-          {type === "completed" ? `Selesai ${formatTime(transaction.updatedAt)}` : "Selesaikan semua pesanan"}
+          {type === "completed" ? `Selesai ${formatTime(transaction.updatedAt)}` : "Selesaikan pesanan"}
         </Button>
         <Button   
           variant="outline"  

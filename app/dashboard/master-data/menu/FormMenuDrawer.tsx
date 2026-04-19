@@ -138,7 +138,7 @@ export function FormMenuDrawer({
                   />
 
                   {!imgValue && (
-                    <div className="relative h-32 w-32">
+                    <div className="relative h-28 w-28">
                       <Image
                         src="https://moeda-space.s3.ap-southeast-1.amazonaws.com/default.png"
                         alt="preview"
@@ -156,7 +156,7 @@ export function FormMenuDrawer({
                   )}
 
                   {imgValue && (
-                    <div className="relative h-32 w-32">
+                    <div className="relative h-28 w-28">
                       <Image
                         src={imgValue}
                         alt="preview"

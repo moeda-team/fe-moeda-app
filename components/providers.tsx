@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { QueryProvider } from "@/components/query-provider"
 import { OutletThemeProvider } from "@/components/OutletThemeProvider"
 import { Toaster } from "@/components/ui/sonner"
+import { DynamicDocumentTitle } from "@/components/dynamic-document-title"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -18,6 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <OutletThemeProvider>
+            <DynamicDocumentTitle />
             {children}
             <Toaster richColors position="top-right" />
           </OutletThemeProvider>

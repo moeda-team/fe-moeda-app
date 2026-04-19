@@ -68,7 +68,8 @@ export default function BillDrawer({
     let text = ""
 
     // ================= HEADER =================
-    text += center("MOEDA")
+    const outletName = session?.outlet?.name || "MOEDA"
+    text += center(outletName.toUpperCase())
     text += center("COFFEE & SPACE")
     text += "\n"
     text += center("Thank you for Order's")
@@ -179,7 +180,7 @@ export default function BillDrawer({
     >
       <SheetContent
         side="right"
-        className="w-[420px] p-0 rounded-l-2xl flex flex-col"
+        className="w-full p-0 rounded-l-2xl flex flex-col"
       >
         <SheetHeader className="px-6 py-4 border-b">
           <SheetTitle>Order Details</SheetTitle>
@@ -203,7 +204,7 @@ export default function BillDrawer({
                 <img
                   src={logoSrc}
                   alt="Logo"
-                  className="w-28 h-14 mx-auto"
+                  className="w-32 h-12 mx-auto"
                 />
 
                 <h2 className="mt-2 font-medium">

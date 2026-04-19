@@ -153,7 +153,7 @@ export default function PrintDrawer({
     >
       <SheetContent
         side="right"
-        className="w-[420px] p-0 rounded-l-2xl flex flex-col"
+        className="w-full p-0 rounded-l-2xl flex flex-col"
       >
         <SheetHeader className="px-6 py-4 border-b">
           <SheetTitle>Close Order Details</SheetTitle>

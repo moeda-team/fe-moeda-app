@@ -153,14 +153,12 @@ export default function CashBalancePage() {
           <h1 className="text-2xl font-semibold">Cash / Balance Logs</h1>
 
           <div className="flex gap-2">
-            {detail && (
+            {detail && detail?.data.length > 0 && (
               <div className="flex gap-3 justify-end ">
                 <div className="text-sm font-semibold p-2 border border-primary rounded-lg bg-primary/20 w-full">
-                {detail && detail?.data.length > 0 && (
-                    <div className="font-medium">
-                      Current Balance :  {formatCurrency(detail.data.reduce((sum, item) => sum + item.amount, 0))}
-                    </div>
-                  )}
+                  <div className="font-medium">
+                    Current Balance :  {formatCurrency(detail.data.reduce((sum, item) => sum + item.amount, 0))}
+                  </div>
                 </div>
               </div>
             )}

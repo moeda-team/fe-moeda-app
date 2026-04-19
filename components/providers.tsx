@@ -11,6 +11,7 @@ import { DynamicDocumentTitle } from "@/components/dynamic-document-title"
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
+      <DynamicDocumentTitle />
       <QueryProvider>
         <ThemeProvider
           attribute="class"
@@ -19,7 +20,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <OutletThemeProvider>
-            <DynamicDocumentTitle />
             {children}
             <Toaster richColors position="top-right" />
           </OutletThemeProvider>

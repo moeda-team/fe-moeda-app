@@ -39,7 +39,7 @@ export default function Hero({
       <div className="relative h-24 overflow-hidden rounded-t-lg">
         <Image
           src="/images/header.png"
-          alt="MOEDA Cafe"
+          alt="XPOS"
           fill
           priority
           className="object-cover"

@@ -68,7 +68,7 @@ export default function BillDrawer({
     let text = ""
 
     // ================= HEADER =================
-    const outletName = session?.outlet?.name || "MOEDA"
+    const outletName = session?.outlet?.name || "XPOS"
     text += center(outletName.toUpperCase())
     text += center("COFFEE & SPACE")
     text += "\n"

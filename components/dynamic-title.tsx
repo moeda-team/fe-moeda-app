@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react"
 
 export function DynamicTitle() {
   const { data: session } = useSession()
-  const outletName = session?.outlet?.name || "Moeda"
+  const outletName = session?.outlet?.name || "XPOS"
   
-  return `${outletName} - Coffee & Space`
+  return `${outletName ? outletName + " - " : ""} Coffee & Space`
 }

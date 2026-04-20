@@ -75,7 +75,8 @@ export default function BillDrawer({
     // ================= INFO =================
     text += `No Nota : ${item.data.paymentNumber}\n`
     text += `Waktu   : ${formatDate(item.data.createdAt, "DD MMM YY HH:mm")}\n`
-    text += `Order   : ${item.data.customerName !== "-"? item.data.customerName : name}\n`
+    // text += `Order   : ${item.data.customerName !== "-"? item.data.customerName : name}\n`
+    text += `Order   : ${name}\n`
     text += `Kasir   : ${name}\n`
 
     text += line()
@@ -247,7 +248,8 @@ export default function BillDrawer({
                 </div>
                 <div className="flex gap-4">
                   <span className="w-20">Order</span>
-                  <span>: {item.data.customerName !== "-"? item.data.customerName : name}</span>
+                  {/* <span>: {item.data.customerName !== "-"? item.data.customerName : name}</span> */}
+                  <span>: {name}</span>
                 </div>
                 <div className="flex gap-4">
                   <span className="w-20">Kasir</span>

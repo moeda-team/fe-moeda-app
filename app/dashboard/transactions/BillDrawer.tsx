@@ -60,7 +60,7 @@ export default function BillDrawer({
       return left + " ".repeat(Math.max(space, 1)) + right + "\n"
     }
 
-    const line = () => "--------------------------------\n"
+    const line = () => "================================\n"
 
     let text = ""
 
@@ -127,7 +127,6 @@ export default function BillDrawer({
 
     text += line()
     text += line()
-    text += "\n"
 
     // ================= FOOTER =================
     text += center("pass : andromoeda")
@@ -139,7 +138,7 @@ export default function BillDrawer({
 
     text += line()
     text += line()
-    text += "\n"
+    text += "\n\n\n"
 
     // ================= DUPLICATE SECTION =================
     text += pad("Order ID", item.data.paymentNumber)

@@ -295,6 +295,9 @@ export function UserFormDialog({
                   if (!/[A-Z]/.test(v))
                     return "Must contain at least 1 uppercase letter"
 
+                  if (!/[a-z]/.test(v))
+                    return "Must contain at least 1 lowercase letter"
+
                   if (!/[!@#$%^&*(),.?\":{}|<>_\-\\[\]\\\/+=~`]/.test(v))
                     return "Must contain at least 1 symbol"
 

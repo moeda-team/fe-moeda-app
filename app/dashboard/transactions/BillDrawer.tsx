@@ -73,9 +73,10 @@ export default function BillDrawer({
     text += "\n"
 
     // ================= INFO =================
-    text += pad("ID", item.data.paymentNumber)
-    text += pad("Customer", item.data.customerName)
-    text += pad("Table", item.data.table?.name ?? "-")
+    text += `No Nota : ${item.data.paymentNumber}\n`
+    text += `Waktu   : ${formatDate(item.data.createdAt, "DD MMM YY HH:mm")}\n`
+    text += `Order   : ${item.data.customerName}\n`
+    text += `Kasir   : ${name}\n`
 
     text += line()
 
@@ -85,8 +86,15 @@ export default function BillDrawer({
         `${menu.quantity}x ${menu.menuName}`,
         formatCurrencySimple(Number(menu.subTotal))
       )
-
       text += `Note : ${menu.note || "-"}\n`
+      if (menu?.addOn) {
+        const addOns = menu.addOn.split(',').map((addOn) => {
+          const [type, ...values] = addOn.trim().split('_')
+          const value = values.join('_')
+          return `${type} : ${value.replaceAll("_", " ")}`
+        }).join(', ')
+        text += `AddOn: ${addOns}\n`
+      }
     })
 
     text += line()
@@ -96,40 +104,46 @@ export default function BillDrawer({
       text += pad("Discount", "-" + formatCurrencySimple(Number(item.data.discount)))
     }
 
-    if (item.data.subTotal && item.data.discount) {
+    if (item.data.discount) {
       text += pad(
         "Sub Total",
         formatCurrencySimple(Number(item.data.subTotal) - Number(item.data.discount))
       )
     }
 
+    text += line()
+
     if (item.data.tax) {
-      // text += pad("Tax", formatCurrencySimple(Number(item.data.tax)))
-      text += pad("Tax", formatCurrencySimple(Number(0)))
+      text += pad("Tax", formatCurrencySimple(Number(item.data.tax)))
     }
 
     if (item.data.serviceCharge) {
       text += pad("Service", formatCurrencySimple(Number(item.data.serviceCharge)))
     }
 
-    if (item.data.rounding) {
-      text += pad("Round", formatCurrencySimple(Number(item.data.rounding)))
-    }
+    // Total Bayar
+    text += line()
+    text += pad("Total Bayar", formatCurrencySimple(item.data.total))
 
     text += line()
+    text += line()
+    text += "\n"
 
-    text += pad("Total", formatCurrencySimple(item.data.total))
+    // ================= FOOTER =================
+    text += center("pass : andromoeda")
+    text += center("instagram:@moedacoffee")
+    text += "\n"
+    text += center(`Terbayar ${formatDate(item.data.createdAt, "DD MMM YY HH:mm")}`)
+    text += center(`dicetak: ${name}`)
+    text += "\n"
 
-    text += "\n\n"
+    text += line()
+    text += line()
+    text += "\n"
 
     // ================= DUPLICATE SECTION =================
-    text += line()
-
     text += pad("Order ID", item.data.paymentNumber)
-    text += pad(
-      "Waktu",
-      formatDate(item.data.createdAt, "DD MMM YYYY HH:mm")
-    )
+    text += pad("Waktu", formatDate(item.data.createdAt, "DD MMM YYYY HH:mm"))
     text += pad("Customer", item.data.customerName)
     text += pad("Table", item.data.table?.name ?? "-")
 
@@ -138,6 +152,14 @@ export default function BillDrawer({
     item.data.subTransactions?.forEach((menu) => {
       text += `${menu.quantity}x ${menu.menuName}\n`
       text += `Note : ${menu.note || "-"}\n`
+      if (menu?.addOn) {
+        const addOns = menu.addOn.split(',').map((addOn) => {
+          const [type, ...values] = addOn.trim().split('_')
+          const value = values.join('_')
+          return `${type} : ${value.replaceAll("_", " ")}`
+        }).join(', ')
+        text += `AddOn: ${addOns}\n`
+      }
     })
 
     text += line()
@@ -202,32 +224,35 @@ export default function BillDrawer({
                   alt="Logo"
                   className="w-28 h-14 mx-auto"
                 />
-
-                <h2 className="mt-2 font-medium">
-                  Thank you for Order’s
-                </h2>
-
-                <p className="text-xs">
-                  {formatDate(
-                    item.data.createdAt,
-                    "DD MMMM YYYY"
-                  )}
-                </p>
+                <br />
+                <div className="text-xs">
+                  Jl. Raya Pekayon No 27
+                </div>
+                <div className="text-xs">
+                  Kota Bekasi
+                </div>
               </div>
+              
+              <hr className="my-1 border-dashed" />
+              <hr className="my-1 border-dashed" />
 
               {/* INFO */}
-              <div className="text-xs mb-2">
-                <div className="flex justify-between">
-                  <span>ID</span>
-                  <span>{item.data.paymentNumber}</span>
+              <div className="text-xs my-2">
+                <div className="flex gap-4">
+                  <span className="w-20">No Nota</span>
+                  <span>: {item.data.paymentNumber}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Customer</span>
-                  <span>{item.data.customerName}</span>
+                <div className="flex gap-4">
+                  <span className="w-20">Waktu</span>
+                  <span>: {formatDate(item.data.createdAt, "DD MMM YY HH:mm")}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Table</span>
-                  <span>{item.data.table?.name}</span>
+                <div className="flex gap-4">
+                  <span className="w-20">Order</span>
+                  <span>: {item.data.customerName}</span>
+                </div>
+                <div className="flex gap-4">
+                  <span className="w-20">Kasir</span>
+                  <span>: {name}</span>
                 </div>
               </div>
 
@@ -287,7 +312,6 @@ export default function BillDrawer({
 
               <hr className="my-2 border-dashed" />
 
-
               {item.data.tax && (
                 <div className="flex justify-between text-xs">
                   <span>Tax</span>
@@ -302,23 +326,35 @@ export default function BillDrawer({
                 </div>
               )}
 
-              {item.data.rounding && (
+              {/* {item.data.rounding && (
                 <div className="flex justify-between text-xs">
                   <span>Round</span>
                   <span>{formatCurrencySimple(Number(item.data.rounding))}</span>
                 </div>
-              )}
+              )} */}
 
-              <hr className="my-2 border-dashed" />
+              {/* <hr className="my-2 border-dashed" /> */}
 
               <div className="flex justify-between font-semibold text-sm">
-                <span>Total</span>
+                <span>Total Bayar</span>
                 <span>{formatCurrencySimple(item.data.total)}</span>
               </div>
+              <hr className="my-1 border-dashed" />
+              <hr className="my-1 border-dashed" />
+              
               <br />
-              <hr style={{color:'white'}}/>
+              {/* FOOTER */}
+              <div className="text-center text-xs">
+                <div>pass : andromoeda</div>
+                <div>instagram:@moedacoffee</div>
+                <br />
+                <div>Terbayar {formatDate(item.data.createdAt, "DD MMM YY HH:mm")}</div>
+                <div>dicetak: {name}</div>
+              </div>
+              
               <br />
-              <hr style={{color:'white'}}/>
+              <hr className="my-1 border-dashed" />
+              <hr className="my-1 border-dashed" />
               <br />
 
               <div className="flex flex-col ">

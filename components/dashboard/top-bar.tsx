@@ -125,13 +125,13 @@ export function Topbar({ onOpenSidebarMobile }: Props) {
                 </span>
               </DropdownMenuLabel>
 
-              {/* <DropdownMenuSeparator /> */}
+              <DropdownMenuSeparator />
 
-              {/* <DropdownMenuItem
-                onClick={() => router.push("/settings")}
+              <DropdownMenuItem
+                onClick={() => router.push("/dashboard/profile")}
               >
-                Settings
-              </DropdownMenuItem> */}
+                Profile
+              </DropdownMenuItem>
 
               <DropdownMenuSeparator />
 

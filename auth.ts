@@ -9,6 +9,7 @@ type LoginResponse = {
     token?: string
     accessToken?: string
     name?: string
+    id?: string
     email?: string,
     role?: string,
     token_type?: string,
@@ -87,7 +88,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         
         if (!accessToken) return null
          return {
-            id: loginJson.data?.email,
+            id: loginJson.data?.id,
             name: loginJson.data?.name,
             email: loginJson.data?.email,
             image: null,
